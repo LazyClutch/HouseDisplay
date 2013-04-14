@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<string>menu_diy</string>
+	<string>menu_about</string>
+	<string>menu_accessories</string>
+	<string>menu_anzhuang</string>
+	<string>menu_book</string>
+	<string>menu_certificate</string>
+	<string>menu_dealer</string>
+	<string>menu_360</string>
+	<string>menu_product</string>
+	<string>menu_project</string>
+	<string>menu_video</string>
+</array>
+</plist>
