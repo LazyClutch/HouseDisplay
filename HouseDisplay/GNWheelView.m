@@ -196,7 +196,7 @@ void(^setShadowForLayer)(CALayer *) = ^(CALayer *____layer) {
         }else{
             
             __view.userInteractionEnabled = NO;
-             
+              
             __view.layer.opacity = 0.85;
         }
         
