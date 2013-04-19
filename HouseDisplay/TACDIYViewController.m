@@ -9,14 +9,13 @@
 #import "TACDIYViewController.h"
 #import "ReflectionView.h"
 #import "JSON.h"
-#import "TACDIYImageRequest.h"
 
 #define kItemWidth 210
 #define kDoor @"door"
 #define kGlass @"glass"
 #define kDisplay @"display"
 #define kSelect @"select"
-#define kHostAddress @"10.0.1.22"
+#define kHostAddress @"192.168.2.157"
 
 
 @interface TACDIYViewController ()
@@ -55,6 +54,10 @@
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     self.mainImageView = nil;
+    self.imageData = nil;
+    self.originalIndexArray = nil;
+    self.jsonTempDataArray = nil;
+    self.originalOperationDic = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -152,7 +155,7 @@
     animation.fillMode = kCAFillModeBackwards;
     animation.removedOnCompletion = NO;
     animation.type = @"rippleEffect";
-    [self.view.layer addAnimation:animation forKey:@"animationBack"];
+    [self.view.superview.layer addAnimation:animation forKey:@"animationBack"];
     //[self.view exchangeSubviewAtIndex:1 withSubviewAtIndex:0];
     [self.view removeFromSuperview];
 }

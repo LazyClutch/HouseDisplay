@@ -57,7 +57,6 @@
 		6348C45C1710F35000425773 /* TACDIYMenuViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6348C45B1710F35000425773 /* TACDIYMenuViewCell.m */; };
 		6348C45E1710F3C200425773 /* TACDIYMenuViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */; };
 		6356DE5B1713ED3D00EA0979 /* MainMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6356DE5A1713ED3D00EA0979 /* MainMenu.plist */; };
-		63697DDC1716867F00F6785A /* TACDIYImageRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 63697DDB1716867F00F6785A /* TACDIYImageRequest.m */; };
 		63746DB11709C6CC00DC7874 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63746DB01709C6CC00DC7874 /* UIKit.framework */; };
 		63746DB31709C6CC00DC7874 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63746DB21709C6CC00DC7874 /* Foundation.framework */; };
 		63746DB51709C6CC00DC7874 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63746DB41709C6CC00DC7874 /* CoreGraphics.framework */; };
@@ -210,8 +209,6 @@
 		6348C45B1710F35000425773 /* TACDIYMenuViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACDIYMenuViewCell.m; sourceTree = "<group>"; };
 		6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACDIYMenuViewCell.xib; sourceTree = "<group>"; };
 		6356DE5A1713ED3D00EA0979 /* MainMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MainMenu.plist; sourceTree = "<group>"; };
-		63697DDA1716867F00F6785A /* TACDIYImageRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACDIYImageRequest.h; sourceTree = "<group>"; };
-		63697DDB1716867F00F6785A /* TACDIYImageRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACDIYImageRequest.m; sourceTree = "<group>"; };
 		63746DAD1709C6CC00DC7874 /* HouseDisplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HouseDisplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63746DB01709C6CC00DC7874 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		63746DB21709C6CC00DC7874 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -625,8 +622,6 @@
 				6348C45A1710F35000425773 /* TACDIYMenuViewCell.h */,
 				6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */,
 				6348C45B1710F35000425773 /* TACDIYMenuViewCell.m */,
-				63697DDA1716867F00F6785A /* TACDIYImageRequest.h */,
-				63697DDB1716867F00F6785A /* TACDIYImageRequest.m */,
 			);
 			name = DIY;
 			sourceTree = "<group>";
@@ -809,7 +804,6 @@
 				6313B8E517146CA70009A8C4 /* SBJsonBase.m in Sources */,
 				6313B8E617146CA70009A8C4 /* SBJsonParser.m in Sources */,
 				6313B8E717146CA70009A8C4 /* SBJsonWriter.m in Sources */,
-				63697DDC1716867F00F6785A /* TACDIYImageRequest.m in Sources */,
 				630C18C61716E4CB001F68E9 /* ASIAuthenticationDialog.m in Sources */,
 				630C18C71716E4CB001F68E9 /* ASIDataCompressor.m in Sources */,
 				630C18C81716E4CB001F68E9 /* ASIDataDecompressor.m in Sources */,

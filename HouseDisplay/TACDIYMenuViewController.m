@@ -52,6 +52,11 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.imageViews = nil;
+}
+
 - (IBAction)returnButtonPressed:(id)sender {
     [UIView beginAnimations:@"animationBack" context:nil];
     [UIView setAnimationDuration:1.0f];
