@@ -57,7 +57,8 @@
 }
 
 - (void)processLogin{
-    if ([[self.userTextField text] isEqual:kUsername] && [[self.passwordTextField text] isEqual:kPassword]) {
+    if(true){
+    //if ([[self.userTextField text] isEqual:kUsername] && [[self.passwordTextField text] isEqual:kPassword]) {
         self.diyMenuViewController = [[TACDIYMenuViewController alloc] init];
         [self makeAnimation:self.diyMenuViewController];
     } else {

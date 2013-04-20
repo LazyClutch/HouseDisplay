@@ -10,12 +10,12 @@
 #import "ReflectionView.h"
 #import "JSON.h"
 
-#define kItemWidth 210
+#define kItemWidth 110
 #define kDoor @"door"
 #define kGlass @"glass"
 #define kDisplay @"display"
 #define kSelect @"select"
-#define kHostAddress @"192.168.2.157"
+#define kHostAddress @"10.0.1.10"
 
 
 @interface TACDIYViewController ()
@@ -46,8 +46,8 @@
     [self loadViewInfo];
     [self receiveData];
     
-    self.coverView.type = iCarouselTypeCoverFlow2;
-    [self.coverView reloadData];
+    self.coverFlow.type = iCarouselTypeLinear;
+    
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -223,7 +223,6 @@
 }
 
 - (void)imageDidReceive:(UIImageView *)imageView{
-    [self carousel:self.coverView viewForItemAtIndex:imageView.tag reusingView:imageView];
     [self.originalIndexArray addObject:[NSString stringWithFormat:@"%d",imageView.tag]];
     [self.originalOperationDic removeObjectForKey:[NSString stringWithFormat:@"%d",imageView.tag]];
 }
@@ -279,7 +278,7 @@
     }
     [data setObject:dict forKey:currentState];
     self.imageData = data;
-    [self.coverView reloadData];
+    [self.coverFlow reloadData];
     if (self.firstLogin) {
         [self initScene];
         self.firstLogin = NO;
@@ -300,12 +299,12 @@
     return [data count];
 }
 
-- (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(ReflectionView *)view{
+- (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(UIView *)view{
     
     //init view
     UIImageView *imageView = nil;
     if (view == nil) {
-        view = [[ReflectionView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+        view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 80, 130)];
         imageView = [[UIImageView alloc] initWithFrame:view.bounds];
         imageView.hidden = NO;
         [view addSubview:imageView];
@@ -317,7 +316,6 @@
     
     //save cache
     
-    [view update];
     return view;
 }
 
@@ -348,5 +346,7 @@
 - (CGFloat)carouselItemWidth:(iCarousel *)carousel{
     return kItemWidth;
 }
+
+
 
 @end

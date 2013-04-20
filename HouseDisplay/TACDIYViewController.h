@@ -11,7 +11,7 @@
 #import "iCarousel.h"
 #import "MBProgressHUD.h"
 
-@interface TACDIYViewController : UIViewController <iCarouselDataSource,iCarouselDelegate,MBProgressHUDDelegate>{
+@interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate>{
     NSString *outString; 
     NSString *currentState;
     CGRect doorPicRect;
@@ -19,7 +19,6 @@
 }
 
 @property (strong, nonatomic) IBOutlet UIButton *returnButton;
-@property (strong, nonatomic) IBOutlet iCarousel *coverView;
 @property (strong, nonatomic) IBOutlet UIButton *doorButton;
 @property (strong, nonatomic) IBOutlet UIButton *glassButton;
 
@@ -28,6 +27,7 @@
 @property (strong, nonatomic) UIImageView *displayGlassImageView;
 @property (strong, nonatomic) UIImageView *frontImageView;
 @property (strong, nonatomic) MBProgressHUD *hud;
+@property (strong, nonatomic) IBOutlet iCarousel *coverFlow;
 
 @property (strong, nonatomic) NSMutableDictionary *viewInfomation;
 @property (strong, nonatomic) NSMutableDictionary *imageData;
