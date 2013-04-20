@@ -246,6 +246,33 @@
     [self.originalOperationDic removeObjectForKey:[NSString stringWithFormat:@"%d",imageView.tag]];
 }
 
+- (IBAction)setCoverButtonPressed:(id)sender {
+    self.returnButton.hidden = YES;
+    self.setCoverButton.hidden = YES;
+    self.doorButton.hidden = YES;
+    self.glassButton.hidden = YES;
+    
+    UIGraphicsBeginImageContext(self.view.bounds.size);     
+    [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *viewImage = UIGraphicsGetImageFromCurrentImageContext();
+
+    CGRect rect = CGRectMake(0, 0, 1000, 600);
+    CGRect newRect = CGRectMake(0, 0, 313, 163);
+    UIImageView *imgPrint = [[UIImageView alloc] initWithFrame:rect];
+    UIImageView *newimg = [[UIImageView alloc] initWithFrame:newRect];
+    imgPrint.image = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([viewImage CGImage], rect)];
+    newimg.image = imgPrint.image;
+    NSMutableArray *array = [[TACDataCenter sharedInstance] menuThumbnails];
+    [array replaceObjectAtIndex:(self.viewTag-1) withObject:newimg.image];
+    [[TACDataCenter sharedInstance] setMenuThumbnails:array];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeThumb" object:nil];
+    
+    self.returnButton.hidden = NO;
+    self.setCoverButton.hidden = NO;
+    self.doorButton.hidden = NO;
+    self.glassButton.hidden = NO;
+}
+
 #pragma mark NSURLConnectionDelegate Methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -269,7 +296,7 @@
     NSString *message = @"连接超时，请检查网络";
     NSString *title = @"超时";
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-    //[alert show];
+    [alert show];
     self.hud.hidden = YES;
     [self.coverFlow reloadData];
     self.doorButton.enabled = YES;

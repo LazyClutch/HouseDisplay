@@ -10,7 +10,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "UIGridView.h"
 #import "UIGridViewDelegate.h"
-
+#import "NSString+MD5.h"
+#import "TACDataCenter.h"
 
 @interface TACDIYMenuViewController : UIViewController <UIGridViewDelegate>{
     NSString *outstring;
@@ -21,7 +22,8 @@
 @property (strong, nonatomic) IBOutlet UIImageView *bannerImageView;
 
 @property (strong, nonatomic) UIImageView *backgroundImageView;
-@property (strong, nonatomic) NSArray *imageViews;
+@property (strong, nonatomic) NSArray *imagePaths;
+@property (strong, nonatomic) NSMutableArray *imageViews;
 @property (strong, nonatomic) NSArray *viewsInfomation;
 
 - (IBAction)returnButtonPressed:(id)sender;

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
+#import "TACDataCenter.h"
 #import "iCarousel.h"
 #import "MBProgressHUD.h"
 #import "FTWCache.h"
@@ -24,6 +25,7 @@
 @property (strong, nonatomic) IBOutlet UIButton *returnButton;
 @property (strong, nonatomic) IBOutlet UIButton *doorButton;
 @property (strong, nonatomic) IBOutlet UIButton *glassButton;
+@property (strong, nonatomic) IBOutlet UIButton *setCoverButton;
 
 @property (strong, nonatomic) UIImageView *mainImageView;
 @property (strong, nonatomic) UIImageView *displayDoorImageView;
@@ -49,6 +51,7 @@
 - (IBAction)doorButtonPressed:(id)sender;
 - (IBAction)glassButtonPressed:(id)sender;
 -(void)imageDidReceive:(UIImageView *)imageView;
+- (IBAction)setCoverButtonPressed:(id)sender;
 
 
 @end

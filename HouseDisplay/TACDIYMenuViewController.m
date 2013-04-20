@@ -33,17 +33,26 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self showLoginSuccess];
     
     self.backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
     self.backgroundImageView.image = [UIImage imageNamed:@"content_background.jpg"];
     [self.view insertSubview:self.backgroundImageView atIndex:0];
-    self.imageViews = @[@"diy1.png",@"diy2.png",@"diy3.png",@"diy4.png",@"diy5.png"];
+    
+    self.imagePaths = @[@"diy1",@"diy2",@"diy3",@"diy4",@"diy5"];
+    [self setThumbNail];
     
     NSString *infoPath = [[NSBundle mainBundle] pathForResource:@"DIYInformation" ofType:@"plist"];
     NSMutableArray *dict = [[NSMutableArray alloc] initWithContentsOfFile:infoPath];
     self.viewsInfomation = dict;
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeThumb:) name:@"changeThumb" object:nil];
+    
     // Do any additional setup after loading the view from its nib.
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
 }
 
 - (void)didReceiveMemoryWarning
@@ -52,14 +61,29 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
-    [self showLoginSuccess];
-}
-
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     self.imageViews = nil;
+}
+
+- (void)setThumbNail{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (int i = 0; i < [self.imagePaths count]; i++) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:[self.imagePaths objectAtIndex:i] ofType:@"png"];
+        NSData *data = [NSData dataWithContentsOfFile:path];
+        UIImage *image = [UIImage imageWithData:data];
+        [array addObject:image];
+    }
+    self.imageViews = array;
+    
+    [[TACDataCenter sharedInstance] setMenuThumbnails:self.imageViews];
+    
+}
+
+- (void)changeThumb:(NSNotification*)notification{
+    NSMutableArray *array = [[TACDataCenter sharedInstance] menuThumbnails];
+    self.imageViews = array;
+    [self.gridView reloadData];
 }
 
 - (void)showLoginSuccess{
@@ -115,8 +139,7 @@
         cell = [[TACDIYMenuViewCell alloc] init];
     }
     NSInteger number = 3 * rowIndex + columnIndex;
-    NSString *imageName = [self.imageViews objectAtIndex:number];
-    cell.thumbnails.image = [UIImage imageNamed:imageName];
+    cell.thumbnails.image = [self.imageViews objectAtIndex:number];
     return cell;
 }
 
