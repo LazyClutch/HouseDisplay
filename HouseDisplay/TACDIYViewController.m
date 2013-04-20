@@ -39,6 +39,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [self loadCacheData];
     self.firstLogin = YES;
     self.jsonTempDataArray = [[NSMutableArray alloc] init];
     //[self setImageRequestQueue];
@@ -47,6 +49,7 @@
     [self receiveData];
     
     self.coverFlow.type = iCarouselTypeLinear;
+    [self.coverFlow reloadData];
     
     // Do any additional setup after loading the view from its nib.
 }
@@ -90,6 +93,10 @@
 
 #pragma mark-
 #pragma mark Custom Methods
+
+- (void)loadCacheData{
+    
+}
 
 - (void)clearData{
     self.jsonTempDataArray = nil;
@@ -190,25 +197,23 @@
     NSArray *array = [dict objectForKey:usage];
     NSString *dataUrl = [array objectAtIndex:index];
     NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
+    NSString *key = [url MD5Hash];
     NSURL *imaUrl = [NSURL URLWithString:url];
-    
     NSString *indexForString = [NSString stringWithFormat:@"%d",index];
     if ([self.originalIndexArray containsObject:indexForString]) {
         return nil;
     }
     UIImageView *imageView = [[UIImageView alloc] init];
     imageView.tag = index;
-    /*TACDIYImageRequest *imageOperation = [[TACDIYImageRequest alloc] init];
-    imageOperation.resourceURL = imaUrl;
-    imageOperation.hostObject = self;
-    imageOperation.resourceDidReceive = @selector(imageDidReceive:);
-    imageOperation.imageView = imageView;
-    
-    [self.requestImageQueue addOperation:imageOperation];
-    [self.originalOperationDic setObject:imageOperation forKey:indexForString];*/
-    
-    NSData *data = [NSData dataWithContentsOfURL:imaUrl];
-    UIImage *image = [UIImage imageWithData:data];
+    NSData *data = [FTWCache objectForKey:key];
+    UIImage *image = [[UIImage alloc] init];
+    if (data != nil) {
+        image = [UIImage imageWithData:data];
+    } else {
+        data = [NSData dataWithContentsOfURL:imaUrl];
+        image = [UIImage imageWithData:data];
+        [FTWCache setObject:data forKey:key];
+    }
     return image;
 }
 
@@ -250,9 +255,11 @@
     NSString *message = @"连接超时，请检查网络";
     NSString *title = @"超时";
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
-    [alert show];
+    //[alert show];
     self.hud.hidden = YES;
-    [self returnSuperView];
+    [self.coverFlow reloadData];
+    self.doorButton.enabled = YES;
+    self.glassButton.enabled = YES;
 }
 
 - (void) connectionDidFinishLoading: (NSURLConnection*) connection {

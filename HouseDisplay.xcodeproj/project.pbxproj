@@ -68,6 +68,8 @@
 		63746DC71709C6CC00DC7874 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63746DC61709C6CC00DC7874 /* Default-568h@2x.png */; };
 		63746DCA1709C6CC00DC7874 /* TACViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63746DC91709C6CC00DC7874 /* TACViewController.m */; };
 		63746DCD1709C6CC00DC7874 /* TACViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63746DCB1709C6CC00DC7874 /* TACViewController.xib */; };
+		6376B2091722774E00DE7475 /* FTWCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6376B2061722774E00DE7475 /* FTWCache.m */; };
+		6376B20A1722774E00DE7475 /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 6376B2081722774E00DE7475 /* NSString+MD5.m */; };
 		63862B851711DB7700F031EA /* content_background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63862B811711DB7700F031EA /* content_background.jpg */; };
 		63862B861711DB7700F031EA /* content_background@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63862B821711DB7700F031EA /* content_background@2x.jpg */; };
 		63862B871711DB7700F031EA /* diy_banner.png in Resources */ = {isa = PBXBuildFile; fileRef = 63862B831711DB7700F031EA /* diy_banner.png */; };
@@ -224,6 +226,10 @@
 		63746DC81709C6CC00DC7874 /* TACViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TACViewController.h; sourceTree = "<group>"; };
 		63746DC91709C6CC00DC7874 /* TACViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TACViewController.m; sourceTree = "<group>"; };
 		63746DCC1709C6CC00DC7874 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/TACViewController.xib; sourceTree = "<group>"; };
+		6376B2051722774E00DE7475 /* FTWCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FTWCache.h; sourceTree = "<group>"; };
+		6376B2061722774E00DE7475 /* FTWCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTWCache.m; sourceTree = "<group>"; };
+		6376B2071722774E00DE7475 /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
+		6376B2081722774E00DE7475 /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
 		63862B811711DB7700F031EA /* content_background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = content_background.jpg; sourceTree = "<group>"; };
 		63862B821711DB7700F031EA /* content_background@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "content_background@2x.jpg"; sourceTree = "<group>"; };
 		63862B831711DB7700F031EA /* diy_banner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = diy_banner.png; sourceTree = "<group>"; };
@@ -569,6 +575,17 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		6376B2041722770400DE7475 /* Cache */ = {
+			isa = PBXGroup;
+			children = (
+				6376B2051722774E00DE7475 /* FTWCache.h */,
+				6376B2061722774E00DE7475 /* FTWCache.m */,
+				6376B2071722774E00DE7475 /* NSString+MD5.h */,
+				6376B2081722774E00DE7475 /* NSString+MD5.m */,
+			);
+			name = Cache;
+			sourceTree = "<group>";
+		};
 		63A2B6F4170AEF7400CA6AD9 /* Menu */ = {
 			isa = PBXGroup;
 			children = (
@@ -639,6 +656,7 @@
 		63B8FD62170AE73F00D7A80A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				6376B2041722770400DE7475 /* Cache */,
 				63C8F321171941F9005BC4B7 /* HUD */,
 				630C18731716E4CB001F68E9 /* ASIHttpRequest */,
 				6313B8D417146C990009A8C4 /* JSON */,
@@ -814,6 +832,8 @@
 				630C18DB1716E4CB001F68E9 /* ASIS3ServiceRequest.m in Sources */,
 				630C18F21716E5BD001F68E9 /* Reachability.m in Sources */,
 				63C8F3241719420E005BC4B7 /* MBProgressHUD.m in Sources */,
+				6376B2091722774E00DE7475 /* FTWCache.m in Sources */,
+				6376B20A1722774E00DE7475 /* NSString+MD5.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

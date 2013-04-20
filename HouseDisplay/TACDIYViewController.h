@@ -10,6 +10,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import "iCarousel.h"
 #import "MBProgressHUD.h"
+#import "FTWCache.h"
+#import "NSString+MD5.h"
 
 @interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate>{
     NSString *outString; 
