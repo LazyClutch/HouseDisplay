@@ -40,13 +40,12 @@
 {
     [super viewDidLoad];
     
-    [self loadCacheData];
     self.firstLogin = YES;
     self.jsonTempDataArray = [[NSMutableArray alloc] init];
     //[self setImageRequestQueue];
     [self showBackgroundImage];
     [self loadViewInfo];
-    [self receiveData];
+    [self loadCacheData];
     
     self.coverFlow.type = iCarouselTypeLinear;
     [self.coverFlow reloadData];
@@ -79,7 +78,7 @@
     }
     currentState = kDoor;
     [self clearData];
-    [self receiveData];
+    [self loadCacheData];
 }
 
 - (IBAction)glassButtonPressed:(id)sender {
@@ -88,14 +87,29 @@
     }
     currentState = kGlass;
     [self clearData];
-    [self receiveData];
+    [self loadCacheData];
 }
 
 #pragma mark-
 #pragma mark Custom Methods
 
 - (void)loadCacheData{
-    
+    NSString *cacheName = [NSString stringWithString:currentState];
+    cacheName = [cacheName stringByAppendingFormat:@"%d",self.viewTag];
+    NSString *cacheKey = [cacheName MD5Hash];
+    NSData *data = [FTWCache objectForKey:cacheKey];
+    NSString *dataStr = [[NSString alloc] initWithData:data encoding: NSUTF8StringEncoding];
+    NSMutableDictionary *dict = [dataStr JSONValue];
+    if (dict) {
+        self.imageData = dict;
+        [self.coverFlow reloadData];
+        if (self.firstLogin) {
+            [self initScene];
+            self.firstLogin = NO;
+        }
+    } else {
+        [self receiveData];
+    }
 }
 
 - (void)clearData{
@@ -285,6 +299,13 @@
     }
     [data setObject:dict forKey:currentState];
     self.imageData = data;
+    NSData *cacheData = [self.imageData toJSON];
+    
+    NSString *cacheName = [NSString stringWithString:currentState];
+    cacheName = [cacheName stringByAppendingFormat:@"%d",self.viewTag];
+    NSString *cacheKey = [cacheName MD5Hash];
+    [FTWCache setObject:cacheData forKey:cacheKey];
+    
     [self.coverFlow reloadData];
     if (self.firstLogin) {
         [self initScene];
@@ -327,10 +348,20 @@
 }
 
 - (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index{
-    if ([currentState isEqual: kDoor]) {
+    
+    NSString *dataUrl = [[[self.imageData objectForKey:currentState] objectForKey:kDisplay] objectAtIndex:index];
+    NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
+    NSString *key = [url MD5Hash];
+    NSData *data = [FTWCache objectForKey:key];
+    UIImage *image = [[UIImage alloc] init];
+    
+    if (data) {
+        image = [UIImage imageWithData:data];
+    } else {
+        image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
+    }
         
-        UIImage *image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
-        //show picture in mainImageView
+    if ([currentState isEqual: kDoor]) {
         [self.displayDoorImageView removeFromSuperview];
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
         imageView.image = image;
@@ -338,9 +369,6 @@
         [self.view insertSubview:self.displayDoorImageView atIndex:2];
 
     } else{
-        
-        UIImage *image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
-        //show picture in mainImageView
         [self.displayGlassImageView removeFromSuperview];
         UIImageView *imageView = [[UIImageView alloc] initWithFrame:glasspicRect];
         imageView.image = image;

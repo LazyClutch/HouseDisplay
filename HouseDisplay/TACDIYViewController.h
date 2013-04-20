@@ -12,6 +12,7 @@
 #import "MBProgressHUD.h"
 #import "FTWCache.h"
 #import "NSString+MD5.h"
+#import "NSMutableDictionary+data.h"
 
 @interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate>{
     NSString *outString; 

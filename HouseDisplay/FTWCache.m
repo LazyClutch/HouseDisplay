@@ -26,6 +26,7 @@ static NSTimeInterval cacheTime =  (double)604800;
 + (NSData*) objectForKey:(NSString*)key {
 	NSFileManager *fileManager = [NSFileManager defaultManager];
 	NSString *filename = [self.cacheDirectory stringByAppendingPathComponent:key];
+    NSLog(@"%@",filename);
 	
 	if ([fileManager fileExistsAtPath:filename])
 	{

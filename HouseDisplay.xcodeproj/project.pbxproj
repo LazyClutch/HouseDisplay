@@ -70,6 +70,7 @@
 		63746DCD1709C6CC00DC7874 /* TACViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63746DCB1709C6CC00DC7874 /* TACViewController.xib */; };
 		6376B2091722774E00DE7475 /* FTWCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6376B2061722774E00DE7475 /* FTWCache.m */; };
 		6376B20A1722774E00DE7475 /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 6376B2081722774E00DE7475 /* NSString+MD5.m */; };
+		6376B2101722A31100DE7475 /* NSMutableDictionary+data.m in Sources */ = {isa = PBXBuildFile; fileRef = 6376B20F1722A31100DE7475 /* NSMutableDictionary+data.m */; };
 		63862B851711DB7700F031EA /* content_background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63862B811711DB7700F031EA /* content_background.jpg */; };
 		63862B861711DB7700F031EA /* content_background@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63862B821711DB7700F031EA /* content_background@2x.jpg */; };
 		63862B871711DB7700F031EA /* diy_banner.png in Resources */ = {isa = PBXBuildFile; fileRef = 63862B831711DB7700F031EA /* diy_banner.png */; };
@@ -230,6 +231,8 @@
 		6376B2061722774E00DE7475 /* FTWCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FTWCache.m; sourceTree = "<group>"; };
 		6376B2071722774E00DE7475 /* NSString+MD5.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+MD5.h"; sourceTree = "<group>"; };
 		6376B2081722774E00DE7475 /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
+		6376B20E1722A31100DE7475 /* NSMutableDictionary+data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+data.h"; sourceTree = "<group>"; };
+		6376B20F1722A31100DE7475 /* NSMutableDictionary+data.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+data.m"; sourceTree = "<group>"; };
 		63862B811711DB7700F031EA /* content_background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = content_background.jpg; sourceTree = "<group>"; };
 		63862B821711DB7700F031EA /* content_background@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "content_background@2x.jpg"; sourceTree = "<group>"; };
 		63862B831711DB7700F031EA /* diy_banner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = diy_banner.png; sourceTree = "<group>"; };
@@ -582,6 +585,8 @@
 				6376B2061722774E00DE7475 /* FTWCache.m */,
 				6376B2071722774E00DE7475 /* NSString+MD5.h */,
 				6376B2081722774E00DE7475 /* NSString+MD5.m */,
+				6376B20E1722A31100DE7475 /* NSMutableDictionary+data.h */,
+				6376B20F1722A31100DE7475 /* NSMutableDictionary+data.m */,
 			);
 			name = Cache;
 			sourceTree = "<group>";
@@ -834,6 +839,7 @@
 				63C8F3241719420E005BC4B7 /* MBProgressHUD.m in Sources */,
 				6376B2091722774E00DE7475 /* FTWCache.m in Sources */,
 				6376B20A1722774E00DE7475 /* NSString+MD5.m in Sources */,
+				6376B2101722A31100DE7475 /* NSMutableDictionary+data.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
