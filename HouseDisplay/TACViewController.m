@@ -11,6 +11,8 @@
 
 @interface TACViewController ()
 
+@property (nonatomic, strong)TACDIYMenuViewController *diyMenuViewController;
+
 @end
 
 @implementation TACViewController
@@ -18,33 +20,16 @@
 #pragma mark-
 #pragma mark Lifecycle Methods
 
-- (GNWheelView *)wheelView{
-    return (GNWheelView *)self.view;
-}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    NSString *mainMenu = [[NSBundle mainBundle] pathForResource:@"MainMenu" ofType:@"plist"];
-    NSArray *mainMenuArray = [[NSArray alloc] initWithContentsOfFile:mainMenu];
-    self.menuList = mainMenuArray;
-        
-    self.wheelView.delegate = self;
-    self.wheelView.idleDuration = 0;
-    
     //Init ViewControllers
-    NSMutableArray *viewControllers = [[NSMutableArray alloc] init];
-    
-    TACDIYMenuViewController *diyMenuViewController = [[TACDIYMenuViewController alloc] init];
-    [viewControllers addObject:diyMenuViewController];
-
-    self.viewControllers = viewControllers;
 }
 
 - (void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.wheelView reloadData];
+    [self.userTextField becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -64,39 +49,23 @@
     [self.view addSubview:menuViewController.view];
 }
 
-#pragma mark-
-#pragma mark Wheel View Methods
-
-- (NSUInteger)numberOfRowsOfWheelView:(GNWheelView *)wheelView{
-    return [self.menuList count];
+- (IBAction)loginButtonPressed:(id)sender {
+    UIWindow *keyWindow = [[UIApplication sharedApplication] keyWindow];
+    UIView *firstResponder = [keyWindow performSelector:@selector(firstResponder)];
+    [firstResponder resignFirstResponder];
+    [self processLogin];
 }
 
-- (UIView *)wheelView:(GNWheelView *)wheelView viewForRowAtIndex:(unsigned int)index{
-    NSString *imagePath = [[NSBundle mainBundle] pathForResource:[self.menuList objectAtIndex:index] ofType:@"jpg"];
-    NSData *data = [NSData dataWithContentsOfFile:imagePath];
-    UIImageView *imageView = [[UIImageView alloc] initWithImage:[UIImage imageWithData:data]];
-    return imageView;
-}
-
-- (float)rowHeightInWheelView:(GNWheelView *)wheelView{
-    return kMenuImageHeight;
-}
-
-- (float)rowWidthInWheelView:(GNWheelView *)wheelView{
-    return kMenuImageWidth;
-}
-
-- (void)wheelView:(GNWheelView *)wheelView didSelectedRowAtIndex:(unsigned int)index{
-    TACDIYMenuViewController *menuViewController;
-    switch (index) {
-        case 0:{
-            menuViewController = [self.viewControllers objectAtIndex:0];
-            break;
-        }
-        default:
-            break;
+- (void)processLogin{
+    if ([[self.userTextField text] isEqual:kUsername] && [[self.passwordTextField text] isEqual:kPassword]) {
+        self.diyMenuViewController = [[TACDIYMenuViewController alloc] init];
+        [self makeAnimation:self.diyMenuViewController];
+    } else {
+        NSString *message = @"登陆失败";
+        NSString *title = @"抱歉";
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"好" otherButtonTitles: nil];
+        [alert show];
     }
-    [self makeAnimation:menuViewController];
+    
 }
-
 @end

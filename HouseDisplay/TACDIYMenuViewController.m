@@ -52,9 +52,21 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self showLoginSuccess];
+}
+
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     self.imageViews = nil;
+}
+
+- (void)showLoginSuccess{
+    NSString *title = @"提示";
+    NSString *message = @"登陆成功";
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"好" otherButtonTitles: nil];
+    [alert show];
 }
 
 - (IBAction)returnButtonPressed:(id)sender {
