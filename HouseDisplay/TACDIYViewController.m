@@ -282,7 +282,7 @@
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     
 	outString = [[NSString alloc] initWithData:data encoding: NSUTF8StringEncoding];
-    NSLog(@"%@",outString);
+    //NSLog(@"%@",outString);
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (NSString *str in self.jsonTempDataArray) {
         [array addObject:str];
@@ -317,7 +317,7 @@
     for (NSString *str in self.jsonTempDataArray) {
         jsonStr = [jsonStr stringByAppendingString:str];
     }
-    NSLog(@"%@",jsonStr);
+    //NSLog(@"%@",jsonStr);
     NSMutableDictionary *json = [jsonStr JSONValue];
     NSArray *keys = [json allKeys];
     for (NSString *key in keys) {

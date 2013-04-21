@@ -39,8 +39,7 @@
     self.backgroundImageView.image = [UIImage imageNamed:@"content_background.jpg"];
     [self.view insertSubview:self.backgroundImageView atIndex:0];
     
-    self.imagePaths = @[@"diy1",@"diy2",@"diy3",@"diy4",@"diy5"];
-    [self setThumbNail];
+    [self loadThumbnail];
     
     NSString *infoPath = [[NSBundle mainBundle] pathForResource:@"DIYInformation" ofType:@"plist"];
     NSMutableArray *dict = [[NSMutableArray alloc] initWithContentsOfFile:infoPath];
@@ -86,6 +85,8 @@
     NSMutableArray *array = [[TACDataCenter sharedInstance] menuThumbnails];
     self.imageViews = array;
     [self.collectionView reloadData];
+    
+    [self writeThumbnailToFile];
 }
 
 - (void)showLoginSuccess{
@@ -118,13 +119,52 @@
     [self.view addSubview:self.DIYViewController.view];
 }
 
+#pragma makr Sava and Load Methods
+- (void)writeThumbnailToFile{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSData *data = nil;
+    for (UIImage *image in self.imageViews) {
+        data = UIImagePNGRepresentation(image);
+        [array addObject:data];
+    }
+    [array writeToFile:[self dataFilePath] atomically:YES];
+}
+
+- (NSString *)dataFilePath{
+    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES);
+    NSString *documentDict = [path objectAtIndex:0];
+    NSString *thumbFileName = @"/thumbnail.data2";
+    return [documentDict stringByAppendingFormat:@"%@",thumbFileName];
+}
+
+- (void)loadThumbnail{
+    NSString *filePath = [self dataFilePath];
+    NSLog(@"%@",filePath);
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSMutableArray *dataArray = [[NSMutableArray alloc] init];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        dataArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+        for (NSData *data in dataArray) {
+            UIImage *image = [UIImage imageWithData:data];
+            [array addObject:image];
+        }
+        self.imageViews = array;
+        [self.collectionView reloadData];
+    } else {
+        self.imagePaths = @[@"diy1",@"diy2",@"diy3",@"diy4",@"diy5"];
+        [self setThumbNail];
+    }
+    [[TACDataCenter sharedInstance] setMenuThumbnails:self.imageViews];
+
+}
+
 #pragma mark Grid View Methods
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return 1;
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return [self.imagePaths count];
+    return [self.imageViews count];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{

@@ -488,6 +488,15 @@
 			path = "场景5";
 			sourceTree = "<group>";
 		};
+		6360E8191723B25F0049AAED /* data */ = {
+			isa = PBXGroup;
+			children = (
+				638569781722F14D000BA23D /* TACDataCenter.h */,
+				638569791722F14D000BA23D /* TACDataCenter.m */,
+			);
+			name = data;
+			sourceTree = "<group>";
+		};
 		63746DA41709C6CC00DC7874 = {
 			isa = PBXGroup;
 			children = (
@@ -526,6 +535,7 @@
 		63746DB61709C6CC00DC7874 /* HouseDisplay */ = {
 			isa = PBXGroup;
 			children = (
+				6360E8191723B25F0049AAED /* data */,
 				63A2B723170AF4A400CA6AD9 /* DIY */,
 				63B8FD62170AE73F00D7A80A /* Library */,
 				63746DBF1709C6CC00DC7874 /* TACAppDelegate.h */,
@@ -611,8 +621,6 @@
 				6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */,
 				63131164172398BC007C326F /* TACDIYMenuViewCell.h */,
 				63131165172398BC007C326F /* TACDIYMenuViewCell.m */,
-				638569781722F14D000BA23D /* TACDataCenter.h */,
-				638569791722F14D000BA23D /* TACDataCenter.m */,
 			);
 			name = DIY;
 			sourceTree = "<group>";
