@@ -38,6 +38,7 @@
     self.backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
     self.backgroundImageView.image = [UIImage imageNamed:@"content_background.jpg"];
     [self.view insertSubview:self.backgroundImageView atIndex:0];
+    self.isDeleting = false;
     
     [self loadThumbnail];
     
@@ -106,6 +107,17 @@
     [self.view removeFromSuperview];
 }
 
+- (IBAction)toggleButtonPressed:(id)sender {
+    if (self.isDeleting) {
+        self.isDeleting = NO;
+        [self.toggleButton setTitle:@"编辑" forState:UIControlStateNormal];
+    } else {
+        self.isDeleting = YES;
+        [self.toggleButton setTitle:@"完成" forState:UIControlStateNormal];
+    }
+    NSLog(@"%@",self.toggleButton.titleLabel.text);
+}
+
 - (void)makeAnimation{
     CATransition *animation = [CATransition animation];
     animation.delegate = self;
@@ -164,7 +176,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return [self.imageViews count];
+    return ([self.imageViews count] + 1);
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -174,20 +186,62 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     TACDIYMenuViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MenuViewCellIdentifier" forIndexPath:indexPath];
-    cell.thumbnails.image = [self.imageViews objectAtIndex:[indexPath row]];
+    if ([indexPath row] < [self.imageViews count]) {
+        cell.thumbnails.image = [self.imageViews objectAtIndex:[indexPath row]];
+    } else {
+        cell.thumbnails.image = [UIImage imageNamed:@"addMark.png"];
+    }
+    
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    self.DIYViewController = [[TACDIYViewController alloc] initWithNibName:@"TACDIYViewController" bundle:nil];
+    if (self.isDeleting) {
+        if ([indexPath row] < [self.imageViews count]) {
+            [self deleteItem:indexPath];
+        }
+    } else {
+        [self performSelection:indexPath];
+    }
+}
+
+- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender{
     
-    NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:[indexPath row]];
-    [self.DIYViewController setViewInfomation:dict];
+}
+
+- (void)performSelection:(NSIndexPath *)indexPath{
+    if ([indexPath row] < [self.imageViews count]) {
+        self.DIYViewController = [[TACDIYViewController alloc] initWithNibName:@"TACDIYViewController" bundle:nil];
+        
+        NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:[indexPath row]];
+        [self.DIYViewController setViewInfomation:dict];
+        
+        BOOL hasGlass = ([indexPath row] < 3) ? YES : NO;
+        [self.DIYViewController setViewTag:[indexPath row] + 1];
+        [self.DIYViewController setHasGlassMaterial:hasGlass];
+        [self makeAnimation];
+    } else {
+        [self insertItem:indexPath];
+    }
+}
+
+- (void)deleteItem:(NSIndexPath *)indexPath{
+    NSString *title = @"警告";
+    NSString *message = @"确实要删除该场景吗？";
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"否" otherButtonTitles:@"是",nil];
+    [alert show];
+}
+
+
+- (void)insertItem:(NSIndexPath *)indexPath{
+    UIImage *image = [[UIImage alloc] init];
+    NSMutableArray *imgArray = [[NSMutableArray alloc] init];
+    imgArray = self.imageViews;
+    [imgArray addObject:image];
+    self.imageViews = imgArray;
     
-    BOOL hasGlass = ([indexPath row] < 3) ? YES : NO;
-    [self.DIYViewController setViewTag:[indexPath row] + 1];
-    [self.DIYViewController setHasGlassMaterial:hasGlass];
-    [self makeAnimation];
+    NSArray *array = [NSArray arrayWithObjects:indexPath,nil];
+    [self.collectionView insertItemsAtIndexPaths:array];
 }
 
 
