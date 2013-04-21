@@ -8,18 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
-#import "UIGridView.h"
-#import "UIGridViewDelegate.h"
+#import "TACDIYMenuViewCell.h"
 #import "NSString+MD5.h"
 #import "TACDataCenter.h"
 
-@interface TACDIYMenuViewController : UIViewController <UIGridViewDelegate>{
+@interface TACDIYMenuViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>{
     NSString *outstring;
 }
 
 @property (strong, nonatomic) IBOutlet UIButton *returnButton;
-@property (strong, nonatomic) IBOutlet UIGridView *gridView;
 @property (strong, nonatomic) IBOutlet UIImageView *bannerImageView;
+@property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 
 @property (strong, nonatomic) UIImageView *backgroundImageView;
 @property (strong, nonatomic) NSArray *imagePaths;

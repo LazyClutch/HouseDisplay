@@ -46,6 +46,8 @@
     NSMutableArray *dict = [[NSMutableArray alloc] initWithContentsOfFile:infoPath];
     self.viewsInfomation = dict;
     
+    self.collectionView.backgroundColor = [UIColor clearColor];
+    [self.collectionView registerClass:[TACDIYMenuViewCell class] forCellWithReuseIdentifier:@"MenuViewCellIdentifier"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(changeThumb:) name:@"changeThumb" object:nil];
     
     // Do any additional setup after loading the view from its nib.
@@ -83,7 +85,7 @@
 - (void)changeThumb:(NSNotification*)notification{
     NSMutableArray *array = [[TACDataCenter sharedInstance] menuThumbnails];
     self.imageViews = array;
-    [self.gridView reloadData];
+    [self.collectionView reloadData];
 }
 
 - (void)showLoginSuccess{
@@ -117,42 +119,33 @@
 }
 
 #pragma mark Grid View Methods
-- (CGFloat)gridView:(UIGridView *)grid heightForRowAt:(int)rowIndex{
-    return kMenuCellHeight;
+- (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
+    return 1;
 }
 
-- (CGFloat)gridView:(UIGridView *)grid widthForColumnAt:(int)columnIndex{
-    return kMenuCellWidth;
+- (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    return [self.imagePaths count];
 }
 
-- (NSInteger)numberOfColumnsOfGridView:(UIGridView *)grid{
-    return 3;
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+    CGSize size = CGSizeMake(313, 163);
+    return size;
 }
 
-- (NSInteger)numberOfCellsOfGridView:(UIGridView *)grid{
-    return 5;
-}
-
-- (UIGridViewCell *)gridView:(UIGridView *)grid cellForRowAt:(int)rowIndex AndColumnAt:(int)columnIndex{
-    TACDIYMenuViewCell *cell = (TACDIYMenuViewCell *)[grid dequeueReusableCell];
-    if (cell == nil) {
-        cell = [[TACDIYMenuViewCell alloc] init];
-    }
-    NSInteger number = 3 * rowIndex + columnIndex;
-    cell.thumbnails.image = [self.imageViews objectAtIndex:number];
+- (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    TACDIYMenuViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MenuViewCellIdentifier" forIndexPath:indexPath];
+    cell.thumbnails.image = [self.imageViews objectAtIndex:[indexPath row]];
     return cell;
 }
 
-
-- (void)gridView:(UIGridView *)grid didSelectRowAt:(int)rowIndex AndColumnAt:(int)columnIndex{
+- (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     self.DIYViewController = [[TACDIYViewController alloc] initWithNibName:@"TACDIYViewController" bundle:nil];
     
-    NSInteger number = 3 * rowIndex + columnIndex;
-    NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:number];
+    NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:[indexPath row]];
     [self.DIYViewController setViewInfomation:dict];
     
-    BOOL hasGlass = (number < 3) ? YES : NO;
-    [self.DIYViewController setViewTag:number + 1];
+    BOOL hasGlass = ([indexPath row] < 3) ? YES : NO;
+    [self.DIYViewController setViewTag:[indexPath row] + 1];
     [self.DIYViewController setHasGlassMaterial:hasGlass];
     [self makeAnimation];
 }

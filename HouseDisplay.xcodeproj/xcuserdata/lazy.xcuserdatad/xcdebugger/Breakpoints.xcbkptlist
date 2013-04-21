@@ -138,11 +138,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "HouseDisplay/TACDIYMenuViewController.m"
-         timestampString = "388168718.53317"
+         timestampString = "388209953.531777"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "55"
-         endingLineNumber = "55"
+         startingLineNumber = "57"
+         endingLineNumber = "57"
          landmarkName = "-viewWillAppear:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -151,11 +151,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "HouseDisplay/TACDIYMenuViewController.m"
-         timestampString = "388168718.53317"
+         timestampString = "388209953.531777"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "70"
-         endingLineNumber = "70"
+         startingLineNumber = "72"
+         endingLineNumber = "72"
          landmarkName = "-setThumbNail"
          landmarkType = "5">
       </FileBreakpoint>
@@ -190,11 +190,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "HouseDisplay/TACDIYMenuViewController.m"
-         timestampString = "388168710.996926"
+         timestampString = "388209953.531777"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "84"
-         endingLineNumber = "84"
+         startingLineNumber = "86"
+         endingLineNumber = "86"
          landmarkName = "-changeThumb:"
          landmarkType = "5">
       </FileBreakpoint>

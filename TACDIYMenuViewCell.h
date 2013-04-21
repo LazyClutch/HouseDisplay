@@ -2,13 +2,13 @@
 //  TACDIYMenuViewCell.h
 //  HouseDisplay
 //
-//  Created by lazy on 13-4-7.
+//  Created by lazy on 13-4-21.
 //  Copyright (c) 2013年 Lazy. All rights reserved.
 //
 
-#import "UIGridViewCell.h"
+#import <UIKit/UIKit.h>
 
-@interface TACDIYMenuViewCell : UIGridViewCell
+@interface TACDIYMenuViewCell : UICollectionViewCell
 
 @property (strong, nonatomic) IBOutlet UIImageView *thumbnails;
 

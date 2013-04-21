@@ -37,6 +37,7 @@
 		630C18FA1716E7CE001F68E9 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 630C18F91716E7CE001F68E9 /* Security.framework */; };
 		630C18FC1716E7D7001F68E9 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 630C18FB1716E7D7001F68E9 /* SystemConfiguration.framework */; };
 		630C18FE1716E7FA001F68E9 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 630C18FD1716E7FA001F68E9 /* libz.dylib */; };
+		63131166172398BC007C326F /* TACDIYMenuViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 63131165172398BC007C326F /* TACDIYMenuViewCell.m */; };
 		6313B8E217146CA70009A8C4 /* NSObject+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 6313B8D717146CA70009A8C4 /* NSObject+SBJSON.m */; };
 		6313B8E317146CA70009A8C4 /* NSString+SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 6313B8D917146CA70009A8C4 /* NSString+SBJSON.m */; };
 		6313B8E417146CA70009A8C4 /* SBJSON.m in Sources */ = {isa = PBXBuildFile; fileRef = 6313B8DB17146CA70009A8C4 /* SBJSON.m */; };
@@ -51,10 +52,6 @@
 		633F0C581712A31A001DB3A3 /* 3_back.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 633F0AD91712A31A001DB3A3 /* 3_back.jpg */; };
 		633F0C651712A31A001DB3A3 /* 4_back.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 633F0AEA1712A31A001DB3A3 /* 4_back.jpg */; };
 		633F0C721712A31A001DB3A3 /* 5_back.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 633F0AFB1712A31A001DB3A3 /* 5_back.jpg */; };
-		6348C4571710F21700425773 /* UIGridView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6348C4511710F21700425773 /* UIGridView.m */; };
-		6348C4581710F21700425773 /* UIGridViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6348C4531710F21700425773 /* UIGridViewCell.m */; };
-		6348C4591710F21700425773 /* UIGridViewRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 6348C4561710F21700425773 /* UIGridViewRow.m */; };
-		6348C45C1710F35000425773 /* TACDIYMenuViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6348C45B1710F35000425773 /* TACDIYMenuViewCell.m */; };
 		6348C45E1710F3C200425773 /* TACDIYMenuViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */; };
 		6356DE5B1713ED3D00EA0979 /* MainMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6356DE5A1713ED3D00EA0979 /* MainMenu.plist */; };
 		63746DB11709C6CC00DC7874 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63746DB01709C6CC00DC7874 /* UIKit.framework */; };
@@ -178,6 +175,8 @@
 		630C18F91716E7CE001F68E9 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		630C18FB1716E7D7001F68E9 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		630C18FD1716E7FA001F68E9 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		63131164172398BC007C326F /* TACDIYMenuViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TACDIYMenuViewCell.h; path = ../TACDIYMenuViewCell.h; sourceTree = "<group>"; };
+		63131165172398BC007C326F /* TACDIYMenuViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TACDIYMenuViewCell.m; path = ../TACDIYMenuViewCell.m; sourceTree = "<group>"; };
 		6313B8D517146CA70009A8C4 /* JSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSON.h; sourceTree = "<group>"; };
 		6313B8D617146CA70009A8C4 /* NSObject+SBJSON.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJSON.h"; sourceTree = "<group>"; };
 		6313B8D717146CA70009A8C4 /* NSObject+SBJSON.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJSON.m"; sourceTree = "<group>"; };
@@ -201,15 +200,6 @@
 		633F0AD91712A31A001DB3A3 /* 3_back.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 3_back.jpg; sourceTree = "<group>"; };
 		633F0AEA1712A31A001DB3A3 /* 4_back.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 4_back.jpg; sourceTree = "<group>"; };
 		633F0AFB1712A31A001DB3A3 /* 5_back.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 5_back.jpg; sourceTree = "<group>"; };
-		6348C4501710F21700425773 /* UIGridView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIGridView.h; sourceTree = "<group>"; };
-		6348C4511710F21700425773 /* UIGridView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIGridView.m; sourceTree = "<group>"; };
-		6348C4521710F21700425773 /* UIGridViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIGridViewCell.h; sourceTree = "<group>"; };
-		6348C4531710F21700425773 /* UIGridViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIGridViewCell.m; sourceTree = "<group>"; };
-		6348C4541710F21700425773 /* UIGridViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIGridViewDelegate.h; sourceTree = "<group>"; };
-		6348C4551710F21700425773 /* UIGridViewRow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIGridViewRow.h; sourceTree = "<group>"; };
-		6348C4561710F21700425773 /* UIGridViewRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIGridViewRow.m; sourceTree = "<group>"; };
-		6348C45A1710F35000425773 /* TACDIYMenuViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACDIYMenuViewCell.h; sourceTree = "<group>"; };
-		6348C45B1710F35000425773 /* TACDIYMenuViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACDIYMenuViewCell.m; sourceTree = "<group>"; };
 		6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACDIYMenuViewCell.xib; sourceTree = "<group>"; };
 		6356DE5A1713ED3D00EA0979 /* MainMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MainMenu.plist; sourceTree = "<group>"; };
 		63746DAD1709C6CC00DC7874 /* HouseDisplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HouseDisplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -498,20 +488,6 @@
 			path = "场景5";
 			sourceTree = "<group>";
 		};
-		6348C44F1710F1FD00425773 /* GridView */ = {
-			isa = PBXGroup;
-			children = (
-				6348C4501710F21700425773 /* UIGridView.h */,
-				6348C4511710F21700425773 /* UIGridView.m */,
-				6348C4521710F21700425773 /* UIGridViewCell.h */,
-				6348C4531710F21700425773 /* UIGridViewCell.m */,
-				6348C4541710F21700425773 /* UIGridViewDelegate.h */,
-				6348C4551710F21700425773 /* UIGridViewRow.h */,
-				6348C4561710F21700425773 /* UIGridViewRow.m */,
-			);
-			name = GridView;
-			sourceTree = "<group>";
-		};
 		63746DA41709C6CC00DC7874 = {
 			isa = PBXGroup;
 			children = (
@@ -632,9 +608,9 @@
 				63A2B73E170B090E00CA6AD9 /* TACDIYViewController.h */,
 				63A2B73F170B090E00CA6AD9 /* TACDIYViewController.m */,
 				63A2B740170B090E00CA6AD9 /* TACDIYViewController.xib */,
-				6348C45A1710F35000425773 /* TACDIYMenuViewCell.h */,
 				6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */,
-				6348C45B1710F35000425773 /* TACDIYMenuViewCell.m */,
+				63131164172398BC007C326F /* TACDIYMenuViewCell.h */,
+				63131165172398BC007C326F /* TACDIYMenuViewCell.m */,
 				638569781722F14D000BA23D /* TACDataCenter.h */,
 				638569791722F14D000BA23D /* TACDataCenter.m */,
 			);
@@ -671,7 +647,6 @@
 				630C18731716E4CB001F68E9 /* ASIHttpRequest */,
 				6313B8D417146C990009A8C4 /* JSON */,
 				631D25651712FBF500B45940 /* CoverFlowView */,
-				6348C44F1710F1FD00425773 /* GridView */,
 			);
 			name = Library;
 			sourceTree = "<group>";
@@ -806,10 +781,6 @@
 				63746DCA1709C6CC00DC7874 /* TACViewController.m in Sources */,
 				63A2B727170AF5C500CA6AD9 /* TACDIYMenuViewController.m in Sources */,
 				63A2B741170B090E00CA6AD9 /* TACDIYViewController.m in Sources */,
-				6348C4571710F21700425773 /* UIGridView.m in Sources */,
-				6348C4581710F21700425773 /* UIGridViewCell.m in Sources */,
-				6348C4591710F21700425773 /* UIGridViewRow.m in Sources */,
-				6348C45C1710F35000425773 /* TACDIYMenuViewCell.m in Sources */,
 				631D256A1712FC0C00B45940 /* ReflectionView.m in Sources */,
 				631D256B1712FC0C00B45940 /* iCarousel.m in Sources */,
 				6313B8E217146CA70009A8C4 /* NSObject+SBJSON.m in Sources */,
@@ -846,6 +817,7 @@
 				6376B20A1722774E00DE7475 /* NSString+MD5.m in Sources */,
 				6376B2101722A31100DE7475 /* NSMutableDictionary+data.m in Sources */,
 				6385697A1722F14D000BA23D /* TACDataCenter.m in Sources */,
+				63131166172398BC007C326F /* TACDIYMenuViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
