@@ -11,8 +11,9 @@
 #import "TACDIYMenuViewCell.h"
 #import "NSString+MD5.h"
 #import "TACDataCenter.h"
+#import "TACDIYPhotoLibraryController.h"
 
-@interface TACDIYMenuViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UIAlertViewDelegate>{
+@interface TACDIYMenuViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UIAlertViewDelegate,UIActionSheetDelegate>{
     NSString *outstring;
 }
 

@@ -55,6 +55,9 @@
 		6348C45E1710F3C200425773 /* TACDIYMenuViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */; };
 		6356DE5B1713ED3D00EA0979 /* MainMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6356DE5A1713ED3D00EA0979 /* MainMenu.plist */; };
 		6360E81E1723CE8D0049AAED /* addMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 6360E81D1723CE8D0049AAED /* addMark.png */; };
+		6360E8221723DE230049AAED /* TACDIYPhotoLibraryController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6360E8201723DE230049AAED /* TACDIYPhotoLibraryController.m */; };
+		6360E8231723DE230049AAED /* TACDIYPhotoLibraryController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6360E8211723DE230049AAED /* TACDIYPhotoLibraryController.xib */; };
+		6360E8251723DEBF0049AAED /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6360E8241723DEBF0049AAED /* MediaPlayer.framework */; };
 		63746DB11709C6CC00DC7874 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63746DB01709C6CC00DC7874 /* UIKit.framework */; };
 		63746DB31709C6CC00DC7874 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63746DB21709C6CC00DC7874 /* Foundation.framework */; };
 		63746DB51709C6CC00DC7874 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63746DB41709C6CC00DC7874 /* CoreGraphics.framework */; };
@@ -204,6 +207,10 @@
 		6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACDIYMenuViewCell.xib; sourceTree = "<group>"; };
 		6356DE5A1713ED3D00EA0979 /* MainMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MainMenu.plist; sourceTree = "<group>"; };
 		6360E81D1723CE8D0049AAED /* addMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addMark.png; sourceTree = "<group>"; };
+		6360E81F1723DE230049AAED /* TACDIYPhotoLibraryController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACDIYPhotoLibraryController.h; sourceTree = "<group>"; };
+		6360E8201723DE230049AAED /* TACDIYPhotoLibraryController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACDIYPhotoLibraryController.m; sourceTree = "<group>"; };
+		6360E8211723DE230049AAED /* TACDIYPhotoLibraryController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACDIYPhotoLibraryController.xib; sourceTree = "<group>"; };
+		6360E8241723DEBF0049AAED /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		63746DAD1709C6CC00DC7874 /* HouseDisplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HouseDisplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		63746DB01709C6CC00DC7874 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		63746DB21709C6CC00DC7874 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -282,6 +289,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6360E8251723DEBF0049AAED /* MediaPlayer.framework in Frameworks */,
 				630C18FE1716E7FA001F68E9 /* libz.dylib in Frameworks */,
 				630C18FC1716E7D7001F68E9 /* SystemConfiguration.framework in Frameworks */,
 				630C18FA1716E7CE001F68E9 /* Security.framework in Frameworks */,
@@ -519,6 +527,7 @@
 		63746DAF1709C6CC00DC7874 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6360E8241723DEBF0049AAED /* MediaPlayer.framework */,
 				630C18FD1716E7FA001F68E9 /* libz.dylib */,
 				630C18FB1716E7D7001F68E9 /* SystemConfiguration.framework */,
 				630C18F91716E7CE001F68E9 /* Security.framework */,
@@ -624,6 +633,9 @@
 				6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */,
 				63131164172398BC007C326F /* TACDIYMenuViewCell.h */,
 				63131165172398BC007C326F /* TACDIYMenuViewCell.m */,
+				6360E81F1723DE230049AAED /* TACDIYPhotoLibraryController.h */,
+				6360E8201723DE230049AAED /* TACDIYPhotoLibraryController.m */,
+				6360E8211723DE230049AAED /* TACDIYPhotoLibraryController.xib */,
 			);
 			name = DIY;
 			sourceTree = "<group>";
@@ -778,6 +790,7 @@
 				630C18F11716E5BD001F68E9 /* README-GHUnit in Resources */,
 				63C8F326171946BE005BC4B7 /* 37x-Checkmark.png in Resources */,
 				6360E81E1723CE8D0049AAED /* addMark.png in Resources */,
+				6360E8231723DE230049AAED /* TACDIYPhotoLibraryController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -830,6 +843,7 @@
 				6376B2101722A31100DE7475 /* NSMutableDictionary+data.m in Sources */,
 				6385697A1722F14D000BA23D /* TACDataCenter.m in Sources */,
 				63131166172398BC007C326F /* TACDIYMenuViewCell.m in Sources */,
+				6360E8221723DE230049AAED /* TACDIYPhotoLibraryController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

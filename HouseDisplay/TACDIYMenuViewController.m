@@ -9,6 +9,7 @@
 #import "TACDIYMenuViewController.h"
 #import "TACDIYViewController.h"
 #import "TACDIYMenuViewCell.h"
+#import "TACDIYPhotoLibraryController.h"
 
 #define kMenuCellWidth  313
 #define kMenuCellHeight 163
@@ -16,6 +17,7 @@
 @interface TACDIYMenuViewController ()
 
 @property (nonatomic, strong) TACDIYViewController *DIYViewController;
+@property (nonatomic, strong) TACDIYPhotoLibraryController *photoLibraryController;
 
 @end
 
@@ -221,7 +223,14 @@
         [self.DIYViewController setHasGlassMaterial:hasGlass];
         [self makeAnimation];
     } else {
-        [self insertItem:indexPath];
+        NSString *message = @"请选择导入背景的方式";
+        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:message delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"相机拍摄",@"从图片库选取", nil];
+        
+        [sheet showInView:(UIView *)[self.collectionView cellForItemAtIndexPath:indexPath]];
+        self.photoLibraryController = [[TACDIYPhotoLibraryController alloc] init];
+        [self.photoLibraryController setIndexPath:indexPath];
+
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertItem:) name:@"insertItem" object:nil];
     }
 }
 
@@ -233,8 +242,13 @@
 }
 
 
-- (void)insertItem:(NSIndexPath *)indexPath{
-    UIImage *image = [[UIImage alloc] init];
+- (void)insertItem:(NSNotification *)notification{
+    
+    NSMutableDictionary *dict = (NSMutableDictionary *)[notification object];
+    
+    NSIndexPath *indexPath = [dict objectForKey:@"indexpath"];
+    UIImage *image = [dict objectForKey:@"image"];
+    
     NSMutableArray *imgArray = [[NSMutableArray alloc] init];
     imgArray = self.imageViews;
     [imgArray addObject:image];
@@ -242,6 +256,20 @@
     
     NSArray *array = [NSArray arrayWithObjects:indexPath,nil];
     [self.collectionView insertItemsAtIndexPaths:array];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    switch (buttonIndex) {
+        case 0:
+            [self.photoLibraryController setSourceType:UIImagePickerControllerSourceTypeCamera];
+            break;
+        case 1:
+            [self.photoLibraryController setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+            break;
+        default:
+            break;
+    }
+    [self.view addSubview:self.photoLibraryController.view];
 }
 
 
