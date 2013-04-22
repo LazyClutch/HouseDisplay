@@ -25,7 +25,7 @@
 @property (strong, nonatomic) UIImageView *backgroundImageView;
 @property (strong, nonatomic) NSArray *imagePaths;
 @property (strong, nonatomic) NSMutableArray *imageViews;
-@property (strong, nonatomic) NSArray *viewsInfomation;
+@property (strong, nonatomic) NSMutableArray *viewsInfomation;
 
 @property BOOL isDeleting;
 

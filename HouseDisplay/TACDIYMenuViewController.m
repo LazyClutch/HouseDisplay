@@ -226,7 +226,11 @@
         [self.DIYViewController setViewInfomation:dict];
         
         BOOL hasGlass = ([indexPath row] < 3) ? YES : NO;
-        [self.DIYViewController setViewTag:[indexPath row] + 1];
+        NSInteger tag = [indexPath row];
+        if ([indexPath row] >= 4) {
+            tag -= 4;
+        }
+        [self.DIYViewController setViewTag:tag + 1];
         [self.DIYViewController setHasGlassMaterial:hasGlass];
         [self makeAnimation];
     } else {
@@ -269,7 +273,12 @@
 }
 
 - (void)insertItemForDetail:(NSMutableDictionary *)dict{
-    
+    // set self.viewInformation defalut:0
+    // (NSMutableDictionary *)dict should contain information about the position of the door
+    NSMutableDictionary *newDict = [self.viewsInfomation objectAtIndex:0];
+    NSMutableArray *array = self.viewsInfomation;
+    [array addObject:newDict];
+    self.viewsInfomation = array;
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
