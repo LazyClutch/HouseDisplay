@@ -177,6 +177,7 @@
     } else {
         self.imagePaths = @[@"diy1",@"diy2",@"diy3",@"diy4",@"diy5"];
         [self setThumbNail];
+        
     }
     [[TACDataCenter sharedInstance] setMenuThumbnails:self.imageViews];
 
