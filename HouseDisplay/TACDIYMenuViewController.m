@@ -70,28 +70,6 @@
     self.imageViews = nil;
 }
 
-- (void)setThumbNail{
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    for (int i = 0; i < [self.imagePaths count]; i++) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:[self.imagePaths objectAtIndex:i] ofType:@"png"];
-        NSData *data = [NSData dataWithContentsOfFile:path];
-        UIImage *image = [UIImage imageWithData:data];
-        [array addObject:image];
-    }
-    self.imageViews = array;
-    
-    [[TACDataCenter sharedInstance] setMenuThumbnails:self.imageViews];
-    
-}
-
-- (void)changeThumb:(NSNotification*)notification{
-    NSMutableArray *array = [[TACDataCenter sharedInstance] menuThumbnails];
-    self.imageViews = array;
-    [self.collectionView reloadData];
-    
-    [self writeThumbnailToFile];
-}
-
 - (void)showLoginSuccess{
     NSString *title = @"提示";
     NSString *message = @"登陆成功";
@@ -133,7 +111,40 @@
     [self.view addSubview:self.DIYViewController.view];
 }
 
-#pragma makr Sava and Load Methods
+#pragma mark Thumbnail Methods
+
+- (void)setThumbNail{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (int i = 0; i < [self.imagePaths count]; i++) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:[self.imagePaths objectAtIndex:i] ofType:@"png"];
+        NSData *data = [NSData dataWithContentsOfFile:path];
+        UIImage *image = [UIImage imageWithData:data];
+        [array addObject:image];
+    }
+    self.imageViews = array;
+    
+    [[TACDataCenter sharedInstance] setMenuThumbnails:self.imageViews];
+    
+}
+
+- (void)changeThumb:(NSNotification*)notification{
+    NSMutableDictionary *dict = (NSMutableDictionary *)[notification object];
+    
+    UIImage *thumbnail = [dict objectForKey:@"thumbnail"];
+    NSInteger tag = [[dict objectForKey:@"tag"] integerValue];
+    
+    NSMutableArray *array = [[TACDataCenter sharedInstance] menuThumbnails];
+    [array replaceObjectAtIndex:(tag-1) withObject:thumbnail];
+    [[TACDataCenter sharedInstance] setMenuThumbnails:array];
+    
+    self.imageViews = array;
+    [self.collectionView reloadData];
+    
+    [self writeThumbnailToFile];
+}
+
+
+#pragma mark Save and Load Methods
 - (void)writeThumbnailToFile{
     NSMutableArray *array = [[NSMutableArray alloc] init];
     NSData *data = nil;
@@ -153,7 +164,6 @@
 
 - (void)loadThumbnail{
     NSString *filePath = [self dataFilePath];
-    NSLog(@"%@",filePath);
     NSMutableArray *array = [[NSMutableArray alloc] init];
     NSMutableArray *dataArray = [[NSMutableArray alloc] init];
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
@@ -207,10 +217,6 @@
     }
 }
 
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender{
-    
-}
-
 - (void)performSelection:(NSIndexPath *)indexPath{
     if ([indexPath row] < [self.imageViews count]) {
         self.DIYViewController = [[TACDIYViewController alloc] initWithNibName:@"TACDIYViewController" bundle:nil];
@@ -229,7 +235,7 @@
         [sheet showInView:(UIView *)[self.collectionView cellForItemAtIndexPath:indexPath]];
         self.photoLibraryController = [[TACDIYPhotoLibraryController alloc] init];
         [self.photoLibraryController setIndexPath:indexPath];
-
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"insertItem" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertItem:) name:@"insertItem" object:nil];
     }
 }
@@ -247,15 +253,22 @@
     NSMutableDictionary *dict = (NSMutableDictionary *)[notification object];
     
     NSIndexPath *indexPath = [dict objectForKey:@"indexpath"];
-    UIImage *image = [dict objectForKey:@"image"];
-    
+    UIImage *coverImage = [dict objectForKey:@"coverImage"];
+        
     NSMutableArray *imgArray = [[NSMutableArray alloc] init];
-    imgArray = self.imageViews;
-    [imgArray addObject:image];
+    imgArray = [[TACDataCenter sharedInstance] menuThumbnails];
+    [imgArray addObject:coverImage];
+    [[TACDataCenter sharedInstance] setMenuThumbnails:imgArray];
     self.imageViews = imgArray;
     
     NSArray *array = [NSArray arrayWithObjects:indexPath,nil];
     [self.collectionView insertItemsAtIndexPaths:array];
+    
+    [self insertItemForDetail:dict];
+}
+
+- (void)insertItemForDetail:(NSMutableDictionary *)dict{
+    
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{

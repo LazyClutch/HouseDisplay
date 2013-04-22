@@ -8,6 +8,12 @@
 
 #import "TACDIYPhotoLibraryController.h"
 #import <MobileCoreServices/MobileCoreServices.h>
+#define kImageWidth 1000
+#define kImageHeight 600
+#define kScreenWidth 1024
+#define kScreenHeight 768
+#define kMenuCellWidth  313
+#define kMenuCellHeight 163
 
 @interface TACDIYPhotoLibraryController ()
 
@@ -50,6 +56,13 @@ static UIImage *shrinkImage(UIImage *original, CGSize size);
     //[self showChoices];
 }
 
+- (void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
+    self.indexPath = nil;
+    self.imageInfo = nil;
+    self.imageView = nil;
+}
+
 - (void)showChoices{
     NSString *message = @"请选择导入背景的方式";
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:message delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"相机拍摄",@"从图片库选取", nil];
@@ -69,7 +82,6 @@ static UIImage *shrinkImage(UIImage *original, CGSize size);
     NSArray *mediaTypes = [UIImagePickerController availableMediaTypesForSourceType:sourceType];
     if ([UIImagePickerController isSourceTypeAvailable:sourceType] && [mediaTypes count] > 0) {
         UIImagePickerController *picker = [[UIImagePickerController alloc] init];
-        CGRect rect = CGRectMake(0, 0, 1000, 600);
         picker.mediaTypes = mediaTypes;
         picker.delegate = self;
         picker.allowsEditing = NO;
@@ -78,9 +90,9 @@ static UIImage *shrinkImage(UIImage *original, CGSize size);
         if (sourceType == UIImagePickerControllerSourceTypePhotoLibrary) {
             UIPopoverController *popoverController=[[UIPopoverController alloc] initWithContentViewController:picker];
             self.imgPopoverController = popoverController;
-            self.imgPopoverController.popoverContentSize = CGSizeMake(600, 1000);
+            self.imgPopoverController.popoverContentSize = CGSizeMake(kImageWidth, kImageHeight);
             self.imgPopoverController.delegate = self;
-            [self.imgPopoverController presentPopoverFromRect:CGRectMake(512, 0, 1, 1) inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
+            [self.imgPopoverController presentPopoverFromRect:CGRectMake(kScreenWidth, 0, 1, 1) inView:self.view permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
             self.view.multipleTouchEnabled = NO;
         } else {
             [self presentViewController:picker animated:YES completion:nil];
@@ -127,16 +139,20 @@ static UIImage *shrinkImage(UIImage *original, CGSize size){
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
     self.view.multipleTouchEnabled = YES;
     NSString *type = [info objectForKey:UIImagePickerControllerMediaType];
-    CGSize size = CGSizeMake(1000, 600);
+    CGSize size = CGSizeMake(kImageWidth, kImageHeight);
+    CGSize coverSize = CGSizeMake(kMenuCellWidth, kMenuCellHeight);
     UIImage *shrunkenImage = [[UIImage alloc] init];
+    UIImage *shrunkenCoverImage = [[UIImage alloc] init];
     UIImage *image = [[UIImage alloc] init];
     if ([type isEqual:(NSString *)kUTTypeImage]) {
         image = [info objectForKey:UIImagePickerControllerOriginalImage];
         shrunkenImage = shrinkImage(image,size);
+        shrunkenCoverImage = shrinkImage(image, coverSize);
         NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
         [dict setObject:shrunkenImage forKey:@"image"];
         [dict setObject:self.indexPath forKey:@"indexpath"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"insertItem" object:dict];
+        [dict setObject:shrunkenCoverImage forKey:@"coverImage"];
+        self.imageInfo = dict;
         self.imageView.image = shrunkenImage;
         if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
             [picker dismissViewControllerAnimated:YES completion:nil];
@@ -157,6 +173,11 @@ static UIImage *shrinkImage(UIImage *original, CGSize size){
         [self.imgPopoverController dismissPopoverAnimated:YES];
     }
 
+}
+
+- (IBAction)finishButtonPressed:(id)sender {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"insertItem" object:self.imageInfo];
+    [self.view removeFromSuperview];
 }
 
 - (IBAction)returnButtonPressed:(id)sender {

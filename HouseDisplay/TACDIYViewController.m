@@ -262,10 +262,11 @@
     UIImageView *newimg = [[UIImageView alloc] initWithFrame:newRect];
     imgPrint.image = [UIImage imageWithCGImage:CGImageCreateWithImageInRect([viewImage CGImage], rect)];
     newimg.image = imgPrint.image;
-    NSMutableArray *array = [[TACDataCenter sharedInstance] menuThumbnails];
-    [array replaceObjectAtIndex:(self.viewTag-1) withObject:newimg.image];
-    [[TACDataCenter sharedInstance] setMenuThumbnails:array];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeThumb" object:nil];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    [dict setObject:newimg.image forKey:@"thumbnail"];
+    [dict setObject:[NSString stringWithFormat:@"%d",self.viewTag] forKey:@"tag"];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"changeThumb" object:dict];
     
     self.returnButton.hidden = NO;
     self.setCoverButton.hidden = NO;

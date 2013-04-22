@@ -12,8 +12,12 @@
 @interface TACDIYPhotoLibraryController : UIViewController<UIActionSheetDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UIPopoverControllerDelegate>
 
 @property (strong, nonatomic) NSIndexPath *indexPath;
-@property (nonatomic) UIImagePickerControllerSourceType sourceType;
 @property (strong, nonatomic) IBOutlet UIImageView *imageView;
+@property (strong, nonatomic) NSMutableDictionary *imageInfo;
 
+@property (nonatomic) UIImagePickerControllerSourceType sourceType;
+
+
+- (IBAction)finishButtonPressed:(id)sender;
 - (IBAction)returnButtonPressed:(id)sender;
 @end
