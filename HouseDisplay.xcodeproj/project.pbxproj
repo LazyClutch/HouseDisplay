@@ -72,6 +72,7 @@
 		6376B2091722774E00DE7475 /* FTWCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6376B2061722774E00DE7475 /* FTWCache.m */; };
 		6376B20A1722774E00DE7475 /* NSString+MD5.m in Sources */ = {isa = PBXBuildFile; fileRef = 6376B2081722774E00DE7475 /* NSString+MD5.m */; };
 		6376B2101722A31100DE7475 /* NSMutableDictionary+data.m in Sources */ = {isa = PBXBuildFile; fileRef = 6376B20F1722A31100DE7475 /* NSMutableDictionary+data.m */; };
+		6383894D172523BD00A5AC18 /* SPUserResizableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6383894C172523BD00A5AC18 /* SPUserResizableView.m */; };
 		6385697A1722F14D000BA23D /* TACDataCenter.m in Sources */ = {isa = PBXBuildFile; fileRef = 638569791722F14D000BA23D /* TACDataCenter.m */; };
 		63862B851711DB7700F031EA /* content_background.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63862B811711DB7700F031EA /* content_background.jpg */; };
 		63862B861711DB7700F031EA /* content_background@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63862B821711DB7700F031EA /* content_background@2x.jpg */; };
@@ -233,6 +234,8 @@
 		6376B2081722774E00DE7475 /* NSString+MD5.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+MD5.m"; sourceTree = "<group>"; };
 		6376B20E1722A31100DE7475 /* NSMutableDictionary+data.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableDictionary+data.h"; sourceTree = "<group>"; };
 		6376B20F1722A31100DE7475 /* NSMutableDictionary+data.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableDictionary+data.m"; sourceTree = "<group>"; };
+		6383894B172523BD00A5AC18 /* SPUserResizableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SPUserResizableView.h; sourceTree = "<group>"; };
+		6383894C172523BD00A5AC18 /* SPUserResizableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SPUserResizableView.m; sourceTree = "<group>"; };
 		638569781722F14D000BA23D /* TACDataCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACDataCenter.h; sourceTree = "<group>"; };
 		638569791722F14D000BA23D /* TACDataCenter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACDataCenter.m; sourceTree = "<group>"; };
 		63862B811711DB7700F031EA /* content_background.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = content_background.jpg; sourceTree = "<group>"; };
@@ -592,6 +595,15 @@
 			name = Cache;
 			sourceTree = "<group>";
 		};
+		6383894E172523C400A5AC18 /* ResizableView */ = {
+			isa = PBXGroup;
+			children = (
+				6383894B172523BD00A5AC18 /* SPUserResizableView.h */,
+				6383894C172523BD00A5AC18 /* SPUserResizableView.m */,
+			);
+			name = ResizableView;
+			sourceTree = "<group>";
+		};
 		63A2B6F4170AEF7400CA6AD9 /* Menu */ = {
 			isa = PBXGroup;
 			children = (
@@ -665,6 +677,7 @@
 		63B8FD62170AE73F00D7A80A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				6383894E172523C400A5AC18 /* ResizableView */,
 				6376B2041722770400DE7475 /* Cache */,
 				63C8F321171941F9005BC4B7 /* HUD */,
 				630C18731716E4CB001F68E9 /* ASIHttpRequest */,
@@ -844,6 +857,7 @@
 				6385697A1722F14D000BA23D /* TACDataCenter.m in Sources */,
 				63131166172398BC007C326F /* TACDIYMenuViewCell.m in Sources */,
 				6360E8221723DE230049AAED /* TACDIYPhotoLibraryController.m in Sources */,
+				6383894D172523BD00A5AC18 /* SPUserResizableView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

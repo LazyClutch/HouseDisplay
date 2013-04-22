@@ -7,6 +7,7 @@
 //
 
 #import "TACDIYPhotoLibraryController.h"
+
 #import <MobileCoreServices/MobileCoreServices.h>
 #define kImageWidth 1000
 #define kImageHeight 600
@@ -63,6 +64,25 @@ static UIImage *shrinkImage(UIImage *original, CGSize size);
     self.imageView = nil;
 }
 
+- (void)addResizableView{
+    
+    SPUserResizableView *resizableView = [[SPUserResizableView alloc] initWithFrame:self.imageView.bounds];
+    CGRect gripFrame = CGRectMake(50, 50, 200, 150);
+    UIView *contentView = [[UIView alloc] initWithFrame:gripFrame];
+    [contentView setBackgroundColor:[UIColor clearColor]];
+    resizableView.contentView = contentView;
+    resizableView.delegate = self;
+    [resizableView showEditingHandles];
+    self.currentResizableView = resizableView;
+    self.lastResizableView = resizableView;
+    [self.imageView addSubview:resizableView];
+    
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideEditingHandles)];
+    [gestureRecognizer setDelegate:self];
+    [self.view addGestureRecognizer:gestureRecognizer];
+
+}
+
 - (void)showChoices{
     NSString *message = @"请选择导入背景的方式";
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:message delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"相机拍摄",@"从图片库选取", nil];
@@ -104,6 +124,9 @@ static UIImage *shrinkImage(UIImage *original, CGSize size);
         [self.view removeFromSuperview];
     }
 }
+
+#pragma mark-
+#pragma mark Shrink Image using C Methods
 
 static UIImage *shrinkImage(UIImage *original, CGSize size){
     CGFloat scale = [UIScreen mainScreen].scale;
@@ -154,6 +177,7 @@ static UIImage *shrinkImage(UIImage *original, CGSize size){
         [dict setObject:shrunkenCoverImage forKey:@"coverImage"];
         self.imageInfo = dict;
         self.imageView.image = shrunkenImage;
+        [self addResizableView];
         if (picker.sourceType == UIImagePickerControllerSourceTypeCamera) {
             [picker dismissViewControllerAnimated:YES completion:nil];
         } else {
@@ -182,5 +206,30 @@ static UIImage *shrinkImage(UIImage *original, CGSize size){
 
 - (IBAction)returnButtonPressed:(id)sender {
     [self.view removeFromSuperview];
+}
+
+#pragma mark ResizableView Methods
+- (void)userResizableViewDidBeginEditing:(SPUserResizableView *)userResizableView {
+    [self.currentResizableView hideEditingHandles];
+    self.currentResizableView = userResizableView;
+}
+
+- (void)userResizableViewDidEndEditing:(SPUserResizableView *)userResizableView {
+    self.lastResizableView = userResizableView;
+    CGFloat x = userResizableView.frame.origin.x;
+    CGFloat y = userResizableView.frame.origin.y;
+    CGFloat w = userResizableView.bounds.size.width;
+    CGFloat h = userResizableView.bounds.size.height;
+    NSLog(@"%f  %f   %f   %f",x,y,w,h);
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return NO;
+}
+
+- (void)hideEditingHandles {
+    // We only want the gesture recognizer to end the editing session on the last
+    // edited view. We wouldn't want to dismiss an editing session in progress.
+    [self.lastResizableView hideEditingHandles];
 }
 @end
