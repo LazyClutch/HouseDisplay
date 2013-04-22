@@ -152,11 +152,13 @@
         data = UIImagePNGRepresentation(image);
         [array addObject:data];
     }
-    [array writeToFile:[self dataFilePath] atomically:YES];
+    NSString *filePath = [self dataFilePath];
+    NSLog(@"%@",filePath);
+    [array writeToFile:filePath atomically:YES];
 }
 
 - (NSString *)dataFilePath{
-    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentationDirectory, NSUserDomainMask, YES);
+    NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentDict = [path objectAtIndex:0];
     NSString *thumbFileName = @"/thumbnail.data2";
     return [documentDict stringByAppendingFormat:@"%@",thumbFileName];
@@ -265,6 +267,7 @@
     [imgArray addObject:coverImage];
     [[TACDataCenter sharedInstance] setMenuThumbnails:imgArray];
     self.imageViews = imgArray;
+    [self writeThumbnailToFile];
     
     NSArray *array = [NSArray arrayWithObjects:indexPath,nil];
     [self.collectionView insertItemsAtIndexPaths:array];

@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "HouseDisplay/TACDIYMenuViewController.m"
-         timestampString = "388301914.974501"
+         timestampString = "388320190.359112"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "259"
-         endingLineNumber = "259"
+         startingLineNumber = "261"
+         endingLineNumber = "261"
          landmarkName = "-insertItem:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "HouseDisplay/TACDIYMenuViewController.m"
-         timestampString = "388301912.733325"
+         timestampString = "388320190.359112"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "222"
-         endingLineNumber = "222"
+         startingLineNumber = "224"
+         endingLineNumber = "224"
          landmarkName = "-performSelection:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -92,6 +92,58 @@
          startingLineNumber = "228"
          endingLineNumber = "228"
          landmarkName = "-gestureRecognizer:shouldReceiveTouch:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "HouseDisplay/TACDIYMenuViewController.m"
+         timestampString = "388320190.359112"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "270"
+         endingLineNumber = "270"
+         landmarkName = "-insertItem:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "HouseDisplay/TACDIYMenuViewController.m"
+         timestampString = "388320190.359112"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "272"
+         endingLineNumber = "272"
+         landmarkName = "-insertItem:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "HouseDisplay/TACDIYMenuViewController.m"
+         timestampString = "388320190.359112"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "168"
+         endingLineNumber = "168"
+         landmarkName = "-loadThumbnail"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "HouseDisplay/TACDIYMenuViewController.m"
+         timestampString = "388318975.062018"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "149"
+         endingLineNumber = "149"
+         landmarkName = "-writeThumbnailToFile"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
