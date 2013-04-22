@@ -66,8 +66,8 @@ static UIImage *shrinkImage(UIImage *original, CGSize size);
 
 - (void)addResizableView{
     
-    SPUserResizableView *resizableView = [[SPUserResizableView alloc] initWithFrame:self.imageView.bounds];
     CGRect gripFrame = CGRectMake(50, 50, 200, 150);
+    SPUserResizableView *resizableView = [[SPUserResizableView alloc] initWithFrame:gripFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:gripFrame];
     [contentView setBackgroundColor:[UIColor clearColor]];
     resizableView.contentView = contentView;
@@ -79,7 +79,7 @@ static UIImage *shrinkImage(UIImage *original, CGSize size);
     
     UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideEditingHandles)];
     [gestureRecognizer setDelegate:self];
-    [self.view addGestureRecognizer:gestureRecognizer];
+    [self.imageView addGestureRecognizer:gestureRecognizer];
 
 }
 
