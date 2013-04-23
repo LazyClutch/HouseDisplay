@@ -39,10 +39,7 @@
 
 @property (strong, nonatomic) NSMutableDictionary *viewInfomation;
 @property (strong, nonatomic) NSMutableDictionary *imageData;
-@property (strong, nonatomic) NSMutableArray *originalIndexArray;
 @property (copy, nonatomic) NSMutableArray *jsonTempDataArray;
-@property (strong, nonatomic) NSMutableDictionary *originalOperationDic;
-@property (strong, nonatomic) NSOperationQueue *requestImageQueue;
 @property (strong, nonatomic) NSArray *dropDownMenu;
 
 @property (strong, nonatomic) NSURLConnection *connection;
@@ -50,6 +47,7 @@
 @property NSInteger viewTag;
 @property BOOL hasGlassMaterial;
 @property BOOL firstLogin;
+@property BOOL isEditing;
 
 - (IBAction)returnButtonPressed:(id)sender;
 - (IBAction)doorButtonPressed:(id)sender;

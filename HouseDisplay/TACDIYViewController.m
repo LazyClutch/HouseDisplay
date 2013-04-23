@@ -41,6 +41,7 @@
     [super viewDidLoad];
     
     self.firstLogin = YES;
+    self.isEditing = NO;
     self.jsonTempDataArray = [[NSMutableArray alloc] init];
     self.dropDownMenu = @[@"设为封面",@"选择产品系列",@"重新框选区域",@"进入编辑模式",@"搜索产品"];
 
@@ -58,9 +59,7 @@
     [super viewWillDisappear:animated];
     self.mainImageView = nil;
     self.imageData = nil;
-    self.originalIndexArray = nil;
     self.jsonTempDataArray = nil;
-    self.originalOperationDic = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -130,8 +129,6 @@
 - (void)clearData{
     self.jsonTempDataArray = nil;
     self.jsonTempDataArray = [[NSMutableArray alloc] init];
-    self.originalOperationDic = nil;
-    self.originalIndexArray = nil;
 }
 
 - (void)loadViewInfo{
@@ -220,6 +217,36 @@
     }
 }
 
+- (void)prepareForRequestData:(NSInteger)index{
+    NSString *dataUrl = [[[self.imageData objectForKey:currentState] objectForKey:kDisplay] objectAtIndex:index];
+    NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
+    NSString *key = [url MD5Hash];
+    NSData *data = [FTWCache objectForKey:key];
+    UIImage *image = [[UIImage alloc] init];
+    
+    if (data) {
+        image = [UIImage imageWithData:data];
+    } else {
+        image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
+    }
+    
+    if ([currentState isEqual: kDoor]) {
+        [self.displayDoorImageView removeFromSuperview];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
+        imageView.image = image;
+        self.displayDoorImageView = imageView;
+        [self.view insertSubview:self.displayDoorImageView atIndex:2];
+        
+    } else{
+        [self.displayGlassImageView removeFromSuperview];
+        UIImageView *imageView = [[UIImageView alloc] initWithFrame:glasspicRect];
+        imageView.image = image;
+        self.displayGlassImageView = imageView;
+        [self.view insertSubview:self.displayGlassImageView atIndex:3];
+        
+    }
+}
+
 - (UIImage *)requestImageForType:(NSString *)type ForUse:(NSString *)usage AtIndex:(NSInteger)index{
     //request image
     NSMutableDictionary *dict = [self.imageData objectForKey:type];
@@ -228,10 +255,6 @@
     NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
     NSString *key = [url MD5Hash];
     NSURL *imaUrl = [NSURL URLWithString:url];
-    NSString *indexForString = [NSString stringWithFormat:@"%d",index];
-    if ([self.originalIndexArray containsObject:indexForString]) {
-        return nil;
-    }
     UIImageView *imageView = [[UIImageView alloc] init];
     imageView.tag = index;
     NSData *data = [FTWCache objectForKey:key];
@@ -244,21 +267,6 @@
         [FTWCache setObject:data forKey:key];
     }
     return image;
-}
-
-- (void)setImageRequestQueue{
-    NSOperationQueue *tmpQueue = [[NSOperationQueue alloc] init];
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
-    
-    self.requestImageQueue = tmpQueue;
-    self.originalIndexArray = array;
-    self.originalOperationDic = dict;
-}
-
-- (void)imageDidReceive:(UIImageView *)imageView{
-    [self.originalIndexArray addObject:[NSString stringWithFormat:@"%d",imageView.tag]];
-    [self.originalOperationDic removeObjectForKey:[NSString stringWithFormat:@"%d",imageView.tag]];
 }
 
 - (void)setCover{
@@ -287,6 +295,42 @@
     self.setCoverButton.hidden = NO;
     self.doorButton.hidden = NO;
     self.glassButton.hidden = NO;
+}
+
+- (void)toggleEdit{
+    NSMutableArray *array = [[NSMutableArray alloc] initWithArray:self.dropDownMenu];
+    if (!self.isEditing) {
+        self.doorButton.enabled = NO;
+        self.glassButton.enabled = NO;
+        [array replaceObjectAtIndex:3 withObject:@"完成编辑"];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"注意" message:@"已进入编辑模式，将图片拖出屏幕下方可删除图片" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles: nil];
+        [alert show];
+    } else {
+        [array replaceObjectAtIndex:3 withObject:@"进入编辑模式"];
+        
+    }
+    [self setIsEditing:!self.isEditing];
+    self.dropDownMenu = array;
+    
+}
+
+- (void)deleteProduct:(NSInteger)index{
+    NSMutableDictionary *dict = self.imageData;
+    NSMutableDictionary *imgDict = [dict objectForKey:currentState];
+    
+    NSMutableArray *array = [imgDict objectForKey:kSelect];
+    [array removeObjectAtIndex:index];
+    [imgDict setObject:array forKey:kSelect];
+
+    array = [imgDict objectForKey:kDisplay];
+    [array removeObjectAtIndex:index];
+    [imgDict setObject:array forKey:kDisplay];
+    
+    [dict setObject:imgDict forKey:currentState];
+    
+    self.imageData = dict;
+    
+    [self.coverFlow removeItemAtIndex:index animated:YES];
 }
 
 #pragma mark NSURLConnectionDelegate Methods
@@ -390,33 +434,11 @@
 
 - (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index{
     
-    NSString *dataUrl = [[[self.imageData objectForKey:currentState] objectForKey:kDisplay] objectAtIndex:index];
-    NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
-    NSString *key = [url MD5Hash];
-    NSData *data = [FTWCache objectForKey:key];
-    UIImage *image = [[UIImage alloc] init];
-    
-    if (data) {
-        image = [UIImage imageWithData:data];
+    if (self.isEditing) {
+        [self deleteProduct:index];
     } else {
-        image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
+        [self prepareForRequestData:index];
     }
-        
-    if ([currentState isEqual: kDoor]) {
-        [self.displayDoorImageView removeFromSuperview];
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
-        imageView.image = image;
-        self.displayDoorImageView = imageView;
-        [self.view insertSubview:self.displayDoorImageView atIndex:2];
-
-    } else{
-        [self.displayGlassImageView removeFromSuperview];
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:glasspicRect];
-        imageView.image = image;
-        self.displayGlassImageView = imageView;
-        [self.view insertSubview:self.displayGlassImageView atIndex:3];
-
-    }    
 }
 
 - (CGFloat)carouselItemWidth:(iCarousel *)carousel{
@@ -449,7 +471,7 @@
             //[self reDraw];
             break;
         case 3:
-            //[self beginEdit];
+            [self toggleEdit];
             break;
         case 4:
             //[self searchProduct];
@@ -458,5 +480,6 @@
             break;
     }
 }
+
 
 @end
