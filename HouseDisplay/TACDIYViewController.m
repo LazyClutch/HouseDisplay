@@ -15,7 +15,7 @@
 #define kGlass @"glass"
 #define kDisplay @"display"
 #define kSelect @"select"
-#define kHostAddress @"10.0.1.10"
+#define kHostAddress @"10.0.1.22"
 
 
 @interface TACDIYViewController ()
@@ -39,12 +39,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    self.firstLogin = YES;
-    self.isEditing = NO;
-    self.jsonTempDataArray = [[NSMutableArray alloc] init];
-    self.dropDownMenu = @[@"设为封面",@"选择产品系列",@"重新框选区域",@"进入编辑模式",@"搜索产品"];
 
+    [self initParameter];
     [self showBackgroundImage];
     [self loadViewInfo];
     [self loadCacheData];
@@ -107,6 +103,14 @@
 #pragma mark-
 #pragma mark Custom Methods
 
+- (void)initParameter{
+    self.isInCell = NO;
+    self.firstLogin = YES;
+    self.isEditing = NO;
+    self.jsonTempDataArray = [[NSMutableArray alloc] init];
+    self.dropDownMenu = @[@"设为封面",@"选择产品系列",@"重新框选区域",@"进入编辑模式",@"搜索产品"];
+}
+
 - (void)loadCacheData{
     NSString *cacheName = [NSString stringWithString:currentState];
     cacheName = [cacheName stringByAppendingFormat:@"%d",self.viewTag];
@@ -166,8 +170,6 @@
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.hud.labelText = @"正在请求数据";
     self.hud.dimBackground = YES;
-    //[self.hud showWhileExecuting:@selector(receiveData) onTarget:self withObject:nil animated:YES];
-    //[self.hud showWhileExecuting:@selector(requestImageForType:ForUse:AtIndex:) onTarget:self withObject:nil animated:YES];
 }
 
 - (void)initScene{
@@ -218,32 +220,36 @@
 }
 
 - (void)prepareForRequestData:(NSInteger)index{
-    NSString *dataUrl = [[[self.imageData objectForKey:currentState] objectForKey:kDisplay] objectAtIndex:index];
-    NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
-    NSString *key = [url MD5Hash];
-    NSData *data = [FTWCache objectForKey:key];
-    UIImage *image = [[UIImage alloc] init];
-    
-    if (data) {
-        image = [UIImage imageWithData:data];
+    if (self.isEditing) {
+        return;
     } else {
-        image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
-    }
-    
-    if ([currentState isEqual: kDoor]) {
-        [self.displayDoorImageView removeFromSuperview];
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
-        imageView.image = image;
-        self.displayDoorImageView = imageView;
-        [self.view insertSubview:self.displayDoorImageView atIndex:2];
+        NSString *dataUrl = [[[self.imageData objectForKey:currentState] objectForKey:kDisplay] objectAtIndex:index];
+        NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
+        NSString *key = [url MD5Hash];
+        NSData *data = [FTWCache objectForKey:key];
+        UIImage *image = [[UIImage alloc] init];
         
-    } else{
-        [self.displayGlassImageView removeFromSuperview];
-        UIImageView *imageView = [[UIImageView alloc] initWithFrame:glasspicRect];
-        imageView.image = image;
-        self.displayGlassImageView = imageView;
-        [self.view insertSubview:self.displayGlassImageView atIndex:3];
+        if (data) {
+            image = [UIImage imageWithData:data];
+        } else {
+            image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
+        }
         
+        if ([currentState isEqual: kDoor]) {
+            [self.displayDoorImageView removeFromSuperview];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
+            imageView.image = image;
+            self.displayDoorImageView = imageView;
+            [self.view insertSubview:self.displayDoorImageView atIndex:2];
+            
+        } else{
+            [self.displayGlassImageView removeFromSuperview];
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:glasspicRect];
+            imageView.image = image;
+            self.displayGlassImageView = imageView;
+            [self.view insertSubview:self.displayGlassImageView atIndex:3];
+            
+        }
     }
 }
 
@@ -331,6 +337,7 @@
     self.imageData = dict;
     
     [self.coverFlow removeItemAtIndex:index animated:YES];
+    //[self.coverFlow remo]
 }
 
 #pragma mark NSURLConnectionDelegate Methods
@@ -433,11 +440,12 @@
 }
 
 - (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index{
-    
+    [self prepareForRequestData:index];
+}
+
+- (void)carousel:(iCarousel *)carousel didSwipeItemAtIndex:(NSInteger)index{
     if (self.isEditing) {
         [self deleteProduct:index];
-    } else {
-        [self prepareForRequestData:index];
     }
 }
 
@@ -480,6 +488,5 @@
             break;
     }
 }
-
 
 @end

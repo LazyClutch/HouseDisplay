@@ -772,6 +772,12 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
     [container addGestureRecognizer:tapGesture];
     AH_RELEASE(tapGesture);
     
+    UISwipeGestureRecognizer *swipeGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(didSwipe:)];
+    swipeGesture.delegate = (id<UIGestureRecognizerDelegate>)self;
+    swipeGesture.direction = UISwipeGestureRecognizerDirectionDown;
+    [container addGestureRecognizer:swipeGesture];
+    AH_RELEASE(swipeGesture);
+    
 #endif
     
     [container addSubview:view];
@@ -1896,6 +1902,18 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
     if ([delegate respondsToSelector:@selector(carousel:didSelectItemAtIndex:)])
     {
         [delegate carousel:self didSelectItemAtIndex:index];
+    }
+}
+
+- (void)didSwipe:(UISwipeGestureRecognizer *)swipeGesture{
+    NSInteger index = [self indexOfItemView:[swipeGesture.view.subviews lastObject]];
+    if (centerItemWhenSelected && index != self.currentItemIndex)
+    {
+        [self scrollToItemAtIndex:index animated:YES];
+    }
+    if ([delegate respondsToSelector:@selector(carousel:didSwipeItemAtIndex:)])
+    {
+        [delegate carousel:self didSwipeItemAtIndex:index];
     }
 }
 

@@ -285,6 +285,7 @@ iCarouselTranformOption;
 
 - (BOOL)carousel:(iCarousel *)carousel shouldSelectItemAtIndex:(NSInteger)index;
 - (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index;
+- (void)carousel:(iCarousel *)carousel didSwipeItemAtIndex:(NSInteger)index;
 
 #endif
 

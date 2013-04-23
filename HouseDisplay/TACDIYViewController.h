@@ -16,7 +16,7 @@
 #import "NSMutableDictionary+data.h"
 #import "NIDropDown.h"
 
-@interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate,NIDropDownDelegate>{
+@interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate,NIDropDownDelegate,UIGestureRecognizerDelegate>{
     NSString *outString; 
     NSString *currentState;
     CGRect doorPicRect;
@@ -48,6 +48,7 @@
 @property BOOL hasGlassMaterial;
 @property BOOL firstLogin;
 @property BOOL isEditing;
+@property BOOL isInCell;
 
 - (IBAction)returnButtonPressed:(id)sender;
 - (IBAction)doorButtonPressed:(id)sender;
