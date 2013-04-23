@@ -95,7 +95,6 @@
         self.isDeleting = YES;
         [self.toggleButton setTitle:@"完成" forState:UIControlStateNormal];
     }
-    NSLog(@"%@",self.toggleButton.titleLabel.text);
 }
 
 - (void)makeAnimation{
@@ -153,7 +152,6 @@
         [array addObject:data];
     }
     NSString *filePath = [self dataFilePath];
-    NSLog(@"%@",filePath);
     [array writeToFile:filePath atomically:YES];
 }
 
@@ -277,10 +275,9 @@
 
 - (void)insertItemForDetail:(NSMutableDictionary *)dict{
     // set self.viewInformation defalut:0
-    // (NSMutableDictionary *)dict should contain information about the position of the door
-    NSMutableDictionary *newDict = [self.viewsInfomation objectAtIndex:0];
+
     NSMutableArray *array = self.viewsInfomation;
-    [array addObject:newDict];
+    [array addObject:dict];
     self.viewsInfomation = array;
 }
 

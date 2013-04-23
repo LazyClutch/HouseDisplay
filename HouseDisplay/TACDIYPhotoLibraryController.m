@@ -200,6 +200,16 @@ static UIImage *shrinkImage(UIImage *original, CGSize size){
 }
 
 - (IBAction)finishButtonPressed:(id)sender {
+    NSString *x = [NSString stringWithFormat:@"%f",self.lastResizableView.frame.origin.x];
+    NSString *y = [NSString stringWithFormat:@"%f",self.lastResizableView.frame.origin.y];
+    NSString *w = [NSString stringWithFormat:@"%f",self.lastResizableView.bounds.size.width];
+    NSString *h = [NSString stringWithFormat:@"%f",self.lastResizableView.bounds.size.height];
+    NSMutableDictionary *dict = self.imageInfo;
+    [dict setObject:x forKey:@"doorPosX"];
+    [dict setObject:y forKey:@"doorPosY"];
+    [dict setObject:w forKey:@"displayDoorWidth"];
+    [dict setObject:h forKey:@"displayDoorHeight"];
+    self.imageInfo = dict;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"insertItem" object:self.imageInfo];
     [self.view removeFromSuperview];
 }
@@ -216,11 +226,7 @@ static UIImage *shrinkImage(UIImage *original, CGSize size){
 
 - (void)userResizableViewDidEndEditing:(SPUserResizableView *)userResizableView {
     self.lastResizableView = userResizableView;
-    CGFloat x = userResizableView.frame.origin.x;
-    CGFloat y = userResizableView.frame.origin.y;
-    CGFloat w = userResizableView.bounds.size.width;
-    CGFloat h = userResizableView.bounds.size.height;
-    NSLog(@"%f  %f   %f   %f",x,y,w,h);
+    
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {

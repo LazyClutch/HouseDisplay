@@ -42,7 +42,8 @@
     
     self.firstLogin = YES;
     self.jsonTempDataArray = [[NSMutableArray alloc] init];
-    //[self setImageRequestQueue];
+    self.dropDownMenu = @[@"设为封面",@"选择产品系列",@"重新框选区域",@"进入编辑模式",@"搜索产品"];
+
     [self showBackgroundImage];
     [self loadViewInfo];
     [self loadCacheData];
@@ -88,6 +89,20 @@
     currentState = kGlass;
     [self clearData];
     [self loadCacheData];
+}
+
+- (IBAction)menuButtonPressed:(id)sender{
+    if (self.dropDown == nil) {
+        self.dropDown = [[NIDropDown alloc] init];
+        CGFloat height = 200;
+        [self.dropDown showDropDown:sender withHeight:height usingArray:self.dropDownMenu];
+        self.dropDown.delegate = self;
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"dropDown" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dropDownCellSelected:) name:@"dropDown" object:nil];
+    } else {
+        [self.dropDown hideDropDown:sender];
+        self.dropDown = nil;
+    }
 }
 
 #pragma mark-
@@ -186,7 +201,7 @@
     currentState = kDoor;
     self.mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
     self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
-
+    
     NSString *name = [self.viewInfomation objectForKey:@"background"];
     NSString *imagePath = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
     UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
@@ -246,7 +261,7 @@
     [self.originalOperationDic removeObjectForKey:[NSString stringWithFormat:@"%d",imageView.tag]];
 }
 
-- (IBAction)setCoverButtonPressed:(id)sender {
+- (void)setCover{
     self.returnButton.hidden = YES;
     self.setCoverButton.hidden = YES;
     self.doorButton.hidden = YES;
@@ -283,7 +298,6 @@
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
     
 	outString = [[NSString alloc] initWithData:data encoding: NSUTF8StringEncoding];
-    //NSLog(@"%@",outString);
     NSMutableArray *array = [[NSMutableArray alloc] init];
     for (NSString *str in self.jsonTempDataArray) {
         [array addObject:str];
@@ -318,7 +332,6 @@
     for (NSString *str in self.jsonTempDataArray) {
         jsonStr = [jsonStr stringByAppendingString:str];
     }
-    //NSLog(@"%@",jsonStr);
     NSMutableDictionary *json = [jsonStr JSONValue];
     NSArray *keys = [json allKeys];
     for (NSString *key in keys) {
@@ -410,6 +423,40 @@
     return kItemWidth;
 }
 
+#pragma mark Dropdown Methods
+- (void)niDropDownDelegateMethod:(NIDropDown *)sender{
+    self.dropDown = nil;
+}
 
+- (void)dropDownCellSelected:(NSNotification *)notification{
+    NSInteger index = [[notification object] integerValue];
+    NSString *cell = [self.dropDownMenu objectAtIndex:index];
+    for (int i = 0;i < [self.dropDownMenu count];i++){
+        NSString *opt = [self.dropDownMenu objectAtIndex:i];
+        if ([cell isEqualToString:opt]) {
+            index = i;
+            break;
+        }
+    }
+    switch (index) {
+        case 0:
+            [self setCover];
+            break;
+        case 1:
+            //[self chooseSeries];
+            break;
+        case 2:
+            //[self reDraw];
+            break;
+        case 3:
+            //[self beginEdit];
+            break;
+        case 4:
+            //[self searchProduct];
+            break;
+        default:
+            break;
+    }
+}
 
 @end

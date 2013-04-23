@@ -118,6 +118,7 @@
 		63C8F3241719420E005BC4B7 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C8F3231719420E005BC4B7 /* MBProgressHUD.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		63C8F326171946BE005BC4B7 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C8F325171946BE005BC4B7 /* 37x-Checkmark.png */; };
 		63F7ABD117154D79001B6DE5 /* DIYInformation.plist in Resources */ = {isa = PBXBuildFile; fileRef = 63F7ABD017154D79001B6DE5 /* DIYInformation.plist */; };
+		63FB902C1726A1C100815A5D /* NIDropDown.m in Sources */ = {isa = PBXBuildFile; fileRef = 63FB902B1726A1C100815A5D /* NIDropDown.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -285,6 +286,8 @@
 		63C8F3231719420E005BC4B7 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		63C8F325171946BE005BC4B7 /* 37x-Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "37x-Checkmark.png"; sourceTree = "<group>"; };
 		63F7ABD017154D79001B6DE5 /* DIYInformation.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = DIYInformation.plist; path = ../DIYInformation.plist; sourceTree = "<group>"; };
+		63FB902A1726A1C100815A5D /* NIDropDown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIDropDown.h; sourceTree = "<group>"; };
+		63FB902B1726A1C100815A5D /* NIDropDown.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NIDropDown.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -677,6 +680,7 @@
 		63B8FD62170AE73F00D7A80A /* Library */ = {
 			isa = PBXGroup;
 			children = (
+				63FB902D1726A1C400815A5D /* DropDownMenu */,
 				6383894E172523C400A5AC18 /* ResizableView */,
 				6376B2041722770400DE7475 /* Cache */,
 				63C8F321171941F9005BC4B7 /* HUD */,
@@ -694,6 +698,15 @@
 				63C8F3231719420E005BC4B7 /* MBProgressHUD.m */,
 			);
 			name = HUD;
+			sourceTree = "<group>";
+		};
+		63FB902D1726A1C400815A5D /* DropDownMenu */ = {
+			isa = PBXGroup;
+			children = (
+				63FB902A1726A1C100815A5D /* NIDropDown.h */,
+				63FB902B1726A1C100815A5D /* NIDropDown.m */,
+			);
+			name = DropDownMenu;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -858,6 +871,7 @@
 				63131166172398BC007C326F /* TACDIYMenuViewCell.m in Sources */,
 				6360E8221723DE230049AAED /* TACDIYPhotoLibraryController.m in Sources */,
 				6383894D172523BD00A5AC18 /* SPUserResizableView.m in Sources */,
+				63FB902C1726A1C100815A5D /* NIDropDown.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

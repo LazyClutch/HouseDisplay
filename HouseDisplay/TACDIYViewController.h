@@ -14,8 +14,9 @@
 #import "FTWCache.h"
 #import "NSString+MD5.h"
 #import "NSMutableDictionary+data.h"
+#import "NIDropDown.h"
 
-@interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate>{
+@interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate,NIDropDownDelegate>{
     NSString *outString; 
     NSString *currentState;
     CGRect doorPicRect;
@@ -31,6 +32,8 @@
 @property (strong, nonatomic) UIImageView *displayDoorImageView;
 @property (strong, nonatomic) UIImageView *displayGlassImageView;
 @property (strong, nonatomic) UIImageView *frontImageView;
+
+@property (strong, nonatomic) NIDropDown *dropDown;
 @property (strong, nonatomic) MBProgressHUD *hud;
 @property (strong, nonatomic) IBOutlet iCarousel *coverFlow;
 
@@ -40,6 +43,7 @@
 @property (copy, nonatomic) NSMutableArray *jsonTempDataArray;
 @property (strong, nonatomic) NSMutableDictionary *originalOperationDic;
 @property (strong, nonatomic) NSOperationQueue *requestImageQueue;
+@property (strong, nonatomic) NSArray *dropDownMenu;
 
 @property (strong, nonatomic) NSURLConnection *connection;
 
@@ -51,7 +55,7 @@
 - (IBAction)doorButtonPressed:(id)sender;
 - (IBAction)glassButtonPressed:(id)sender;
 -(void)imageDidReceive:(UIImageView *)imageView;
-- (IBAction)setCoverButtonPressed:(id)sender;
+- (IBAction)menuButtonPressed:(id)sender;
 
 
 @end

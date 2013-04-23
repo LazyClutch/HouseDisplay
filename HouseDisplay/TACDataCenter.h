@@ -11,6 +11,7 @@
 @interface TACDataCenter : NSObject
 
 @property (strong, nonatomic) NSMutableArray *menuThumbnails;
+@property (strong, nonatomic) NSMutableArray *viewsInformation;
 
 + (TACDataCenter *) sharedInstance;
 - (void) operation;
