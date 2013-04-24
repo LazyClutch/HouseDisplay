@@ -43,7 +43,7 @@
     [self initParameter];
     [self showBackgroundImage];
     [self loadViewInfo];
-    [self loadCacheData];
+    [self receiveData];
     
     self.coverFlow.type = iCarouselTypeLinear;
     [self.coverFlow reloadData];
@@ -74,7 +74,7 @@
     }
     currentState = kDoor;
     [self clearData];
-    [self loadCacheData];
+    [self receiveData];
 }
 
 - (IBAction)glassButtonPressed:(id)sender {
@@ -83,17 +83,18 @@
     }
     currentState = kGlass;
     [self clearData];
-    [self loadCacheData];
+    [self receiveData];
 }
 
 - (IBAction)menuButtonPressed:(id)sender{
     if (self.dropDown == nil) {
-        self.dropDown = [[NIDropDown alloc] init];
-        CGFloat height = 200;
-        [self.dropDown showDropDown:sender withHeight:height usingArray:self.dropDownMenu];
-        self.dropDown.delegate = self;
+        lastDropIndex = -1;
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"dropDown" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dropDownCellSelected:) name:@"dropDown" object:nil];
+        self.dropDown = [[NIDropDown alloc] init];
+        CGFloat height = 240;
+        [self.dropDown showDropDown:sender withHeight:height usingArray:self.dropDownMenu];
+        self.dropDown.delegate = self;
     } else {
         [self.dropDown hideDropDown:sender];
         self.dropDown = nil;
@@ -108,27 +109,9 @@
     self.firstLogin = YES;
     self.isEditing = NO;
     self.jsonTempDataArray = [[NSMutableArray alloc] init];
-    self.dropDownMenu = @[@"设为封面",@"选择产品系列",@"重新框选区域",@"进入编辑模式",@"搜索产品"];
+    self.dropDownMenu = @[@"设为封面",@"选择产品系列",@"重新框选区域",@"进入编辑模式",@"搜索产品",@"刷新数据"];
 }
 
-- (void)loadCacheData{
-    NSString *cacheName = [NSString stringWithString:currentState];
-    cacheName = [cacheName stringByAppendingFormat:@"%d",self.viewTag];
-    NSString *cacheKey = [cacheName MD5Hash];
-    NSData *data = [FTWCache objectForKey:cacheKey];
-    NSString *dataStr = [[NSString alloc] initWithData:data encoding: NSUTF8StringEncoding];
-    NSMutableDictionary *dict = [dataStr JSONValue];
-    if (dict) {
-        self.imageData = dict;
-        [self.coverFlow reloadData];
-        if (self.firstLogin) {
-            [self initScene];
-            self.firstLogin = NO;
-        }
-    } else {
-        [self receiveData];
-    }
-}
 
 - (void)clearData{
     self.jsonTempDataArray = nil;
@@ -162,13 +145,14 @@
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     self.connection = connection;
-    [self setHudStatus];
+    NSString *text = @"正在请求数据";
+    [self setHudStatus:text];
     
 }
 
-- (void)setHudStatus{
+- (void)setHudStatus:(NSString *)text{
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
-    self.hud.labelText = @"正在请求数据";
+    self.hud.labelText = text;
     self.hud.dimBackground = YES;
 }
 
@@ -276,6 +260,7 @@
 }
 
 - (void)setCover{
+
     self.returnButton.hidden = YES;
     self.setCoverButton.hidden = YES;
     self.doorButton.hidden = YES;
@@ -301,6 +286,12 @@
     self.setCoverButton.hidden = NO;
     self.doorButton.hidden = NO;
     self.glassButton.hidden = NO;
+    
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.png"]];
+    self.hud.mode = MBProgressHUDModeCustomView;
+    self.hud.labelText = @"成功设为封面";
+	[self.hud hide:YES afterDelay:1];
 }
 
 - (void)toggleEdit{
@@ -317,7 +308,6 @@
     }
     [self setIsEditing:!self.isEditing];
     self.dropDownMenu = array;
-    
 }
 
 - (void)deleteProduct:(NSInteger)index{
@@ -460,6 +450,11 @@
 
 - (void)dropDownCellSelected:(NSNotification *)notification{
     NSInteger index = [[notification object] integerValue];
+    if (index == lastDropIndex) {
+        return;
+    } else {
+        lastDropIndex = index;
+    }
     NSString *cell = [self.dropDownMenu objectAtIndex:index];
     for (int i = 0;i < [self.dropDownMenu count];i++){
         NSString *opt = [self.dropDownMenu objectAtIndex:i];
@@ -483,6 +478,9 @@
             break;
         case 4:
             //[self searchProduct];
+            break;
+        case 5:
+            [self receiveData];
             break;
         default:
             break;

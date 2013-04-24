@@ -21,6 +21,7 @@
     NSString *currentState;
     CGRect doorPicRect;
     CGRect glasspicRect;
+    NSInteger lastDropIndex;
 }
 
 @property (strong, nonatomic) IBOutlet UIButton *returnButton;
