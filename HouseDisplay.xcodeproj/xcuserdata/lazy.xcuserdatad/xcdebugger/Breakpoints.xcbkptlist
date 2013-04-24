@@ -234,7 +234,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "447"
          endingLineNumber = "447"
-         landmarkName = "-carousel:didSelectItemAtIndex:"
+         landmarkName = "-carousel:didSwipeItemAtIndex:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -247,8 +247,8 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "451"
          endingLineNumber = "451"
-         landmarkName = "-carousel:didSwipeItemAtIndex:"
-         landmarkType = "5">
+         landmarkName = "@implementation TACDIYViewController"
+         landmarkType = "3">
       </FileBreakpoint>
       <FileBreakpoint
          shouldBeEnabled = "No"
@@ -260,7 +260,7 @@
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "257"
          endingLineNumber = "257"
-         landmarkName = "-prepareForRequestData:"
+         landmarkName = "-requestImageForType:ForUse:AtIndex:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
