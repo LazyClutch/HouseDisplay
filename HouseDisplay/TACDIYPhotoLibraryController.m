@@ -83,13 +83,6 @@ static UIImage *shrinkImage(UIImage *original, CGSize size);
 
 }
 
-- (void)showChoices{
-    NSString *message = @"请选择导入背景的方式";
-    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:message delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"相机拍摄",@"从图片库选取", nil];
-    
-    [sheet showInView:self.view];
-}
-
 - (void)shootPicture{
     [self getMediaFromSource:UIImagePickerControllerSourceTypeCamera];
 }
@@ -140,23 +133,6 @@ static UIImage *shrinkImage(UIImage *original, CGSize size){
     CGImageRelease(shrunken);
     return final;
 }
-
-#pragma mark-
-#pragma mark UIActionSheet Methods
-
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    switch (buttonIndex) {
-        case 0:
-            [self shootPicture];
-            break;
-        case 1:
-            [self choosePicture];
-            break;
-        default:
-            break;
-    }
-}
-
 
 #pragma mark UIImagePickerController Methods
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
@@ -211,10 +187,12 @@ static UIImage *shrinkImage(UIImage *original, CGSize size){
     [dict setObject:h forKey:@"displayDoorHeight"];
     self.imageInfo = dict;
     [[NSNotificationCenter defaultCenter] postNotificationName:@"insertItem" object:self.imageInfo];
+    [self.imgPopoverController dismissPopoverAnimated:YES];
     [self.view removeFromSuperview];
 }
 
 - (IBAction)returnButtonPressed:(id)sender {
+    [self.imgPopoverController dismissPopoverAnimated:YES];
     [self.view removeFromSuperview];
 }
 

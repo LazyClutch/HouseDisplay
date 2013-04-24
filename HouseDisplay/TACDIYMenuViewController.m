@@ -285,14 +285,15 @@
     switch (buttonIndex) {
         case 0:
             [self.photoLibraryController setSourceType:UIImagePickerControllerSourceTypeCamera];
+            [self.view addSubview:self.photoLibraryController.view];
             break;
         case 1:
             [self.photoLibraryController setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+            [self.view addSubview:self.photoLibraryController.view];
             break;
         default:
             break;
     }
-    [self.view addSubview:self.photoLibraryController.view];
 }
 
 

@@ -280,13 +280,14 @@
     [dict setObject:newimg.image forKey:@"thumbnail"];
     [dict setObject:[NSString stringWithFormat:@"%d",self.viewTag] forKey:@"tag"];
     
+    
     [[NSNotificationCenter defaultCenter] postNotificationName:@"changeThumb" object:dict];
     
     self.returnButton.hidden = NO;
     self.setCoverButton.hidden = NO;
     self.doorButton.hidden = NO;
     self.glassButton.hidden = NO;
-    
+      
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.png"]];
     self.hud.mode = MBProgressHUDModeCustomView;
