@@ -52,6 +52,7 @@
 		633F0C581712A31A001DB3A3 /* 3_back.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 633F0AD91712A31A001DB3A3 /* 3_back.jpg */; };
 		633F0C651712A31A001DB3A3 /* 4_back.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 633F0AEA1712A31A001DB3A3 /* 4_back.jpg */; };
 		633F0C721712A31A001DB3A3 /* 5_back.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 633F0AFB1712A31A001DB3A3 /* 5_back.jpg */; };
+		633FDF831728F14F0067A2CE /* TACPhotoSelecter.m in Sources */ = {isa = PBXBuildFile; fileRef = 633FDF821728F14F0067A2CE /* TACPhotoSelecter.m */; };
 		6348C45E1710F3C200425773 /* TACDIYMenuViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */; };
 		6356DE5B1713ED3D00EA0979 /* MainMenu.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6356DE5A1713ED3D00EA0979 /* MainMenu.plist */; };
 		6360E81E1723CE8D0049AAED /* addMark.png in Resources */ = {isa = PBXBuildFile; fileRef = 6360E81D1723CE8D0049AAED /* addMark.png */; };
@@ -206,6 +207,8 @@
 		633F0AD91712A31A001DB3A3 /* 3_back.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 3_back.jpg; sourceTree = "<group>"; };
 		633F0AEA1712A31A001DB3A3 /* 4_back.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 4_back.jpg; sourceTree = "<group>"; };
 		633F0AFB1712A31A001DB3A3 /* 5_back.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 5_back.jpg; sourceTree = "<group>"; };
+		633FDF811728F14F0067A2CE /* TACPhotoSelecter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACPhotoSelecter.h; sourceTree = "<group>"; };
+		633FDF821728F14F0067A2CE /* TACPhotoSelecter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACPhotoSelecter.m; sourceTree = "<group>"; };
 		6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACDIYMenuViewCell.xib; sourceTree = "<group>"; };
 		6356DE5A1713ED3D00EA0979 /* MainMenu.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = MainMenu.plist; sourceTree = "<group>"; };
 		6360E81D1723CE8D0049AAED /* addMark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = addMark.png; sourceTree = "<group>"; };
@@ -504,6 +507,18 @@
 			path = "场景5";
 			sourceTree = "<group>";
 		};
+		633FDF7D1728ED7D0067A2CE /* photo */ = {
+			isa = PBXGroup;
+			children = (
+				6360E81F1723DE230049AAED /* TACDIYPhotoLibraryController.h */,
+				6360E8201723DE230049AAED /* TACDIYPhotoLibraryController.m */,
+				6360E8211723DE230049AAED /* TACDIYPhotoLibraryController.xib */,
+				633FDF811728F14F0067A2CE /* TACPhotoSelecter.h */,
+				633FDF821728F14F0067A2CE /* TACPhotoSelecter.m */,
+			);
+			name = photo;
+			sourceTree = "<group>";
+		};
 		6360E8191723B25F0049AAED /* data */ = {
 			isa = PBXGroup;
 			children = (
@@ -552,6 +567,7 @@
 		63746DB61709C6CC00DC7874 /* HouseDisplay */ = {
 			isa = PBXGroup;
 			children = (
+				633FDF7D1728ED7D0067A2CE /* photo */,
 				6360E8191723B25F0049AAED /* data */,
 				63A2B723170AF4A400CA6AD9 /* DIY */,
 				63B8FD62170AE73F00D7A80A /* Library */,
@@ -648,9 +664,6 @@
 				6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */,
 				63131164172398BC007C326F /* TACDIYMenuViewCell.h */,
 				63131165172398BC007C326F /* TACDIYMenuViewCell.m */,
-				6360E81F1723DE230049AAED /* TACDIYPhotoLibraryController.h */,
-				6360E8201723DE230049AAED /* TACDIYPhotoLibraryController.m */,
-				6360E8211723DE230049AAED /* TACDIYPhotoLibraryController.xib */,
 			);
 			name = DIY;
 			sourceTree = "<group>";
@@ -872,6 +885,7 @@
 				6360E8221723DE230049AAED /* TACDIYPhotoLibraryController.m in Sources */,
 				6383894D172523BD00A5AC18 /* SPUserResizableView.m in Sources */,
 				63FB902C1726A1C100815A5D /* NIDropDown.m in Sources */,
+				633FDF831728F14F0067A2CE /* TACPhotoSelecter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,7 +10,7 @@
 #import "TACDIYViewController.h"
 #import "TACDIYMenuViewCell.h"
 #import "TACDIYPhotoLibraryController.h"
-
+#import "TACPhotoSelecter.h"
 #define kMenuCellWidth  313
 #define kMenuCellHeight 163
 
@@ -18,6 +18,7 @@
 
 @property (nonatomic, strong) TACDIYViewController *DIYViewController;
 @property (nonatomic, strong) TACDIYPhotoLibraryController *photoLibraryController;
+@property (nonatomic, strong) TACPhotoSelecter *photoSelector;
 
 @end
 
@@ -193,7 +194,7 @@
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
-    CGSize size = CGSizeMake(313, 163);
+    CGSize size = CGSizeMake(kMenuCellWidth, kMenuCellHeight);
     return size;
 }
 
@@ -238,8 +239,9 @@
         UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:message delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"相机拍摄",@"从图片库选取", nil];
         
         [sheet showInView:(UIView *)[self.collectionView cellForItemAtIndexPath:indexPath]];
-        self.photoLibraryController = [[TACDIYPhotoLibraryController alloc] init];
-        [self.photoLibraryController setIndexPath:indexPath];
+        self.photoSelector = [[TACPhotoSelecter alloc] initWithFrame:CGRectMake(100, 100, 200, 200)];
+        [self.photoSelector setIndexPath:indexPath];
+        [self.photoSelector setParentViewController:self];
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"insertItem" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(insertItem:) name:@"insertItem" object:nil];
     }
@@ -282,18 +284,33 @@
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 0 || buttonIndex == 1) {
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pickerPicture" object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageDidGotten:) name:@"pickerPicture" object:nil];
+    }
     switch (buttonIndex) {
         case 0:
-            [self.photoLibraryController setSourceType:UIImagePickerControllerSourceTypeCamera];
-            [self.view addSubview:self.photoLibraryController.view];
+            [self.photoSelector setSourceType:UIImagePickerControllerSourceTypeCamera];
+            [self.view addSubview:self.photoSelector];
+            [self.photoSelector pickerPicture];
             break;
         case 1:
-            [self.photoLibraryController setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
-            [self.view addSubview:self.photoLibraryController.view];
+            [self.photoSelector setSourceType:UIImagePickerControllerSourceTypePhotoLibrary];
+            [self.view addSubview:self.photoSelector];
+            [self.photoSelector pickerPicture];
             break;
         default:
             break;
     }
+}
+
+- (void)imageDidGotten:(NSNotification *)notification{
+    NSMutableDictionary *dict = (NSMutableDictionary *)[notification object];
+    UIImage *image = [dict objectForKey:@"image"];
+    self.photoLibraryController = [[TACDIYPhotoLibraryController alloc] init];
+    [self.view addSubview:self.photoLibraryController.view];
+    [self.photoLibraryController setImageInfo:dict];
+    [self.photoLibraryController setPhoto:image];
 }
 
 
