@@ -11,11 +11,8 @@
 #import "TACDIYMenuViewCell.h"
 #import "TACDIYPhotoLibraryController.h"
 #import "TACPhotoSelecter.h"
-
 #define kMenuCellWidth  313
 #define kMenuCellHeight 163
-#define kActionSheetDelete 10
-#define kActionSheetSelect 6
 
 @interface TACDIYMenuViewController ()
 
@@ -44,13 +41,11 @@
     self.backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
     self.backgroundImageView.image = [UIImage imageNamed:@"content_background.jpg"];
     [self.view insertSubview:self.backgroundImageView atIndex:0];
-    self.isDeleting = NO;
-    lastSelectedIndex = nil;
+    self.isDeleting = false;
     
     [self loadThumbnail];
     
-    NSString *infoPath = [[NSBundle mainBundle] pathForResource:@"houseInfomation" ofType:@"plist"];
-    NSLog(@"%@",infoPath);
+    NSString *infoPath = [[NSBundle mainBundle] pathForResource:@"DIYInformation" ofType:@"plist"];
     NSMutableArray *dict = [[NSMutableArray alloc] initWithContentsOfFile:infoPath];
     self.viewsInfomation = dict;
     
@@ -132,6 +127,22 @@
     
 }
 
+- (void)changeThumb:(NSNotification*)notification{
+    NSMutableDictionary *dict = (NSMutableDictionary *)[notification object];
+    
+    UIImage *thumbnail = [dict objectForKey:@"thumbnail"];
+    NSInteger tag = [[dict objectForKey:@"tag"] integerValue];
+    
+    NSMutableArray *array = [[TACDataCenter sharedInstance] menuThumbnails];
+    [array replaceObjectAtIndex:(tag-1) withObject:thumbnail];
+    [[TACDataCenter sharedInstance] setMenuThumbnails:array];
+    
+    self.imageViews = array;
+    [self.collectionView reloadData];
+    
+    [self writeThumbnailToFile];
+}
+
 
 #pragma mark Save and Load Methods
 - (void)writeThumbnailToFile{
@@ -208,8 +219,6 @@
     }
 }
 
-#pragma mark Edit Methods
-
 - (void)performSelection:(NSIndexPath *)indexPath{
     if ([indexPath row] < [self.imageViews count]) {
         self.DIYViewController = [[TACDIYViewController alloc] initWithNibName:@"TACDIYViewController" bundle:nil];
@@ -228,7 +237,6 @@
     } else {
         NSString *message = @"请选择导入背景的方式";
         UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:message delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:nil otherButtonTitles:@"相机拍摄",@"从图片库选取", nil];
-        sheet.tag = kActionSheetSelect;
         
         [sheet showInView:(UIView *)[self.collectionView cellForItemAtIndexPath:indexPath]];
         self.photoSelector = [[TACPhotoSelecter alloc] initWithFrame:CGRectMake(100, 100, 200, 200)];
@@ -240,12 +248,10 @@
 }
 
 - (void)deleteItem:(NSIndexPath *)indexPath{
-    if (lastSelectedIndex == nil) {
-        lastSelectedIndex = indexPath;
-        UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"确实要删除场景吗？" delegate:self cancelButtonTitle:@"取消" destructiveButtonTitle:@"删除" otherButtonTitles:@"取消", nil];
-        actionSheet.tag = kActionSheetDelete;
-        [actionSheet showInView:self.view];
-    }
+    NSString *title = @"警告";
+    NSString *message = @"确实要删除该场景吗？";
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"否" otherButtonTitles:@"是",nil];
+    [alert show];
 }
 
 
@@ -277,45 +283,7 @@
     self.viewsInfomation = array;
 }
 
-#pragma mark NSNotificationCenter Methods
-
-- (void)imageDidGotten:(NSNotification *)notification{
-    NSMutableDictionary *dict = (NSMutableDictionary *)[notification object];
-    UIImage *image = [dict objectForKey:@"image"];
-    self.photoLibraryController = [[TACDIYPhotoLibraryController alloc] init];
-    [self.view addSubview:self.photoLibraryController.view];
-    [self.photoLibraryController setImageInfo:dict];
-    [self.photoLibraryController setPhoto:image];
-}
-
-- (void)changeThumb:(NSNotification*)notification{
-    NSMutableDictionary *dict = (NSMutableDictionary *)[notification object];
-    
-    UIImage *thumbnail = [dict objectForKey:@"thumbnail"];
-    NSInteger tag = [[dict objectForKey:@"tag"] integerValue];
-    
-    NSMutableArray *array = [[TACDataCenter sharedInstance] menuThumbnails];
-    [array replaceObjectAtIndex:(tag-1) withObject:thumbnail];
-    [[TACDataCenter sharedInstance] setMenuThumbnails:array];
-    
-    self.imageViews = array;
-    [self.collectionView reloadData];
-    
-    [self writeThumbnailToFile];
-}
-
-#pragma mark UIAlertView and UIActionSheet Methods
-
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    if (actionSheet.tag == kActionSheetDelete) {
-        [self processDelete:buttonIndex];
-    } else {
-        [self processSelect:buttonIndex];
-    }
-}
-
-- (void)processSelect:(NSInteger)buttonIndex{
-    NSLog(@"%d",buttonIndex);
     if (buttonIndex == 0 || buttonIndex == 1) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pickerPicture" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageDidGotten:) name:@"pickerPicture" object:nil];
@@ -336,33 +304,14 @@
     }
 }
 
-- (void)processDelete:(NSInteger)buttonIndex{
-    NSLog(@"%d",buttonIndex);
-    if (self.isDeleting && buttonIndex == 0) {
-        BOOL isSystem = [[[self.viewsInfomation objectAtIndex:[lastSelectedIndex row]] objectForKey:@"system"] boolValue];
-        if (isSystem) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"警告" message:@"不能删除厂家自带的场景" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles: nil];
-            [alert show];
-        } else {
-            [self modifyDataByDelete];
-            
-            NSMutableArray *views = [[NSMutableArray alloc] initWithArray:self.viewsInfomation];
-            [views removeObjectAtIndex:[lastSelectedIndex row]];
-            NSArray *array = [NSArray arrayWithObject:lastSelectedIndex];
-            [self.collectionView deleteItemsAtIndexPaths:array];
-            lastSelectedIndex = nil;
-        }
-    }
+- (void)imageDidGotten:(NSNotification *)notification{
+    NSMutableDictionary *dict = (NSMutableDictionary *)[notification object];
+    UIImage *image = [dict objectForKey:@"image"];
+    self.photoLibraryController = [[TACDIYPhotoLibraryController alloc] init];
+    [self.view addSubview:self.photoLibraryController.view];
+    [self.photoLibraryController setImageInfo:dict];
+    [self.photoLibraryController setPhoto:image];
 }
 
-- (void)modifyDataByDelete{
-    NSInteger index = [lastSelectedIndex row];
-    NSMutableArray *view = [[TACDataCenter sharedInstance] viewsInformation];
-    NSMutableArray *thumbnails = [[TACDataCenter sharedInstance] menuThumbnails];
-    [view removeObjectAtIndex:index];
-    [thumbnails removeObjectAtIndex:index];
-    [[TACDataCenter sharedInstance] setViewsInformation:view];
-    [[TACDataCenter sharedInstance] setMenuThumbnails:thumbnails];
-}
 
 @end
