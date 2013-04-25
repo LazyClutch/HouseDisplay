@@ -13,8 +13,9 @@
 #import "TACDataCenter.h"
 #import "TACDIYPhotoLibraryController.h"
 
-@interface TACDIYMenuViewController : UIViewController<UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UIAlertViewDelegate,UIActionSheetDelegate>{
+@interface TACDIYMenuViewController : UIViewController<UIAlertViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UIActionSheetDelegate>{
     NSString *outstring;
+    NSIndexPath *lastSelectedIndex;
 }
 
 @property (strong, nonatomic) IBOutlet UIButton *returnButton;

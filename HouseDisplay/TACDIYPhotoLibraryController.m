@@ -82,8 +82,6 @@
 
 }
 
-
-
 - (IBAction)finishButtonPressed:(id)sender {
     NSString *x = [NSString stringWithFormat:@"%f",self.lastResizableView.frame.origin.x];
     NSString *y = [NSString stringWithFormat:@"%f",self.lastResizableView.frame.origin.y];

@@ -101,6 +101,7 @@ static UIImage *shrinkImage(UIImage *original, CGSize size){
         shrunkenImage = shrinkImage(image,size);
         shrunkenCoverImage = shrinkImage(image, coverSize);
         NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+        [dict setValue:NO forKey:@"system"];
         [dict setObject:shrunkenImage forKey:@"image"];
         [dict setObject:self.indexPath forKey:@"indexpath"];
         [dict setObject:shrunkenCoverImage forKey:@"coverImage"];
