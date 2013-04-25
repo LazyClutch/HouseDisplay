@@ -47,12 +47,9 @@
     self.isDeleting = NO;
     lastSelectedIndex = nil;
     
+    [self loadInformation];
     [self loadThumbnail];
-    
-    NSString *infoPath = [[NSBundle mainBundle] pathForResource:@"houseInfomation" ofType:@"plist"];
-    NSLog(@"%@",infoPath);
-    NSMutableArray *dict = [[NSMutableArray alloc] initWithContentsOfFile:infoPath];
-    self.viewsInfomation = dict;
+    [self setDataCenter];
     
     self.collectionView.backgroundColor = [UIColor clearColor];
     [self.collectionView registerClass:[TACDIYMenuViewCell class] forCellWithReuseIdentifier:@"MenuViewCellIdentifier"];
@@ -132,6 +129,10 @@
     
 }
 
+- (void)setDataCenter{
+    [[TACDataCenter sharedInstance] setViewsInformation:self.viewsInfomation];
+}
+
 
 #pragma mark Save and Load Methods
 - (void)writeThumbnailToFile{
@@ -141,19 +142,40 @@
         data = UIImagePNGRepresentation(image);
         [array addObject:data];
     }
-    NSString *filePath = [self dataFilePath];
+    NSString *fileName = @"/thumbnail.data2";
+    NSString *filePath = [self dataFilePath:fileName];
     [array writeToFile:filePath atomically:YES];
 }
 
-- (NSString *)dataFilePath{
+- (void)writeInformationToFile{
+    NSString *fileName = @"/roomInfo.data";
+    NSString *filePath = [self dataFilePath:fileName];
+    [self.viewsInfomation writeToFile:filePath atomically:YES];
+}
+
+- (NSString *)dataFilePath:(NSString *)fileName{
     NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentDict = [path objectAtIndex:0];
-    NSString *thumbFileName = @"/thumbnail.data2";
+    NSString *thumbFileName = fileName;
     return [documentDict stringByAppendingFormat:@"%@",thumbFileName];
 }
 
+- (void)loadInformation{
+    NSString *fileName = @"/roomInfo.data";
+    NSString *filePath = [self dataFilePath:fileName];
+    NSLog(@"%@",filePath);
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        self.viewsInfomation = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+    } else {
+        NSString *infoPath = [[NSBundle mainBundle] pathForResource:@"houseInfomation" ofType:@"plist"];
+        NSMutableArray *dict = [[NSMutableArray alloc] initWithContentsOfFile:infoPath];
+        self.viewsInfomation = dict;
+    }
+}
+
 - (void)loadThumbnail{
-    NSString *filePath = [self dataFilePath];
+    NSString *fileName = @"/thumbnail.data2";
+    NSString *filePath = [self dataFilePath:fileName];
     NSMutableArray *array = [[NSMutableArray alloc] init];
     NSMutableArray *dataArray = [[NSMutableArray alloc] init];
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
@@ -256,12 +278,22 @@
     NSIndexPath *indexPath = [dict objectForKey:@"indexpath"];
     UIImage *coverImage = [dict objectForKey:@"coverImage"];
         
-    NSMutableArray *imgArray = [[NSMutableArray alloc] init];
-    imgArray = [[TACDataCenter sharedInstance] menuThumbnails];
+    NSMutableArray *imgArray = [NSMutableArray arrayWithArray:self.imageViews];
     [imgArray addObject:coverImage];
     [[TACDataCenter sharedInstance] setMenuThumbnails:imgArray];
+    
+    NSMutableArray *viewsInfo = [NSMutableArray arrayWithArray:self.viewsInfomation];
+    [dict removeObjectForKey:@"image"];
+    [dict removeObjectForKey:@"indexpath"];
+    [dict removeObjectForKey:@"coverImage"];
+    [viewsInfo addObject:dict];
+    [[TACDataCenter sharedInstance] setViewsInformation:viewsInfo];
+    
+    self.viewsInfomation = viewsInfo;
     self.imageViews = imgArray;
+    
     [self writeThumbnailToFile];
+    [self writeInformationToFile];
     
     NSArray *array = [NSArray arrayWithObjects:indexPath,nil];
     [self.collectionView insertItemsAtIndexPaths:array];
@@ -272,9 +304,7 @@
 - (void)insertItemForDetail:(NSMutableDictionary *)dict{
     // set self.viewInformation defalut:0
 
-    NSMutableArray *array = self.viewsInfomation;
-    [array addObject:dict];
-    self.viewsInfomation = array;
+
 }
 
 #pragma mark NSNotificationCenter Methods
@@ -339,19 +369,24 @@
 - (void)processDelete:(NSInteger)buttonIndex{
     NSLog(@"%d",buttonIndex);
     if (self.isDeleting && buttonIndex == 0) {
-        BOOL isSystem = [[[self.viewsInfomation objectAtIndex:[lastSelectedIndex row]] objectForKey:@"system"] boolValue];
-        if (isSystem) {
+        NSInteger row = [lastSelectedIndex row];
+        NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:row];
+        NSString *system = [dict objectForKey:@"system"];
+        NSInteger ix = [system integerValue];
+        //BOOL isSystem = [[[self.viewsInfomation objectAtIndex:[lastSelectedIndex row]] objectForKey:@"system"] boolValue];
+        if (ix == 1) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"警告" message:@"不能删除厂家自带的场景" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles: nil];
             [alert show];
         } else {
             [self modifyDataByDelete];
-            
-            NSMutableArray *views = [[NSMutableArray alloc] initWithArray:self.viewsInfomation];
-            [views removeObjectAtIndex:[lastSelectedIndex row]];
             NSArray *array = [NSArray arrayWithObject:lastSelectedIndex];
             [self.collectionView deleteItemsAtIndexPaths:array];
-            lastSelectedIndex = nil;
+            [self writeThumbnailToFile];
+            [self writeInformationToFile];
+            [self.toggleButton setTitle:@"编辑" forState:UIControlStateNormal];
+            self.isDeleting = NO;
         }
+        lastSelectedIndex = nil;
     }
 }
 
