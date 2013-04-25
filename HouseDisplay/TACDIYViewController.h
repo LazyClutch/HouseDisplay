@@ -16,7 +16,7 @@
 #import "NSMutableDictionary+data.h"
 #import "NIDropDown.h"
 
-@interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate,NIDropDownDelegate,UIGestureRecognizerDelegate>{
+@interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate,NIDropDownDelegate,UIGestureRecognizerDelegate,UIAlertViewDelegate>{
     NSString *outString; 
     NSString *currentState;
     CGRect doorPicRect;
