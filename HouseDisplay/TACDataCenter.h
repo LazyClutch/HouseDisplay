@@ -12,6 +12,7 @@
 
 @property (strong, nonatomic) NSMutableArray *menuThumbnails;
 @property (strong, nonatomic) NSMutableArray *viewsInformation;
+@property (strong, nonatomic) NSMutableArray *backgrounds;
 
 + (TACDataCenter *) sharedInstance;
 - (void) operation;

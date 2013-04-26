@@ -11,6 +11,7 @@
 #import "TACDIYMenuViewCell.h"
 #import "TACDIYPhotoLibraryController.h"
 #import "TACPhotoSelecter.h"
+#import <ImageIO/ImageIO.h>
 
 #define kMenuCellWidth  313
 #define kMenuCellHeight 163
@@ -49,6 +50,8 @@
     
     [self loadInformation];
     [self loadThumbnail];
+    [self loadBackgrounds];
+    
     [self setDataCenter];
     
     self.collectionView.backgroundColor = [UIColor clearColor];
@@ -134,6 +137,20 @@
 }
 
 
+- (void)setBackground{
+    NSArray *array = [[NSArray alloc] initWithObjects:@"1_back",@"2_back",@"3_back",@"4_back",@"5_back", nil];
+    NSMutableArray *images = [[NSMutableArray alloc] init];
+    for (NSString *name in array) {
+        NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
+        NSData *data = [NSData dataWithContentsOfFile:path];
+        UIImage *image = [UIImage imageWithData:data];
+        [images addObject:image];
+    }
+    self.backgrounds = images;
+    
+    [[TACDataCenter sharedInstance] setBackgrounds:images];
+}
+
 #pragma mark Save and Load Methods
 - (void)writeThumbnailToFile{
     NSMutableArray *array = [[NSMutableArray alloc] init];
@@ -151,6 +168,18 @@
     NSString *fileName = @"/roomInfo.data";
     NSString *filePath = [self dataFilePath:fileName];
     [self.viewsInfomation writeToFile:filePath atomically:YES];
+}
+
+- (void)writeBackgroundsToFile{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSData *data = nil;
+    for (UIImage *image in self.backgrounds) {
+        data = UIImageJPEGRepresentation(image, 1.0);
+        [array addObject:data];
+    }
+    NSString *fileName = @"/background.data";
+    NSString *filePath = [self dataFilePath:fileName];
+    [array writeToFile:filePath atomically:YES];
 }
 
 - (NSString *)dataFilePath:(NSString *)fileName{
@@ -171,6 +200,24 @@
         NSMutableArray *dict = [[NSMutableArray alloc] initWithContentsOfFile:infoPath];
         self.viewsInfomation = dict;
     }
+}
+
+- (void)loadBackgrounds{
+    NSString *fileName = @"/background.data";
+    NSString *filePath = [self dataFilePath:fileName];
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSMutableArray *dataArray = [[NSMutableArray alloc] init];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        dataArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+        for (NSData *data in dataArray) {
+            UIImage *image = [UIImage imageWithData:data];
+            [array addObject:image];
+        }
+        self.backgrounds = array;
+    } else {
+        [self setBackground];
+    }
+    [[TACDataCenter sharedInstance] setBackgrounds:self.backgrounds];
 }
 
 - (void)loadThumbnail{
@@ -241,9 +288,6 @@
         
         BOOL hasGlass = ([indexPath row] < 3) ? YES : NO;
         NSInteger tag = [indexPath row];
-        if ([indexPath row] >= 4) {
-            tag -= 4;
-        }
         [self.DIYViewController setViewTag:tag + 1];
         [self.DIYViewController setHasGlassMaterial:hasGlass];
         [self makeAnimation];
@@ -277,10 +321,15 @@
     
     NSIndexPath *indexPath = [dict objectForKey:@"indexpath"];
     UIImage *coverImage = [dict objectForKey:@"coverImage"];
+    UIImage *background = [dict objectForKey:@"image"];
+    
+    NSMutableArray *backgrounds = [NSMutableArray arrayWithArray:self.backgrounds];
+    [backgrounds addObject:background];
+    [[TACDataCenter sharedInstance] setBackgrounds:backgrounds];
         
-    NSMutableArray *imgArray = [NSMutableArray arrayWithArray:self.imageViews];
-    [imgArray addObject:coverImage];
-    [[TACDataCenter sharedInstance] setMenuThumbnails:imgArray];
+    NSMutableArray *thumbArray = [NSMutableArray arrayWithArray:self.imageViews];
+    [thumbArray addObject:coverImage];
+    [[TACDataCenter sharedInstance] setMenuThumbnails:thumbArray];
     
     NSMutableArray *viewsInfo = [NSMutableArray arrayWithArray:self.viewsInfomation];
     [dict removeObjectForKey:@"image"];
@@ -290,10 +339,12 @@
     [[TACDataCenter sharedInstance] setViewsInformation:viewsInfo];
     
     self.viewsInfomation = viewsInfo;
-    self.imageViews = imgArray;
+    self.imageViews = thumbArray;
+    self.backgrounds = backgrounds;
     
     [self writeThumbnailToFile];
     [self writeInformationToFile];
+    [self writeBackgroundsToFile];
     
     NSArray *array = [NSArray arrayWithObjects:indexPath,nil];
     [self.collectionView insertItemsAtIndexPaths:array];
@@ -394,10 +445,13 @@
     NSInteger index = [lastSelectedIndex row];
     NSMutableArray *view = [[TACDataCenter sharedInstance] viewsInformation];
     NSMutableArray *thumbnails = [[TACDataCenter sharedInstance] menuThumbnails];
+    NSMutableArray *backgrounds = [[TACDataCenter sharedInstance] backgrounds];
     [view removeObjectAtIndex:index];
     [thumbnails removeObjectAtIndex:index];
+    [backgrounds removeObjectAtIndex:index];
     [[TACDataCenter sharedInstance] setViewsInformation:view];
     [[TACDataCenter sharedInstance] setMenuThumbnails:thumbnails];
+    [[TACDataCenter sharedInstance] setBackgrounds:backgrounds];
 }
 
 @end

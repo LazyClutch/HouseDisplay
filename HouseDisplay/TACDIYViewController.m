@@ -136,6 +136,31 @@
     doorPicRect = CGRectMake(doorPosX, doorPosY, doorDisWidth, doorDisHeight);
 }
 
+- (void)showBackgroundImage{
+    
+    currentState = kDoor;
+    self.mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
+    self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
+    
+    NSMutableArray *array = [[TACDataCenter sharedInstance] backgrounds];
+//    NSString *name = [self.viewInfomation objectForKey:@"background"];
+//    NSString *imagePath = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
+    UIImage *image = [array objectAtIndex:(self.viewTag - 1)];
+    self.mainImageView.image = image;
+    
+    [self.view insertSubview:self.mainImageView atIndex:1];
+    
+//    if (self.viewTag == 1) {
+//        name = [self.viewInfomation objectForKey:@"front"];
+//        imagePath = [[NSBundle mainBundle] pathForResource:name ofType:@"png"];
+//        UIImage *imageFront = [UIImage imageWithContentsOfFile:imagePath];
+//        self.frontImageView.image = imageFront;
+//        [self.view insertSubview:self.frontImageView atIndex:4];
+//    } else if (self.viewTag >= 4){
+//        self.glassButton.hidden = YES;
+//    }
+}
+
 - (void)receiveData{
     
     self.doorButton.enabled = NO;
@@ -177,30 +202,6 @@
     [self.view.superview.layer addAnimation:animation forKey:@"animationBack"];
     //[self.view exchangeSubviewAtIndex:1 withSubviewAtIndex:0];
     [self.view removeFromSuperview];
-}
-
-- (void)showBackgroundImage{
-    
-    currentState = kDoor;
-    self.mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
-    self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
-    
-    NSString *name = [self.viewInfomation objectForKey:@"background"];
-    NSString *imagePath = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
-    UIImage *image = [UIImage imageWithContentsOfFile:imagePath];
-    self.mainImageView.image = image;
-    
-    [self.view insertSubview:self.mainImageView atIndex:1];
-    
-    if (self.viewTag == 1) {
-        name = [self.viewInfomation objectForKey:@"front"];
-        imagePath = [[NSBundle mainBundle] pathForResource:name ofType:@"png"];
-        UIImage *imageFront = [UIImage imageWithContentsOfFile:imagePath];
-        self.frontImageView.image = imageFront;
-        [self.view insertSubview:self.frontImageView atIndex:4];
-    } else if (self.viewTag >= 4){
-        self.glassButton.hidden = YES;
-    }
 }
 
 - (void)prepareForRequestData:(NSInteger)index{
