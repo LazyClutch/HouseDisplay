@@ -41,6 +41,7 @@
 {
     [super viewDidLoad];
     [self showLoginSuccess];
+    //[self receiveData];
     
     self.backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
     self.backgroundImageView.image = [UIImage imageNamed:@"content_background.jpg"];

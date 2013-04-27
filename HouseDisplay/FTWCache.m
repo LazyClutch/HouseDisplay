@@ -20,6 +20,7 @@ static NSTimeInterval cacheTime =  (double)604800;
 	NSArray* paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 	NSString *cacheDirectory = [paths objectAtIndex:0];
 	cacheDirectory = [cacheDirectory stringByAppendingPathComponent:@"ImgCache"];
+    NSLog(@"%@",cacheDirectory);
 	return cacheDirectory;
 }
 

@@ -18,20 +18,15 @@
 
 @interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate,NIDropDownDelegate,UIGestureRecognizerDelegate,UIAlertViewDelegate>{
     NSString *outString; 
-    NSString *currentState;
     CGRect doorPicRect;
-    CGRect glasspicRect;
     NSInteger lastDropIndex;
 }
 
 @property (strong, nonatomic) IBOutlet UIButton *returnButton;
-@property (strong, nonatomic) IBOutlet UIButton *doorButton;
-@property (strong, nonatomic) IBOutlet UIButton *glassButton;
 @property (strong, nonatomic) IBOutlet UIButton *setCoverButton;
 
 @property (strong, nonatomic) UIImageView *mainImageView;
 @property (strong, nonatomic) UIImageView *displayDoorImageView;
-@property (strong, nonatomic) UIImageView *displayGlassImageView;
 @property (strong, nonatomic) UIImageView *frontImageView;
 
 @property (strong, nonatomic) NIDropDown *dropDown;
@@ -52,8 +47,7 @@
 @property BOOL isInCell;
 
 - (IBAction)returnButtonPressed:(id)sender;
-- (IBAction)doorButtonPressed:(id)sender;
-- (IBAction)glassButtonPressed:(id)sender;
+
 -(void)imageDidReceive:(UIImageView *)imageView;
 - (IBAction)menuButtonPressed:(id)sender;
 

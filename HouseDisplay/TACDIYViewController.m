@@ -16,6 +16,7 @@
 #define kDisplay @"display"
 #define kSelect @"select"
 #define kHostAddress @"10.0.1.22"
+#define currentState @"door"
 
 
 @interface TACDIYViewController ()
@@ -68,23 +69,6 @@
     [self returnSuperView];
 }
 
-- (IBAction)doorButtonPressed:(id)sender {
-    if ([currentState isEqual:kDoor]) {
-        return;
-    }
-    currentState = kDoor;
-    [self clearData];
-    [self receiveData];
-}
-
-- (IBAction)glassButtonPressed:(id)sender {
-    if ([currentState isEqual:kGlass]) {
-        return;
-    }
-    currentState = kGlass;
-    [self clearData];
-    [self receiveData];
-}
 
 - (IBAction)menuButtonPressed:(id)sender{
     if (self.dropDown == nil) {
@@ -119,52 +103,30 @@
 }
 
 - (void)loadViewInfo{
-    NSInteger doorDisWidth,doorDisHeight,glassDicWidth,glassDicHeight;
-    NSInteger doorPosX,doorPosY,glassPosX,glassPosY;
+    NSInteger doorDisWidth,doorDisHeight;
+    NSInteger doorPosX,doorPosY;
     doorDisWidth = [[self.viewInfomation objectForKey:@"displayDoorWidth"] integerValue];
     doorDisHeight = [[self.viewInfomation objectForKey:@"displayDoorHeight"] integerValue];
     doorPosX = [[self.viewInfomation objectForKey:@"doorPosX"] integerValue];
     doorPosY = [[self.viewInfomation objectForKey:@"doorPosY"] integerValue];
-    if ([[self.viewInfomation allKeys] count] >= 7) {     //glass & door
-        glassDicHeight = [[self.viewInfomation objectForKey:@"displayGlassHeight"] integerValue];
-        glassDicWidth = [[self.viewInfomation objectForKey:@"displayGlassWidth"] integerValue];
-        glassPosX = [[self.viewInfomation objectForKey:@"glassPosX"] integerValue];
-        glassPosY = [[self.viewInfomation objectForKey:@"glassPosY"] integerValue];
-        glasspicRect = CGRectMake(glassPosX, glassPosY, glassDicWidth, glassDicHeight);
-
-    }
     doorPicRect = CGRectMake(doorPosX, doorPosY, doorDisWidth, doorDisHeight);
 }
 
 - (void)showBackgroundImage{
     
-    currentState = kDoor;
     self.mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
     self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
     
     NSMutableArray *array = [[TACDataCenter sharedInstance] backgrounds];
-//    NSString *name = [self.viewInfomation objectForKey:@"background"];
-//    NSString *imagePath = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
     UIImage *image = [array objectAtIndex:(self.viewTag - 1)];
     self.mainImageView.image = image;
     
     [self.view insertSubview:self.mainImageView atIndex:1];
     
-//    if (self.viewTag == 1) {
-//        name = [self.viewInfomation objectForKey:@"front"];
-//        imagePath = [[NSBundle mainBundle] pathForResource:name ofType:@"png"];
-//        UIImage *imageFront = [UIImage imageWithContentsOfFile:imagePath];
-//        self.frontImageView.image = imageFront;
-//        [self.view insertSubview:self.frontImageView atIndex:4];
-//    } else if (self.viewTag >= 4){
-//        self.glassButton.hidden = YES;
-//    }
 }
 
 - (void)receiveData{
-    
-    self.doorButton.enabled = NO;
-    self.glassButton.enabled = NO;
+
     NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/fetch_images.php?background=%d&category=%@",kHostAddress,self.viewTag,currentState];
     NSURL *url = [NSURL URLWithString:requestURL];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
@@ -181,14 +143,25 @@
     self.hud.dimBackground = YES;
 }
 
+- (void)setHudFinishStatus:(NSString *)text withTime:(CGFloat)time{
+    self.hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.png"]];
+    self.hud.mode = MBProgressHUDModeCustomView;
+    self.hud.labelText = text;
+	[self.hud hide:YES afterDelay:time];
+}
+
 - (void)initScene{
-    UIImage *image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:0];
-    //show picture in mainImageView
-    [self.displayDoorImageView removeFromSuperview];
-    UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
-    imageView.image = image;
-    self.displayDoorImageView = imageView;
-    [self.view insertSubview:self.displayDoorImageView atIndex:2];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        UIImage *image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:0];
+        //show picture in mainImageView
+        [self.displayDoorImageView removeFromSuperview];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
+            imageView.image = image;
+            self.displayDoorImageView = imageView;
+            [self.view insertSubview:self.displayDoorImageView atIndex:2];
+        });
+    });
 }
 
 - (void)returnSuperView{
@@ -212,29 +185,25 @@
         NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
         NSString *key = [url MD5Hash];
         NSData *data = [FTWCache objectForKey:key];
-        UIImage *image = [[UIImage alloc] init];
         
-        if (data) {
-            image = [UIImage imageWithData:data];
-        } else {
-            image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
-        }
-        
-        if ([currentState isEqual: kDoor]) {
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            UIImage *image = [[UIImage alloc] init];
+            if (data) {
+                image = [UIImage imageWithData:data];
+            } else {
+                [self setHudStatus:@"正在加载"];
+                image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
+            }
             [self.displayDoorImageView removeFromSuperview];
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
-            imageView.image = image;
-            self.displayDoorImageView = imageView;
-            [self.view insertSubview:self.displayDoorImageView atIndex:2];
-            
-        } else{
-            [self.displayGlassImageView removeFromSuperview];
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:glasspicRect];
-            imageView.image = image;
-            self.displayGlassImageView = imageView;
-            [self.view insertSubview:self.displayGlassImageView atIndex:3];
-            
-        }
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
+                imageView.image = image;
+                [self setHudFinishStatus:@"加载完毕" withTime:0.2];
+                
+                self.displayDoorImageView = imageView;
+                [self.view insertSubview:self.displayDoorImageView atIndex:2];
+            });
+        });
     }
 }
 
@@ -264,8 +233,6 @@
 
     self.returnButton.hidden = YES;
     self.setCoverButton.hidden = YES;
-    self.doorButton.hidden = YES;
-    self.glassButton.hidden = YES;
     
     UIGraphicsBeginImageContext(self.view.bounds.size);     
     [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
@@ -286,8 +253,6 @@
     
     self.returnButton.hidden = NO;
     self.setCoverButton.hidden = NO;
-    self.doorButton.hidden = NO;
-    self.glassButton.hidden = NO;
       
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.png"]];
@@ -299,8 +264,6 @@
 - (void)toggleEdit{
     NSMutableArray *array = [[NSMutableArray alloc] initWithArray:self.dropDownMenu];
     if (!self.isEditing) {
-        self.doorButton.enabled = NO;
-        self.glassButton.enabled = NO;
         [array replaceObjectAtIndex:3 withObject:@"完成编辑"];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"注意" message:@"已进入编辑模式，将图片拖出屏幕下方可删除图片" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles: nil];
         [alert show];
@@ -332,6 +295,17 @@
     //[self.coverFlow remo]
 }
 
+- (BOOL)analyzeData:(NSMutableDictionary *)dict{
+    NSArray *array = [dict allKeys];
+    for (NSString *key in array) {
+        NSArray *data = [dict objectForKey:key];
+        if ([data count] != 0) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
 #pragma mark NSURLConnectionDelegate Methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -357,17 +331,9 @@
     [alert show];
     self.hud.hidden = YES;
     [self.coverFlow reloadData];
-    self.doorButton.enabled = YES;
-    self.glassButton.enabled = YES;
 }
 
 - (void) connectionDidFinishLoading: (NSURLConnection*) connection {
-    self.doorButton.enabled = YES;
-    self.glassButton.enabled = YES;
-    self.hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.png"]];
-    self.hud.mode = MBProgressHUDModeCustomView;
-    self.hud.labelText = @"数据读取完毕";
-	[self.hud hide:YES afterDelay:2];
     
     NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
@@ -376,6 +342,10 @@
         jsonStr = [jsonStr stringByAppendingString:str];
     }
     NSMutableDictionary *json = [jsonStr JSONValue];
+    BOOL isDataEmpty = [self analyzeData:json];
+    if (isDataEmpty) {
+        return;
+    }
     NSArray *keys = [json allKeys];
     for (NSString *key in keys) {
         NSArray *images = [json objectForKey:key];
@@ -385,7 +355,7 @@
     self.imageData = data;
     NSData *cacheData = [self.imageData toJSON];
     
-    NSString *cacheName = [NSString stringWithString:currentState];
+    NSString *cacheName = currentState;
     cacheName = [cacheName stringByAppendingFormat:@"%d",self.viewTag];
     NSString *cacheKey = [cacheName MD5Hash];
     [FTWCache setObject:cacheData forKey:cacheKey];
@@ -395,6 +365,7 @@
         [self initScene];
         self.firstLogin = NO;
     }
+    [self setHudFinishStatus:@"数据读取完毕" withTime:2.0];
 }
 
 #pragma mark Cover View Methods
@@ -424,7 +395,13 @@
         imageView = [[view subviews] lastObject];
     }
     
-    imageView.image = [self requestImageForType:currentState ForUse:kSelect AtIndex:index];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        UIImage *image = [[UIImage alloc] init];
+        image = [self requestImageForType:currentState ForUse:kSelect AtIndex:index];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            imageView.image = image;
+        });
+    });
     
     //save cache
     
@@ -482,6 +459,8 @@
             //[self searchProduct];
             break;
         case 5:
+            self.jsonTempDataArray = nil;
+            self.imageData = nil;
             [self receiveData];
             break;
         default:
