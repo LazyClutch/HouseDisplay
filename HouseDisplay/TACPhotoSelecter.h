@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <MediaPlayer/MediaPlayer.h>
+#import "UIImage-Extensions.h"
 
 @interface TACPhotoSelecter : UIView<UIImagePickerControllerDelegate,UIPopoverControllerDelegate,UINavigationControllerDelegate>
 
@@ -16,6 +17,7 @@
 @property (nonatomic, weak) UIViewController *parentViewController;
 @property (nonatomic) UIImagePickerControllerSourceType sourceType;
 @property (nonatomic, strong) UIPopoverController *imgPopoverController;
+
 
 - (void)pickerPicture;
 

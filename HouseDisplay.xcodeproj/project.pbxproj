@@ -121,6 +121,7 @@
 		63C8F3241719420E005BC4B7 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C8F3231719420E005BC4B7 /* MBProgressHUD.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		63C8F326171946BE005BC4B7 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C8F325171946BE005BC4B7 /* 37x-Checkmark.png */; };
 		63FB902C1726A1C100815A5D /* NIDropDown.m in Sources */ = {isa = PBXBuildFile; fileRef = 63FB902B1726A1C100815A5D /* NIDropDown.m */; };
+		63FE38D31734035900E14754 /* UIImage-Extensions.m in Sources */ = {isa = PBXBuildFile; fileRef = 63FE38D21734035900E14754 /* UIImage-Extensions.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -293,6 +294,8 @@
 		63C8F325171946BE005BC4B7 /* 37x-Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "37x-Checkmark.png"; sourceTree = "<group>"; };
 		63FB902A1726A1C100815A5D /* NIDropDown.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NIDropDown.h; sourceTree = "<group>"; };
 		63FB902B1726A1C100815A5D /* NIDropDown.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NIDropDown.m; sourceTree = "<group>"; };
+		63FE38D11734035900E14754 /* UIImage-Extensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage-Extensions.h"; sourceTree = "<group>"; };
+		63FE38D21734035900E14754 /* UIImage-Extensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage-Extensions.m"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -520,6 +523,8 @@
 		633FDF7D1728ED7D0067A2CE /* photo */ = {
 			isa = PBXGroup;
 			children = (
+				63FE38D11734035900E14754 /* UIImage-Extensions.h */,
+				63FE38D21734035900E14754 /* UIImage-Extensions.m */,
 				6360E81F1723DE230049AAED /* TACDIYPhotoLibraryController.h */,
 				6360E8201723DE230049AAED /* TACDIYPhotoLibraryController.m */,
 				6360E8211723DE230049AAED /* TACDIYPhotoLibraryController.xib */,
@@ -898,6 +903,7 @@
 				6383894D172523BD00A5AC18 /* SPUserResizableView.m in Sources */,
 				63FB902C1726A1C100815A5D /* NIDropDown.m in Sources */,
 				633FDF831728F14F0067A2CE /* TACPhotoSelecter.m in Sources */,
+				63FE38D31734035900E14754 /* UIImage-Extensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
