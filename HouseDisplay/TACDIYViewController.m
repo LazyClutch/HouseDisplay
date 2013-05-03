@@ -7,8 +7,7 @@
 //
 
 #import "TACDIYViewController.h"
-#import "ReflectionView.h"
-#import "JSON.h"
+
 
 #define kItemWidth 110
 #define kDoor @"door"
@@ -71,17 +70,23 @@
 
 
 - (IBAction)menuButtonPressed:(id)sender{
-    if (self.dropDown == nil) {
-        lastDropIndex = -1;
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:@"dropDown" object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dropDownCellSelected:) name:@"dropDown" object:nil];
-        self.dropDown = [[NIDropDown alloc] init];
-        CGFloat height = 240;
-        [self.dropDown showDropDown:sender withHeight:height usingArray:self.dropDownMenu];
-        self.dropDown.delegate = self;
+    UIButton *button = (UIButton *)sender;
+    if ([button.titleLabel.text isEqualToString:@"用户选项"]) {
+        if (self.dropDown == nil) {
+            lastDropIndex = -1;
+            [[NSNotificationCenter defaultCenter] removeObserver:self name:@"dropDown" object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dropDownCellSelected:) name:@"dropDown" object:nil];
+            self.dropDown = [[NIDropDown alloc] init];
+            CGFloat height = 240;
+            [self.dropDown showDropDown:sender withHeight:height usingArray:self.dropDownMenu];
+            self.dropDown.delegate = self;
+        } else {
+            [self.dropDown hideDropDown:sender];
+            self.dropDown = nil;
+        }
     } else {
-        [self.dropDown hideDropDown:sender];
-        self.dropDown = nil;
+        [self reDrawDidFinish];
+        [button setTitle:@"用户选项" forState:UIControlStateNormal];                                      
     }
 }
 
@@ -136,6 +141,9 @@
     [self setHudStatus:text];
     
 }
+
+#pragma mark -
+#pragma mark Hud Delegate Methods
 
 - (void)setHudStatus:(NSString *)text{
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
@@ -306,6 +314,44 @@
     return YES;
 }
 
+- (void)reDraw{
+    [self.setCoverButton setTitle:@"完成" forState:UIControlStateNormal];
+    
+    self.mainImageView.userInteractionEnabled = YES;
+    CGRect gripFrame = doorPicRect;
+    SPUserResizableView *resizableView = [[SPUserResizableView alloc] initWithFrame:gripFrame];
+    UIView *contentView = [[UIView alloc] initWithFrame:gripFrame];
+    [contentView setBackgroundColor:[UIColor clearColor]];
+    resizableView.contentView = contentView;
+    resizableView.delegate = self;
+    [resizableView showEditingHandles];
+    self.currentResizableView = resizableView;
+    self.lastResizableView = resizableView;
+    [self.mainImageView addSubview:resizableView];
+    
+    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideEditingHandles)];
+    [gestureRecognizer setDelegate:self];
+    [self.mainImageView addGestureRecognizer:gestureRecognizer];
+}
+
+- (void)reDrawDidFinish{
+    self.mainImageView.userInteractionEnabled = NO;
+    doorPicRect = CGRectMake(self.lastResizableView.frame.origin.x, self.lastResizableView.frame.origin.y, self.lastResizableView.bounds.size.width, self.lastResizableView.bounds.size.height);
+    NSString *x = [NSString stringWithFormat:@"%f",self.lastResizableView.frame.origin.x];
+    NSString *y = [NSString stringWithFormat:@"%f",self.lastResizableView.frame.origin.y];
+    NSString *w = [NSString stringWithFormat:@"%f",self.lastResizableView.bounds.size.width];
+    NSString *h = [NSString stringWithFormat:@"%f",self.lastResizableView.bounds.size.height];
+    NSMutableDictionary *dict = self.viewInfomation;
+    [dict setObject:x forKey:@"doorPosX"];
+    [dict setObject:y forKey:@"doorPosY"];
+    [dict setObject:w forKey:@"displayDoorWidth"];
+    [dict setObject:h forKey:@"displayDoorHeight"];
+    [self.currentResizableView removeFromSuperview];
+    [self.lastResizableView removeFromSuperview];
+    self.lastResizableView = nil;
+    self.currentResizableView = nil;
+}
+
 #pragma mark NSURLConnectionDelegate Methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -422,6 +468,27 @@
     return kItemWidth;
 }
 
+#pragma mark ResizableView Methods
+- (void)userResizableViewDidBeginEditing:(SPUserResizableView *)userResizableView {
+    [self.currentResizableView hideEditingHandles];
+    self.currentResizableView = userResizableView;
+}
+
+- (void)userResizableViewDidEndEditing:(SPUserResizableView *)userResizableView {
+    self.lastResizableView = userResizableView;
+    
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+    return NO;
+}
+
+- (void)hideEditingHandles {
+    // We only want the gesture recognizer to end the editing session on the last
+    // edited view. We wouldn't want to dismiss an editing session in progress.
+    [self.lastResizableView hideEditingHandles];
+}
+
 #pragma mark Dropdown Methods
 - (void)niDropDownDelegateMethod:(NIDropDown *)sender{
     self.dropDown = nil;
@@ -450,7 +517,7 @@
             //[self chooseSeries];
             break;
         case 2:
-            //[self reDraw];
+            [self reDraw];
             break;
         case 3:
             [self toggleEdit];

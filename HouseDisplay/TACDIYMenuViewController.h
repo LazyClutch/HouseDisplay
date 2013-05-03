@@ -12,9 +12,11 @@
 #import "NSString+MD5.h"
 #import "TACDataCenter.h"
 #import "TACDIYPhotoLibraryController.h"
+#import "MBProgressHUD.h"
+#import "JSON.h"
 
-@interface TACDIYMenuViewController : UIViewController<UIAlertViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UIActionSheetDelegate>{
-    NSString *outstring;
+@interface TACDIYMenuViewController : UIViewController<UIAlertViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UIActionSheetDelegate,NSURLConnectionDataDelegate,MBProgressHUDDelegate>{
+    NSString *outString;
     NSIndexPath *lastSelectedIndex;
 }
 
@@ -23,11 +25,20 @@
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) IBOutlet UIButton *toggleButton;
 
+@property (strong, nonatomic) MBProgressHUD *hud;
+
 @property (strong, nonatomic) UIImageView *backgroundImageView;
 @property (strong, nonatomic) NSArray *imagePaths;
-@property (strong, nonatomic) NSMutableArray *imageViews;
+
+@property (strong, nonatomic) NSMutableArray *thumbnails;
+
+//viewsinformation contain the information of all rooms including ID, url for thumb, url for background
 @property (strong, nonatomic) NSMutableArray *viewsInfomation;
+
 @property (strong, nonatomic) NSMutableArray *backgrounds;
+@property (strong, nonatomic) NSMutableArray *jsonTempDataArray;
+
+@property (strong, nonatomic) NSURLConnection *thumbConnection;
 
 @property BOOL isDeleting;
 

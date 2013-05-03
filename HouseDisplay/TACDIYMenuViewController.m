@@ -17,6 +17,7 @@
 #define kMenuCellHeight 163
 #define kActionSheetDelete 10
 #define kActionSheetSelect 6
+#define kHostAddress @"10.0.1.22"
 
 @interface TACDIYMenuViewController ()
 
@@ -41,7 +42,6 @@
 {
     [super viewDidLoad];
     [self showLoginSuccess];
-    //[self receiveData];
     
     self.backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
     self.backgroundImageView.image = [UIImage imageNamed:@"content_background.jpg"];
@@ -50,10 +50,6 @@
     lastSelectedIndex = nil;
     
     [self loadInformation];
-    [self loadThumbnail];
-    [self loadBackgrounds];
-    
-    [self setDataCenter];
     
     self.collectionView.backgroundColor = [UIColor clearColor];
     [self.collectionView registerClass:[TACDIYMenuViewCell class] forCellWithReuseIdentifier:@"MenuViewCellIdentifier"];
@@ -74,7 +70,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
-    self.imageViews = nil;
+    self.thumbnails = nil;
 }
 
 - (void)showLoginSuccess{
@@ -127,16 +123,11 @@
         UIImage *image = [UIImage imageWithData:data];
         [array addObject:image];
     }
-    self.imageViews = array;
+    self.thumbnails = array;
     
-    [[TACDataCenter sharedInstance] setMenuThumbnails:self.imageViews];
+    [[TACDataCenter sharedInstance] setMenuThumbnails:self.thumbnails];
     
 }
-
-- (void)setDataCenter{
-    [[TACDataCenter sharedInstance] setViewsInformation:self.viewsInfomation];
-}
-
 
 - (void)setBackground{
     NSArray *array = [[NSArray alloc] initWithObjects:@"1_back",@"2_back",@"3_back",@"4_back",@"5_back", nil];
@@ -156,7 +147,7 @@
 - (void)writeThumbnailToFile{
     NSMutableArray *array = [[NSMutableArray alloc] init];
     NSData *data = nil;
-    for (UIImage *image in self.imageViews) {
+    for (UIImage *image in self.thumbnails) {
         data = UIImagePNGRepresentation(image);
         [array addObject:data];
     }
@@ -193,13 +184,13 @@
 - (void)loadInformation{
     NSString *fileName = @"/roomInfo.data";
     NSString *filePath = [self dataFilePath:fileName];
-    NSLog(@"%@",filePath);
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         self.viewsInfomation = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+        [[TACDataCenter sharedInstance] setViewsInformation:self.viewsInfomation];
+        [self loadThumbnail];
+        [self loadBackgrounds];
     } else {
-        NSString *infoPath = [[NSBundle mainBundle] pathForResource:@"houseInfomation" ofType:@"plist"];
-        NSMutableArray *dict = [[NSMutableArray alloc] initWithContentsOfFile:infoPath];
-        self.viewsInfomation = dict;
+        [self receiveData];
     }
 }
 
@@ -215,10 +206,8 @@
             [array addObject:image];
         }
         self.backgrounds = array;
-    } else {
-        [self setBackground];
+        [[TACDataCenter sharedInstance] setBackgrounds:self.backgrounds];
     }
-    [[TACDataCenter sharedInstance] setBackgrounds:self.backgrounds];
 }
 
 - (void)loadThumbnail{
@@ -226,21 +215,113 @@
     NSString *filePath = [self dataFilePath:fileName];
     NSMutableArray *array = [[NSMutableArray alloc] init];
     NSMutableArray *dataArray = [[NSMutableArray alloc] init];
+    NSLog(@"%@",filePath);
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
         dataArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
         for (NSData *data in dataArray) {
             UIImage *image = [UIImage imageWithData:data];
             [array addObject:image];
         }
-        self.imageViews = array;
+        self.thumbnails = array;
         [self.collectionView reloadData];
-    } else {
-        self.imagePaths = @[@"diy1",@"diy2",@"diy3",@"diy4",@"diy5"];
-        [self setThumbNail];
-        
+        [[TACDataCenter sharedInstance] setMenuThumbnails:self.thumbnails];
     }
-    [[TACDataCenter sharedInstance] setMenuThumbnails:self.imageViews];
+}
 
+#pragma mark Network Methods
+- (void)receiveData{
+    [self setHudStatus:@"正在请求数据"];
+    NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/room.php",kHostAddress];
+    NSURL *url = [NSURL URLWithString:requestURL];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    self.thumbConnection = connection;
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response{
+    self.hud.mode = MBProgressHUDModeDeterminate;
+}
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error{
+    NSString *message = @"连接超时，请检查网络";
+    NSString *title = @"超时";
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];
+    self.hud.hidden = YES;
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data{
+    outString = [[NSString alloc] initWithData:data encoding: NSUTF8StringEncoding];
+    NSMutableArray *array = [[NSMutableArray alloc] init];
+    for (NSString *str in self.jsonTempDataArray) {
+        [array addObject:str];
+    }
+    [array addObject:outString];
+    self.jsonTempDataArray = array;
+}
+
+- (void)connectionDidFinishLoading:(NSURLConnection *)connection{
+    NSString *jsonStr = [[NSString alloc] init];
+    for (NSString *str in self.jsonTempDataArray) {
+        jsonStr = [jsonStr stringByAppendingString:str];
+    }
+    NSMutableArray *json = [jsonStr JSONValue];
+//    BOOL isDataEmpty = [self analyzeData:json];
+//    if (isDataEmpty) {
+//        return;
+//    }
+    self.viewsInfomation = json;
+    [self.collectionView reloadData];
+    [[TACDataCenter sharedInstance] setViewsInformation:self.viewsInfomation];
+}
+
+- (BOOL)analyzeData:(NSMutableArray *)data{
+    NSMutableDictionary *dict = [data objectAtIndex:0];
+    NSArray *array = [dict allKeys];
+    for (NSString *key in array) {
+        NSArray *arr = [dict objectForKey:key];
+        if ([arr count] != 0) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
+- (void)updateData:(NSMutableDictionary *)dict{
+    NSString *back = [dict objectForKey:@"background"];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        NSString *backStr = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,back];
+        NSURL *backURL = [NSURL URLWithString:backStr];
+        NSString *key = [backStr MD5Hash];
+        NSData *data = [FTWCache objectForKey:key];
+        UIImage *image = [[UIImage alloc] init];
+        if (data) {
+            image = [UIImage imageWithData:data];
+        } else {
+            NSData *backData = [NSData dataWithContentsOfURL:backURL];
+            image = [UIImage imageWithData:backData];
+        }
+        NSMutableArray *array = self.backgrounds;
+        [array addObject:image];
+        self.backgrounds = array;
+        [[TACDataCenter sharedInstance] setBackgrounds:array];
+    });
+}
+
+#pragma mark -
+#pragma mark Hud Delegate Methods
+
+- (void)setHudStatus:(NSString *)text{
+    self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
+    self.hud.labelText = text;
+    self.hud.dimBackground = YES;
+}
+
+- (void)setHudFinishStatus:(NSString *)text withTime:(CGFloat)time{
+    self.hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.png"]];
+    self.hud.mode = MBProgressHUDModeCustomView;
+    self.hud.labelText = text;
+	[self.hud hide:YES afterDelay:time];
 }
 
 #pragma mark Grid View Methods
@@ -249,7 +330,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return ([self.imageViews count] + 1);
+    return ([self.thumbnails count] + 1);
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -259,8 +340,38 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     TACDIYMenuViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MenuViewCellIdentifier" forIndexPath:indexPath];
-    if ([indexPath row] < [self.imageViews count]) {
-        cell.thumbnails.image = [self.imageViews objectAtIndex:[indexPath row]];
+    if ([indexPath row] < [self.thumbnails count]) {
+        UIImage *image = [self.thumbnails objectAtIndex:[indexPath row]];
+        if (image != nil) {
+            cell.thumbnails.image = image;
+        } else {
+            NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:[indexPath row]];
+            NSString *thumb = [dict objectForKey:@"thumb"];
+            dispatch_async(dispatch_get_global_queue(0, 0), ^{
+                NSString *thumbStr = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,thumb];
+                NSURL *thumbURL = [NSURL URLWithString:thumbStr];
+                NSString *key = [thumbStr MD5Hash];
+                NSLog(@"%@",key);
+                NSData *data = [FTWCache objectForKey:key];
+                if (data) {
+                    cell.thumbnails.image = [UIImage imageWithData:data];
+                } else {
+                    NSData *thumbData = [NSData dataWithContentsOfURL:thumbURL];
+                    [FTWCache setObject:thumbData forKey:key];
+                    UIImage *thumbImage = [UIImage imageWithData:thumbData];
+                    NSMutableArray *array = self.thumbnails;
+                    if (thumbImage != nil) {
+                        [array addObject:thumbImage];
+                        self.thumbnails = array;
+                        [[TACDataCenter sharedInstance] setMenuThumbnails:array];
+                        dispatch_async(dispatch_get_main_queue(), ^{
+                            cell.thumbnails.image = thumbImage;
+                            [self updateData:dict];
+                        });
+                    }
+                }
+            });
+        }  
     } else {
         cell.thumbnails.image = [UIImage imageNamed:@"addMark.png"];
     }
@@ -270,7 +381,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if (self.isDeleting) {
-        if ([indexPath row] < [self.imageViews count]) {
+        if ([indexPath row] < [self.thumbnails count]) {
             [self deleteItem:indexPath];
         }
     } else {
@@ -281,7 +392,7 @@
 #pragma mark Edit Methods
 
 - (void)performSelection:(NSIndexPath *)indexPath{
-    if ([indexPath row] < [self.imageViews count]) {
+    if ([indexPath row] < [self.thumbnails count]) {
         self.DIYViewController = [[TACDIYViewController alloc] initWithNibName:@"TACDIYViewController" bundle:nil];
         
         NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:[indexPath row]];
@@ -328,7 +439,7 @@
     [backgrounds addObject:background];
     [[TACDataCenter sharedInstance] setBackgrounds:backgrounds];
         
-    NSMutableArray *thumbArray = [NSMutableArray arrayWithArray:self.imageViews];
+    NSMutableArray *thumbArray = [NSMutableArray arrayWithArray:self.thumbnails];
     [thumbArray addObject:coverImage];
     [[TACDataCenter sharedInstance] setMenuThumbnails:thumbArray];
     
@@ -340,7 +451,7 @@
     [[TACDataCenter sharedInstance] setViewsInformation:viewsInfo];
     
     self.viewsInfomation = viewsInfo;
-    self.imageViews = thumbArray;
+    self.thumbnails = thumbArray;
     self.backgrounds = backgrounds;
     
     [self writeThumbnailToFile];
@@ -349,14 +460,13 @@
     
     NSArray *array = [NSArray arrayWithObjects:indexPath,nil];
     [self.collectionView insertItemsAtIndexPaths:array];
+    [self.collectionView reloadData];
     
     [self insertItemForDetail:dict];
 }
 
 - (void)insertItemForDetail:(NSMutableDictionary *)dict{
     // set self.viewInformation defalut:0
-
-
 }
 
 #pragma mark NSNotificationCenter Methods
@@ -380,7 +490,7 @@
     [array replaceObjectAtIndex:(tag-1) withObject:thumbnail];
     [[TACDataCenter sharedInstance] setMenuThumbnails:array];
     
-    self.imageViews = array;
+    self.thumbnails = array;
     [self.collectionView reloadData];
     
     [self writeThumbnailToFile];
@@ -397,7 +507,6 @@
 }
 
 - (void)processSelect:(NSInteger)buttonIndex{
-    NSLog(@"%d",buttonIndex);
     if (buttonIndex == 0 || buttonIndex == 1) {
         [[NSNotificationCenter defaultCenter] removeObserver:self name:@"pickerPicture" object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageDidGotten:) name:@"pickerPicture" object:nil];
@@ -419,7 +528,6 @@
 }
 
 - (void)processDelete:(NSInteger)buttonIndex{
-    NSLog(@"%d",buttonIndex);
     if (self.isDeleting && buttonIndex == 0) {
         NSInteger row = [lastSelectedIndex row];
         NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:row];

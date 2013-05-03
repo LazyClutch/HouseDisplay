@@ -8,7 +8,7 @@
 
 #import "FTWCache.h"
 
-static NSTimeInterval cacheTime =  (double)604800;
+static NSTimeInterval cacheTime =  (double)60480000;
 
 @implementation FTWCache
 
@@ -20,7 +20,7 @@ static NSTimeInterval cacheTime =  (double)604800;
 	NSArray* paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES);
 	NSString *cacheDirectory = [paths objectAtIndex:0];
 	cacheDirectory = [cacheDirectory stringByAppendingPathComponent:@"ImgCache"];
-    NSLog(@"%@",cacheDirectory);
+    //NSLog(@"%@",cacheDirectory);
 	return cacheDirectory;
 }
 

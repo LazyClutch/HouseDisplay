@@ -15,8 +15,12 @@
 #import "NSString+MD5.h"
 #import "NSMutableDictionary+data.h"
 #import "NIDropDown.h"
+#import "ReflectionView.h"
+#import "JSON.h"
+#import "SPUserResizableView.h"
 
-@interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate,NIDropDownDelegate,UIGestureRecognizerDelegate,UIAlertViewDelegate>{
+
+@interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate,NIDropDownDelegate,UIGestureRecognizerDelegate,UIAlertViewDelegate,SPUserResizableViewDelegate>{
     NSString *outString; 
     CGRect doorPicRect;
     NSInteger lastDropIndex;
@@ -32,6 +36,8 @@
 @property (strong, nonatomic) NIDropDown *dropDown;
 @property (strong, nonatomic) MBProgressHUD *hud;
 @property (strong, nonatomic) IBOutlet iCarousel *coverFlow;
+@property (strong, nonatomic) SPUserResizableView *currentResizableView;
+@property (strong, nonatomic) SPUserResizableView *lastResizableView;
 
 @property (strong, nonatomic) NSMutableDictionary *viewInfomation;
 @property (strong, nonatomic) NSMutableDictionary *imageData;

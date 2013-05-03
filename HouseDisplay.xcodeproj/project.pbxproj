@@ -46,7 +46,6 @@
 		6313B8E717146CA70009A8C4 /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = 6313B8E117146CA70009A8C4 /* SBJsonWriter.m */; };
 		631D256A1712FC0C00B45940 /* ReflectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 631D25671712FC0C00B45940 /* ReflectionView.m */; };
 		631D256B1712FC0C00B45940 /* iCarousel.m in Sources */ = {isa = PBXBuildFile; fileRef = 631D25691712FC0C00B45940 /* iCarousel.m */; };
-		6326BCDA172BFFD8006804AC /* TACURLConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 6326BCD9172BFFD8006804AC /* TACURLConnection.m */; };
 		6329DEBC172963CF00E41290 /* houseInfomation.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6329DEBB172963CF00E41290 /* houseInfomation.plist */; };
 		633F0B6D1712A31A001DB3A3 /* 1_back.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 633F09E01712A31A001DB3A3 /* 1_back.jpg */; };
 		633F0B6E1712A31A001DB3A3 /* 1_front.png in Resources */ = {isa = PBXBuildFile; fileRef = 633F09E11712A31A001DB3A3 /* 1_front.png */; };
@@ -203,8 +202,6 @@
 		631D25671712FC0C00B45940 /* ReflectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReflectionView.m; sourceTree = "<group>"; };
 		631D25681712FC0C00B45940 /* iCarousel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = iCarousel.h; sourceTree = "<group>"; };
 		631D25691712FC0C00B45940 /* iCarousel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iCarousel.m; sourceTree = "<group>"; };
-		6326BCD8172BFFD8006804AC /* TACURLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACURLConnection.h; sourceTree = "<group>"; };
-		6326BCD9172BFFD8006804AC /* TACURLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACURLConnection.m; sourceTree = "<group>"; };
 		6329DEBB172963CF00E41290 /* houseInfomation.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = houseInfomation.plist; sourceTree = "<group>"; };
 		633F09E01712A31A001DB3A3 /* 1_back.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = 1_back.jpg; sourceTree = "<group>"; };
 		633F09E11712A31A001DB3A3 /* 1_front.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1_front.png; sourceTree = "<group>"; };
@@ -463,8 +460,6 @@
 		6326BCD7172BFF5B006804AC /* Network */ = {
 			isa = PBXGroup;
 			children = (
-				6326BCD8172BFFD8006804AC /* TACURLConnection.h */,
-				6326BCD9172BFFD8006804AC /* TACURLConnection.m */,
 			);
 			name = Network;
 			sourceTree = "<group>";
@@ -903,7 +898,6 @@
 				6383894D172523BD00A5AC18 /* SPUserResizableView.m in Sources */,
 				63FB902C1726A1C100815A5D /* NIDropDown.m in Sources */,
 				633FDF831728F14F0067A2CE /* TACPhotoSelecter.m in Sources */,
-				6326BCDA172BFFD8006804AC /* TACURLConnection.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
