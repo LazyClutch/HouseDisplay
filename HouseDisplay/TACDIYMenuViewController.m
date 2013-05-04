@@ -42,6 +42,7 @@
 {
     [super viewDidLoad];
     [self showLoginSuccess];
+    [self initParameter];
     
     self.backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
     self.backgroundImageView.image = [UIImage imageNamed:@"content_background.jpg"];
@@ -71,6 +72,11 @@
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     self.thumbnails = nil;
+}
+
+- (void)initParameter{
+    self.thumbnails = [[NSMutableArray alloc] init];
+    self.backgrounds = [[NSMutableArray alloc] init];
 }
 
 - (void)showLoginSuccess{
@@ -266,6 +272,7 @@
         jsonStr = [jsonStr stringByAppendingString:str];
     }
     NSMutableArray *json = [jsonStr JSONValue];
+    [self setHudFinishStatus:@"数据接受完毕" withTime:1.0];
 //    BOOL isDataEmpty = [self analyzeData:json];
 //    if (isDataEmpty) {
 //        return;
@@ -300,6 +307,7 @@
         } else {
             NSData *backData = [NSData dataWithContentsOfURL:backURL];
             image = [UIImage imageWithData:backData];
+            [FTWCache setObject:backData forKey:key];
         }
         NSMutableArray *array = self.backgrounds;
         [array addObject:image];
@@ -330,7 +338,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return ([self.thumbnails count] + 1);
+    return ([self.viewsInfomation count] + 1);
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -340,18 +348,18 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     TACDIYMenuViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MenuViewCellIdentifier" forIndexPath:indexPath];
-    if ([indexPath row] < [self.thumbnails count]) {
-        UIImage *image = [self.thumbnails objectAtIndex:[indexPath row]];
-        if (image != nil) {
+    if ([indexPath row] < [self.viewsInfomation count]) {
+        if ([indexPath row] < [self.thumbnails count]) {
+            UIImage *image = [self.thumbnails objectAtIndex:[indexPath row]];
             cell.thumbnails.image = image;
         } else {
+            cell.thumbnails.image = nil;
             NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:[indexPath row]];
             NSString *thumb = [dict objectForKey:@"thumb"];
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 NSString *thumbStr = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,thumb];
                 NSURL *thumbURL = [NSURL URLWithString:thumbStr];
                 NSString *key = [thumbStr MD5Hash];
-                NSLog(@"%@",key);
                 NSData *data = [FTWCache objectForKey:key];
                 if (data) {
                     cell.thumbnails.image = [UIImage imageWithData:data];
@@ -366,12 +374,12 @@
                         [[TACDataCenter sharedInstance] setMenuThumbnails:array];
                         dispatch_async(dispatch_get_main_queue(), ^{
                             cell.thumbnails.image = thumbImage;
-                            [self updateData:dict];
                         });
                     }
                 }
+                [self updateData:dict];
             });
-        }  
+        }
     } else {
         cell.thumbnails.image = [UIImage imageNamed:@"addMark.png"];
     }
@@ -392,7 +400,8 @@
 #pragma mark Edit Methods
 
 - (void)performSelection:(NSIndexPath *)indexPath{
-    if ([indexPath row] < [self.thumbnails count]) {
+    if ([indexPath row] < [self.viewsInfomation
+                           count]) {
         self.DIYViewController = [[TACDIYViewController alloc] initWithNibName:@"TACDIYViewController" bundle:nil];
         
         NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:[indexPath row]];
