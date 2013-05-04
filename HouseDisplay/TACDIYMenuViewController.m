@@ -296,24 +296,22 @@
 
 - (void)updateData:(NSMutableDictionary *)dict{
     NSString *back = [dict objectForKey:@"background"];
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        NSString *backStr = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,back];
-        NSURL *backURL = [NSURL URLWithString:backStr];
-        NSString *key = [backStr MD5Hash];
-        NSData *data = [FTWCache objectForKey:key];
-        UIImage *image = [[UIImage alloc] init];
-        if (data) {
-            image = [UIImage imageWithData:data];
-        } else {
-            NSData *backData = [NSData dataWithContentsOfURL:backURL];
-            image = [UIImage imageWithData:backData];
-            [FTWCache setObject:backData forKey:key];
-        }
-        NSMutableArray *array = self.backgrounds;
-        [array addObject:image];
-        self.backgrounds = array;
-        [[TACDataCenter sharedInstance] setBackgrounds:array];
-    });
+    NSString *backStr = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,back];
+    NSURL *backURL = [NSURL URLWithString:backStr];
+    NSString *key = [backStr MD5Hash];
+    NSData *data = [FTWCache objectForKey:key];
+    UIImage *image = [[UIImage alloc] init];
+    if (data) {
+        image = [UIImage imageWithData:data];
+    } else {
+        NSData *backData = [NSData dataWithContentsOfURL:backURL];
+        image = [UIImage imageWithData:backData];
+        [FTWCache setObject:backData forKey:key];
+    }
+    NSMutableArray *array = self.backgrounds;
+    [array addObject:image];
+    self.backgrounds = array;
+    [[TACDataCenter sharedInstance] setBackgrounds:array];
 }
 
 #pragma mark -
