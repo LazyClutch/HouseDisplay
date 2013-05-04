@@ -41,10 +41,12 @@
 
 @property (strong, nonatomic) NSMutableDictionary *viewInfomation;
 @property (strong, nonatomic) NSMutableDictionary *imageData;
+@property (strong, nonatomic) NSMutableArray *catalogs;
 @property (copy, nonatomic) NSMutableArray *jsonTempDataArray;
 @property (strong, nonatomic) NSArray *dropDownMenu;
 
-@property (strong, nonatomic) NSURLConnection *connection;
+@property (strong, nonatomic) NSURLConnection *catalogConnection;
+@property (strong, nonatomic) NSURLConnection *productConnection;
 
 @property NSInteger viewTag;
 @property BOOL hasGlassMaterial;

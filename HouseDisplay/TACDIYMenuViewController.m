@@ -294,7 +294,12 @@
     return YES;
 }
 
-- (void)updateData:(NSMutableDictionary *)dict{
+- (void)updateData:(NSMutableDictionary *)dict atIndex:(NSInteger)index{
+    NSMutableArray *views = self.viewsInfomation;
+    NSMutableDictionary *newDict = dict;
+    NSString *system = [NSString stringWithFormat:@"%d",1];
+    [newDict setObject:system forKey:@"system"];
+    
     NSString *back = [dict objectForKey:@"background"];
     NSString *backStr = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,back];
     NSURL *backURL = [NSURL URLWithString:backStr];
@@ -311,6 +316,8 @@
     NSMutableArray *array = self.backgrounds;
     [array addObject:image];
     self.backgrounds = array;
+    [views replaceObjectAtIndex:index withObject:newDict];
+    
     [[TACDataCenter sharedInstance] setBackgrounds:array];
 }
 
@@ -361,6 +368,9 @@
                 NSData *data = [FTWCache objectForKey:key];
                 if (data) {
                     cell.thumbnails.image = [UIImage imageWithData:data];
+                    NSMutableArray *array = self.thumbnails;
+                    [array addObject:cell.thumbnails.image];
+                    self.thumbnails = array;
                 } else {
                     NSData *thumbData = [NSData dataWithContentsOfURL:thumbURL];
                     [FTWCache setObject:thumbData forKey:key];
@@ -375,7 +385,7 @@
                         });
                     }
                 }
-                [self updateData:dict];
+                [self updateData:dict atIndex:[indexPath row]];
             });
         }
     } else {

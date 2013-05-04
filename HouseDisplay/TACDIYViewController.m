@@ -16,6 +16,7 @@
 #define kSelect @"select"
 #define kHostAddress @"10.0.1.22"
 #define currentState @"door"
+#define DEFAULT_RECT CGRectMake(100,100,50,50)
 
 
 @interface TACDIYViewController ()
@@ -43,7 +44,7 @@
     [self initParameter];
     [self showBackgroundImage];
     [self loadViewInfo];
-    [self receiveData];
+    [self loadCatalog];
     
     self.coverFlow.type = iCarouselTypeLinear;
     [self.coverFlow reloadData];
@@ -114,7 +115,11 @@
     doorDisHeight = [[self.viewInfomation objectForKey:@"displayDoorHeight"] integerValue];
     doorPosX = [[self.viewInfomation objectForKey:@"doorPosX"] integerValue];
     doorPosY = [[self.viewInfomation objectForKey:@"doorPosY"] integerValue];
-    doorPicRect = CGRectMake(doorPosX, doorPosY, doorDisWidth, doorDisHeight);
+    if (doorDisHeight == 0 && doorDisWidth == 0 && doorPosX == 0 && doorPosY == 0) {
+        doorPicRect = DEFAULT_RECT;
+    } else {
+        doorPicRect = CGRectMake(doorPosX, doorPosY, doorDisWidth, doorDisHeight);
+    }
 }
 
 - (void)showBackgroundImage{
@@ -130,13 +135,14 @@
     
 }
 
-- (void)receiveData{
+- (void)loadCatalog{
 
-    NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/fetch_images.php?background=%d&category=%@",kHostAddress,self.viewTag,currentState];
+    NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/catalog.php?room_id=%d",kHostAddress,self.viewTag];
+    NSLog(@"%@",requestURL);
     NSURL *url = [NSURL URLWithString:requestURL];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    self.connection = connection;
+    self.catalogConnection = connection;
     NSString *text = @"正在请求数据";
     [self setHudStatus:text];
     
@@ -359,14 +365,15 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    
-	outString = [[NSString alloc] initWithData:data encoding: NSUTF8StringEncoding];
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    for (NSString *str in self.jsonTempDataArray) {
-        [array addObject:str];
-    }
-    [array addObject:outString];
-    self.jsonTempDataArray = array;
+    if (connection == self.catalogConnection) {
+        outString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSMutableArray *array = [[NSMutableArray alloc] init];
+        for (NSString *str in self.jsonTempDataArray) {
+            [array addObject:str];
+        }
+        [array addObject:outString];
+        self.jsonTempDataArray = array;
+    }	
 }
 
 -(void) connection:(NSURLConnection *)connection
@@ -380,38 +387,33 @@
 }
 
 - (void) connectionDidFinishLoading: (NSURLConnection*) connection {
-    
-    NSMutableDictionary *data = [[NSMutableDictionary alloc] init];
+    if (connection == self.catalogConnection) {
+        [self catalogDidLoad];
+    } else {
+        
+    }
+}
+
+- (void)catalogDidLoad{
+    NSMutableArray *array = [[NSMutableArray alloc] init];
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     NSString *jsonStr = [[NSString alloc] init];
     for (NSString *str in self.jsonTempDataArray) {
         jsonStr = [jsonStr stringByAppendingString:str];
     }
-    NSMutableDictionary *json = [jsonStr JSONValue];
-    BOOL isDataEmpty = [self analyzeData:json];
-    if (isDataEmpty) {
-        return;
+    NSMutableArray *json = [jsonStr JSONValue];
+    for (NSMutableDictionary *dict in json) {
+        NSString *name = [NSString stringWithUTF8String:[[dict objectForKey:@"name"] UTF8String]];
+        NSString *number = [NSString stringWithUTF8String:[[dict objectForKey:@"number"] UTF8String]];
+        [dict setObject:name forKey:@"name"];
+        [dict setObject:number forKey:@"number"];
+        [array addObject:dict];
     }
-    NSArray *keys = [json allKeys];
-    for (NSString *key in keys) {
-        NSArray *images = [json objectForKey:key];
-        [dict setObject:images forKey:key];
-    }
-    [data setObject:dict forKey:currentState];
-    self.imageData = data;
-    NSData *cacheData = [self.imageData toJSON];
-    
-    NSString *cacheName = currentState;
-    cacheName = [cacheName stringByAppendingFormat:@"%d",self.viewTag];
-    NSString *cacheKey = [cacheName MD5Hash];
-    [FTWCache setObject:cacheData forKey:cacheKey];
-    
-    [self.coverFlow reloadData];
+    self.catalogs = array;
     if (self.firstLogin) {
         [self initScene];
         self.firstLogin = NO;
     }
-    [self setHudFinishStatus:@"数据读取完毕" withTime:2.0];
 }
 
 #pragma mark Cover View Methods
@@ -528,7 +530,7 @@
         case 5:
             self.jsonTempDataArray = nil;
             self.imageData = nil;
-            [self receiveData];
+            [self loadCatalog];
             break;
         default:
             break;
