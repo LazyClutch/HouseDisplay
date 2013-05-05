@@ -18,6 +18,8 @@
 #import "ReflectionView.h"
 #import "JSON.h"
 #import "SPUserResizableView.h"
+#import "AFNetworking.h"
+#import "NSString+Encode.h"
 
 
 @interface TACDIYViewController : UIViewController <MBProgressHUDDelegate,iCarouselDataSource,iCarouselDelegate,NIDropDownDelegate,UIGestureRecognizerDelegate,UIAlertViewDelegate,SPUserResizableViewDelegate>{
@@ -42,6 +44,7 @@
 @property (strong, nonatomic) NSMutableDictionary *viewInfomation;
 @property (strong, nonatomic) NSMutableDictionary *imageData;
 @property (strong, nonatomic) NSMutableArray *catalogs;
+@property (strong, nonatomic) NSMutableArray *shownProduct;
 @property (copy, nonatomic) NSMutableArray *jsonTempDataArray;
 @property (strong, nonatomic) NSArray *dropDownMenu;
 

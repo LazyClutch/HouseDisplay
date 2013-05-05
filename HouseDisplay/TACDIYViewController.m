@@ -100,6 +100,7 @@
     self.isEditing = NO;
     self.jsonTempDataArray = [[NSMutableArray alloc] init];
     self.dropDownMenu = @[@"设为封面",@"选择产品系列",@"重新框选区域",@"进入编辑模式",@"搜索产品",@"刷新数据"];
+    self.shownProduct = [[NSMutableArray alloc] init];
 }
 
 
@@ -148,6 +149,17 @@
     
 }
 
+- (void)loadProduct{
+    for (NSMutableDictionary *dict in self.catalogs) {
+        NSString *number = [[dict objectForKey:@"number"] URLEncodedString];
+        NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/product.php?catalog_number=%@",kHostAddress,number];
+        NSURL *url = [NSURL URLWithString:requestURL];
+        NSLog(@"%@",url);
+        NSURLRequest *request = [NSURLRequest requestWithURL:url];
+        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    }
+}
+
 #pragma mark -
 #pragma mark Hud Delegate Methods
 
@@ -165,17 +177,17 @@
 }
 
 - (void)initScene{
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        UIImage *image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:0];
-        //show picture in mainImageView
-        [self.displayDoorImageView removeFromSuperview];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
-            imageView.image = image;
-            self.displayDoorImageView = imageView;
-            [self.view insertSubview:self.displayDoorImageView atIndex:2];
-        });
-    });
+//    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+//        UIImage *image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:0];
+//        //show picture in mainImageView
+//        [self.displayDoorImageView removeFromSuperview];
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
+//            imageView.image = image;
+//            self.displayDoorImageView = imageView;
+//            [self.view insertSubview:self.displayDoorImageView atIndex:2];
+//        });
+//    });
 }
 
 - (void)returnSuperView{
@@ -189,58 +201,6 @@
     [self.view.superview.layer addAnimation:animation forKey:@"animationBack"];
     //[self.view exchangeSubviewAtIndex:1 withSubviewAtIndex:0];
     [self.view removeFromSuperview];
-}
-
-- (void)prepareForRequestData:(NSInteger)index{
-    if (self.isEditing) {
-        return;
-    } else {
-        NSString *dataUrl = [[[self.imageData objectForKey:currentState] objectForKey:kDisplay] objectAtIndex:index];
-        NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
-        NSString *key = [url MD5Hash];
-        NSData *data = [FTWCache objectForKey:key];
-        
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            UIImage *image = [[UIImage alloc] init];
-            if (data) {
-                image = [UIImage imageWithData:data];
-            } else {
-                [self setHudStatus:@"正在加载"];
-                image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
-            }
-            [self.displayDoorImageView removeFromSuperview];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
-                imageView.image = image;
-                [self setHudFinishStatus:@"加载完毕" withTime:0.2];
-                
-                self.displayDoorImageView = imageView;
-                [self.view insertSubview:self.displayDoorImageView atIndex:2];
-            });
-        });
-    }
-}
-
-- (UIImage *)requestImageForType:(NSString *)type ForUse:(NSString *)usage AtIndex:(NSInteger)index{
-    //request image
-    NSMutableDictionary *dict = [self.imageData objectForKey:type];
-    NSArray *array = [dict objectForKey:usage];
-    NSString *dataUrl = [array objectAtIndex:index];
-    NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
-    NSString *key = [url MD5Hash];
-    NSURL *imaUrl = [NSURL URLWithString:url];
-    UIImageView *imageView = [[UIImageView alloc] init];
-    imageView.tag = index;
-    NSData *data = [FTWCache objectForKey:key];
-    UIImage *image = [[UIImage alloc] init];
-    if (data != nil) {
-        image = [UIImage imageWithData:data];
-    } else {
-        data = [NSData dataWithContentsOfURL:imaUrl];
-        image = [UIImage imageWithData:data];
-        [FTWCache setObject:data forKey:key];
-    }
-    return image;
 }
 
 - (void)setCover{
@@ -358,6 +318,62 @@
     self.currentResizableView = nil;
 }
 
+
+- (void)prepareForRequestData:(NSInteger)index{
+    if (self.isEditing) {
+        return;
+    } else {
+        NSString *dataUrl = [[[self.imageData objectForKey:currentState] objectForKey:kDisplay] objectAtIndex:index];
+        NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
+        NSString *key = [url MD5Hash];
+        NSData *data = [FTWCache objectForKey:key];
+        
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            UIImage *image = [[UIImage alloc] init];
+            if (data) {
+                image = [UIImage imageWithData:data];
+            } else {
+                [self setHudStatus:@"正在加载"];
+                //image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
+            }
+            [self.displayDoorImageView removeFromSuperview];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
+                imageView.image = image;
+                [self setHudFinishStatus:@"加载完毕" withTime:0.2];
+                
+                self.displayDoorImageView = imageView;
+                [self.view insertSubview:self.displayDoorImageView atIndex:2];
+            });
+        });
+    }
+}
+
+- (void)requestImageForUse:(NSString *)usage AtIndex:(NSInteger)index forView:(UIImageView *)imageView{
+    NSMutableArray *products = self.shownProduct;
+    NSMutableDictionary *dict = [self.shownProduct objectAtIndex:index];
+    NSString *photo_id = [dict objectForKey:@"photo_id"];
+    NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/photo.php?id=%@",kHostAddress,photo_id];
+    NSURL *url = [NSURL URLWithString:requestURL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    self.productConnection = connection;
+    [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/html"]];
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSLog(@"%@", JSON);
+        //NSArray *array = (NSArray *)JSON;
+        //[dict addEntriesFromDictionary:array];
+        [products replaceObjectAtIndex:index withObject:dict];
+        NSString *thumb = [dict objectForKey:@"thumb"];
+        NSString *thumbUrl = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,thumb];
+        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:thumbUrl]];
+        UIImage *image = [UIImage imageWithData:data];
+        imageView.image = image;
+    } failure:nil];
+    [operation start];
+}
+
+
 #pragma mark NSURLConnectionDelegate Methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -365,7 +381,6 @@
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    if (connection == self.catalogConnection) {
         outString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
         NSMutableArray *array = [[NSMutableArray alloc] init];
         for (NSString *str in self.jsonTempDataArray) {
@@ -373,7 +388,6 @@
         }
         [array addObject:outString];
         self.jsonTempDataArray = array;
-    }	
 }
 
 -(void) connection:(NSURLConnection *)connection
@@ -389,18 +403,39 @@
 - (void) connectionDidFinishLoading: (NSURLConnection*) connection {
     if (connection == self.catalogConnection) {
         [self catalogDidLoad];
-    } else {
+    } else if(connection == self.productConnection){
+        NSString *jsonStr = [[NSString alloc] init];
+        for (NSString *str in self.jsonTempDataArray) {
+            jsonStr = [jsonStr stringByAppendingString:str];
+        }
+        self.jsonTempDataArray = nil;
+        NSMutableArray *json = [jsonStr JSONValue];
         
+
+    } else {
+        NSString *jsonStr = [[NSString alloc] init];
+        for (NSString *str in self.jsonTempDataArray) {
+            jsonStr = [jsonStr stringByAppendingString:str];
+        }
+        self.jsonTempDataArray = nil;
+        NSMutableArray *json = [jsonStr JSONValue];
+        NSMutableArray *allPro = self.shownProduct;
+        for (NSMutableDictionary *dict in json) {
+            [allPro addObject:dict];
+        }
+        self.shownProduct = allPro;
+        [self.coverFlow reloadData];
     }
 }
 
 - (void)catalogDidLoad{
+    [self setHudFinishStatus:@"数据读取完毕" withTime:1.0];
     NSMutableArray *array = [[NSMutableArray alloc] init];
-    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     NSString *jsonStr = [[NSString alloc] init];
     for (NSString *str in self.jsonTempDataArray) {
         jsonStr = [jsonStr stringByAppendingString:str];
     }
+    self.jsonTempDataArray = nil;
     NSMutableArray *json = [jsonStr JSONValue];
     for (NSMutableDictionary *dict in json) {
         NSString *name = [NSString stringWithUTF8String:[[dict objectForKey:@"name"] UTF8String]];
@@ -414,20 +449,17 @@
         [self initScene];
         self.firstLogin = NO;
     }
+    [self loadProduct];
 }
 
 #pragma mark Cover View Methods
 
 - (NSUInteger)numberOfItemsInCarousel:(iCarousel *)carousel{
-    NSMutableDictionary *dict = [self.imageData objectForKey:currentState];
-    NSArray *data = [dict objectForKey:kSelect];
-    return [data count];
+    return [self.shownProduct count];
 }
 
 - (NSUInteger)numberOfVisibleItemsInCarousel:(iCarousel *)carousel{
-    NSMutableDictionary *dict = [self.imageData objectForKey:currentState];
-    NSArray *data = [dict objectForKey:kSelect];
-    return [data count];
+    return 15;
 }
 
 - (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(UIView *)view{
@@ -444,11 +476,7 @@
     }
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        UIImage *image = [[UIImage alloc] init];
-        image = [self requestImageForType:currentState ForUse:kSelect AtIndex:index];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            imageView.image = image;
-        });
+        [self requestImageForUse:kSelect AtIndex:index forView:imageView];
     });
     
     //save cache

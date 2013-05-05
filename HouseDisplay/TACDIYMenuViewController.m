@@ -43,6 +43,7 @@
     [super viewDidLoad];
     [self showLoginSuccess];
     [self initParameter];
+    [self setSaveNotification];
     
     self.backgroundImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1024, 768)];
     self.backgroundImageView.image = [UIImage imageNamed:@"content_background.jpg"];
@@ -84,6 +85,11 @@
     NSString *message = @"登陆成功";
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"好" otherButtonTitles: nil];
     [alert show];
+}
+
+- (void)setSaveNotification{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"saveData" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(saveData:) name:@"saveData" object:nil];
 }
 
 - (IBAction)returnButtonPressed:(id)sender {
@@ -232,6 +238,12 @@
         [self.collectionView reloadData];
         [[TACDataCenter sharedInstance] setMenuThumbnails:self.thumbnails];
     }
+}
+
+- (void)saveData:(NSNotification *)notification{
+    [self writeThumbnailToFile];
+    [self writeInformationToFile];
+    [self writeBackgroundsToFile];
 }
 
 #pragma mark Network Methods
@@ -470,10 +482,6 @@
     self.viewsInfomation = viewsInfo;
     self.thumbnails = thumbArray;
     self.backgrounds = backgrounds;
-    
-    [self writeThumbnailToFile];
-    [self writeInformationToFile];
-    [self writeBackgroundsToFile];
     
     NSArray *array = [NSArray arrayWithObjects:indexPath,nil];
     [self.collectionView insertItemsAtIndexPaths:array];

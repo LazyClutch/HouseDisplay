@@ -15,7 +15,7 @@
 #import "MBProgressHUD.h"
 #import "JSON.h"
 
-@interface TACDIYMenuViewController : UIViewController<UIAlertViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UIActionSheetDelegate,NSURLConnectionDataDelegate,MBProgressHUDDelegate>{
+@interface TACDIYMenuViewController : UIViewController<UIAlertViewDelegate,UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,UIActionSheetDelegate,NSURLConnectionDataDelegate,MBProgressHUDDelegate,UIApplicationDelegate>{
     NSString *outString;
     NSIndexPath *lastSelectedIndex;
 }
