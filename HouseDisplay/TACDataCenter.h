@@ -10,9 +10,9 @@
 
 @interface TACDataCenter : NSObject
 
-@property (strong, nonatomic) NSMutableArray *menuThumbnails;
+@property (strong, nonatomic) NSMutableDictionary *menuThumbnails;
 @property (strong, nonatomic) NSMutableArray *viewsInformation;
-@property (strong, nonatomic) NSMutableArray *backgrounds;
+@property (strong, nonatomic) NSMutableDictionary *backgrounds;
 
 + (TACDataCenter *) sharedInstance;
 - (void) operation;

@@ -42,7 +42,6 @@
 @property (strong, nonatomic) SPUserResizableView *lastResizableView;
 
 @property (strong, nonatomic) NSMutableDictionary *viewInfomation;
-@property (strong, nonatomic) NSMutableDictionary *imageData;
 @property (strong, nonatomic) NSMutableArray *catalogs;
 @property (strong, nonatomic) NSMutableArray *shownProduct;
 @property (copy, nonatomic) NSMutableArray *jsonTempDataArray;
@@ -52,7 +51,6 @@
 @property (strong, nonatomic) NSURLConnection *productConnection;
 
 @property NSInteger viewTag;
-@property BOOL hasGlassMaterial;
 @property BOOL firstLogin;
 @property BOOL isEditing;
 @property BOOL isInCell;

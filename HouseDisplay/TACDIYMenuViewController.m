@@ -76,8 +76,8 @@
 }
 
 - (void)initParameter{
-    self.thumbnails = [[NSMutableArray alloc] init];
-    self.backgrounds = [[NSMutableArray alloc] init];
+    self.thumbnails = [[NSMutableDictionary alloc] init];
+    self.backgrounds = [[NSMutableDictionary alloc] init];
 }
 
 - (void)showLoginSuccess{
@@ -128,31 +128,18 @@
 #pragma mark Thumbnail Methods
 
 - (void)setThumbNail{
-    NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     for (int i = 0; i < [self.imagePaths count]; i++) {
         NSString *path = [[NSBundle mainBundle] pathForResource:[self.imagePaths objectAtIndex:i] ofType:@"png"];
         NSData *data = [NSData dataWithContentsOfFile:path];
         UIImage *image = [UIImage imageWithData:data];
-        [array addObject:image];
+        NSString *index = [NSString stringWithFormat:@"%d",i];
+        [dict setObject:image forKey:index];
     }
-    self.thumbnails = array;
+    self.thumbnails = dict;
     
     [[TACDataCenter sharedInstance] setMenuThumbnails:self.thumbnails];
     
-}
-
-- (void)setBackground{
-    NSArray *array = [[NSArray alloc] initWithObjects:@"1_back",@"2_back",@"3_back",@"4_back",@"5_back", nil];
-    NSMutableArray *images = [[NSMutableArray alloc] init];
-    for (NSString *name in array) {
-        NSString *path = [[NSBundle mainBundle] pathForResource:name ofType:@"jpg"];
-        NSData *data = [NSData dataWithContentsOfFile:path];
-        UIImage *image = [UIImage imageWithData:data];
-        [images addObject:image];
-    }
-    self.backgrounds = images;
-    
-    [[TACDataCenter sharedInstance] setBackgrounds:images];
 }
 
 #pragma mark Save and Load Methods
@@ -209,15 +196,17 @@
 - (void)loadBackgrounds{
     NSString *fileName = @"/background.data";
     NSString *filePath = [self dataFilePath:fileName];
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    NSMutableArray *dataArray = [[NSMutableArray alloc] init];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *dataArray = [[NSMutableDictionary alloc] init];
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        dataArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
-        for (NSData *data in dataArray) {
+        dataArray = [[NSMutableDictionary alloc] initWithContentsOfFile:filePath];
+        NSArray *array = [dataArray allKeys];
+        for (NSString *key in array) {
+            NSData *data = [dataArray objectForKey:key];
             UIImage *image = [UIImage imageWithData:data];
-            [array addObject:image];
+            [dict setObject:image forKey:key];
         }
-        self.backgrounds = array;
+        self.backgrounds = dict;
         [[TACDataCenter sharedInstance] setBackgrounds:self.backgrounds];
     }
 }
@@ -225,18 +214,18 @@
 - (void)loadThumbnail{
     NSString *fileName = @"/thumbnail.data2";
     NSString *filePath = [self dataFilePath:fileName];
-    NSMutableArray *array = [[NSMutableArray alloc] init];
-    NSMutableArray *dataArray = [[NSMutableArray alloc] init];
-    NSLog(@"%@",filePath);
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary *dataArray = [[NSMutableDictionary alloc] init];
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        dataArray = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
-        for (NSData *data in dataArray) {
+        dataArray = [[NSMutableDictionary alloc] initWithContentsOfFile:filePath];
+        NSArray *array = [dataArray allKeys];
+        for (NSString *key in array) {
+            NSData *data = [dataArray objectForKey:key];
             UIImage *image = [UIImage imageWithData:data];
-            [array addObject:image];
+            [dict setObject:image forKey:key];
         }
-        self.thumbnails = array;
-        [self.collectionView reloadData];
-        [[TACDataCenter sharedInstance] setMenuThumbnails:self.thumbnails];
+        self.thumbnails = dict;
+        [[TACDataCenter sharedInstance] setBackgrounds:self.thumbnails];
     }
 }
 
@@ -325,12 +314,14 @@
         image = [UIImage imageWithData:backData];
         [FTWCache setObject:backData forKey:key];
     }
-    NSMutableArray *array = self.backgrounds;
-    [array addObject:image];
-    self.backgrounds = array;
+    NSMutableDictionary *backs = self.backgrounds;
+    NSString *indexStr = [NSString stringWithFormat:@"%d",index];
+    [backs setObject:image forKey:indexStr];
+    
+    self.backgrounds = backs;
     [views replaceObjectAtIndex:index withObject:newDict];
     
-    [[TACDataCenter sharedInstance] setBackgrounds:array];
+    [[TACDataCenter sharedInstance] setBackgrounds:backs];
 }
 
 #pragma mark -
@@ -367,7 +358,8 @@
     TACDIYMenuViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MenuViewCellIdentifier" forIndexPath:indexPath];
     if ([indexPath row] < [self.viewsInfomation count]) {
         if ([indexPath row] < [self.thumbnails count]) {
-            UIImage *image = [self.thumbnails objectAtIndex:[indexPath row]];
+            NSString *imgkey = [NSString stringWithFormat:@"%d",[indexPath row]];
+            UIImage *image = [self.thumbnails objectForKey:imgkey];
             cell.thumbnails.image = image;
         } else {
             cell.thumbnails.image = nil;
@@ -378,20 +370,22 @@
                 NSURL *thumbURL = [NSURL URLWithString:thumbStr];
                 NSString *key = [thumbStr MD5Hash];
                 NSData *data = [FTWCache objectForKey:key];
+                NSString *imgkey = [NSString stringWithFormat:@"%d",[indexPath row]];
                 if (data) {
                     cell.thumbnails.image = [UIImage imageWithData:data];
-                    NSMutableArray *array = self.thumbnails;
-                    [array addObject:cell.thumbnails.image];
-                    self.thumbnails = array;
+                    NSMutableDictionary *thumbs = self.thumbnails;
+                    [thumbs setObject:cell.thumbnails.image forKey:imgkey];
+                    self.thumbnails = thumbs;
+                    [[TACDataCenter sharedInstance] setMenuThumbnails:thumbs];
                 } else {
                     NSData *thumbData = [NSData dataWithContentsOfURL:thumbURL];
                     [FTWCache setObject:thumbData forKey:key];
                     UIImage *thumbImage = [UIImage imageWithData:thumbData];
-                    NSMutableArray *array = self.thumbnails;
                     if (thumbImage != nil) {
-                        [array addObject:thumbImage];
-                        self.thumbnails = array;
-                        [[TACDataCenter sharedInstance] setMenuThumbnails:array];
+                        NSMutableDictionary *thumbs = self.thumbnails;
+                        [thumbs setObject:cell.thumbnails.image forKey:imgkey];
+                        self.thumbnails = thumbs;
+                        [[TACDataCenter sharedInstance] setMenuThumbnails:thumbs];
                         dispatch_async(dispatch_get_main_queue(), ^{
                             cell.thumbnails.image = thumbImage;
                         });
@@ -427,10 +421,8 @@
         NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:[indexPath row]];
         [self.DIYViewController setViewInfomation:dict];
         
-        BOOL hasGlass = ([indexPath row] < 3) ? YES : NO;
         NSInteger tag = [indexPath row];
         [self.DIYViewController setViewTag:tag + 1];
-        [self.DIYViewController setHasGlassMaterial:hasGlass];
         [self makeAnimation];
     } else {
         NSString *message = @"请选择导入背景的方式";
@@ -464,12 +456,14 @@
     UIImage *coverImage = [dict objectForKey:@"coverImage"];
     UIImage *background = [dict objectForKey:@"image"];
     
-    NSMutableArray *backgrounds = [NSMutableArray arrayWithArray:self.backgrounds];
-    [backgrounds addObject:background];
+    NSMutableDictionary *backgrounds = self.backgrounds;
+    NSString *backKey = [NSString stringWithFormat:@"%d",[self.backgrounds count]];
+    [backgrounds setObject:background forKey:backKey];
     [[TACDataCenter sharedInstance] setBackgrounds:backgrounds];
         
-    NSMutableArray *thumbArray = [NSMutableArray arrayWithArray:self.thumbnails];
-    [thumbArray addObject:coverImage];
+    NSMutableDictionary *thumbArray = self.thumbnails;
+    NSString *thumbKey = [NSString stringWithFormat:@"%d",[self.thumbnails count]];
+    [thumbArray setObject:coverImage forKey:thumbKey];
     [[TACDataCenter sharedInstance] setMenuThumbnails:thumbArray];
     
     NSMutableArray *viewsInfo = [NSMutableArray arrayWithArray:self.viewsInfomation];
@@ -511,14 +505,13 @@
     UIImage *thumbnail = [dict objectForKey:@"thumbnail"];
     NSInteger tag = [[dict objectForKey:@"tag"] integerValue];
     
-    NSMutableArray *array = [[TACDataCenter sharedInstance] menuThumbnails];
-    [array replaceObjectAtIndex:(tag-1) withObject:thumbnail];
-    [[TACDataCenter sharedInstance] setMenuThumbnails:array];
+    NSMutableDictionary *thumbs = [[TACDataCenter sharedInstance] menuThumbnails];
+    NSString *key = [NSString stringWithFormat:@"%d",tag-1];
+    [thumbs setObject:thumbnail forKey:key];
+    [[TACDataCenter sharedInstance] setMenuThumbnails:thumbs];
     
-    self.thumbnails = array;
+    self.thumbnails = thumbs;
     [self.collectionView reloadData];
-    
-    [self writeThumbnailToFile];
 }
 
 #pragma mark UIAlertView and UIActionSheet Methods
@@ -577,12 +570,13 @@
 
 - (void)modifyDataByDelete{
     NSInteger index = [lastSelectedIndex row];
+    NSString *key = [NSString stringWithFormat:@"%d",index];
     NSMutableArray *view = [[TACDataCenter sharedInstance] viewsInformation];
-    NSMutableArray *thumbnails = [[TACDataCenter sharedInstance] menuThumbnails];
-    NSMutableArray *backgrounds = [[TACDataCenter sharedInstance] backgrounds];
+    NSMutableDictionary *thumbnails = [[TACDataCenter sharedInstance] menuThumbnails];
+    NSMutableDictionary *backgrounds = [[TACDataCenter sharedInstance] backgrounds];
     [view removeObjectAtIndex:index];
-    [thumbnails removeObjectAtIndex:index];
-    [backgrounds removeObjectAtIndex:index];
+    [thumbnails removeObjectForKey:key];
+    [backgrounds removeObjectForKey:key];
     [[TACDataCenter sharedInstance] setViewsInformation:view];
     [[TACDataCenter sharedInstance] setMenuThumbnails:thumbnails];
     [[TACDataCenter sharedInstance] setBackgrounds:backgrounds];

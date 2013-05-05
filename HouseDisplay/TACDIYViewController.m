@@ -55,7 +55,6 @@
 - (void)viewWillDisappear:(BOOL)animated{
     [super viewWillDisappear:animated];
     self.mainImageView = nil;
-    self.imageData = nil;
     self.jsonTempDataArray = nil;
 }
 
@@ -128,8 +127,9 @@
     self.mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
     self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
     
-    NSMutableArray *array = [[TACDataCenter sharedInstance] backgrounds];
-    UIImage *image = [array objectAtIndex:(self.viewTag - 1)];
+    NSMutableDictionary *dict = [[TACDataCenter sharedInstance] backgrounds];
+    NSString *key = [NSString stringWithFormat:@"%d",self.viewTag - 1];
+    UIImage *image = [dict objectForKey:key];
     self.mainImageView.image = image;
     
     [self.view insertSubview:self.mainImageView atIndex:1];
@@ -250,21 +250,10 @@
 }
 
 - (void)deleteProduct:(NSInteger)index{
-    NSMutableDictionary *dict = self.imageData;
-    NSMutableDictionary *imgDict = [dict objectForKey:currentState];
+    NSMutableArray *dict = self.shownProduct;
+    [dict removeObjectAtIndex:index];
     
-    NSMutableArray *array = [imgDict objectForKey:kSelect];
-    [array removeObjectAtIndex:index];
-    [imgDict setObject:array forKey:kSelect];
-
-    array = [imgDict objectForKey:kDisplay];
-    [array removeObjectAtIndex:index];
-    [imgDict setObject:array forKey:kDisplay];
-    
-    [dict setObject:imgDict forKey:currentState];
-    
-    self.imageData = dict;
-    
+    self.shownProduct = dict;
     [self.coverFlow removeItemAtIndex:index animated:YES];
     //[self.coverFlow remo]
 }
@@ -558,7 +547,6 @@
             break;
         case 5:
             self.jsonTempDataArray = nil;
-            self.imageData = nil;
             [self loadCatalog];
             break;
         default:
