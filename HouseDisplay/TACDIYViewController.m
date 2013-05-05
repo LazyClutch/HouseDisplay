@@ -277,7 +277,7 @@
     SPUserResizableView *resizableView = [[SPUserResizableView alloc] initWithFrame:gripFrame];
     UIView *contentView = [[UIView alloc] initWithFrame:gripFrame];
     [contentView setBackgroundColor:[UIColor clearColor]];
-    resizableView.contentView = contentView;
+    resizableView.contentView = self.displayDoorImageView;
     resizableView.delegate = self;
     [resizableView showEditingHandles];
     self.currentResizableView = resizableView;
@@ -301,6 +301,11 @@
     [dict setObject:y forKey:@"doorPosY"];
     [dict setObject:w forKey:@"displayDoorWidth"];
     [dict setObject:h forKey:@"displayDoorHeight"];
+    UIImage *image = self.displayDoorImageView.image;
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
+    self.displayDoorImageView = imageView;
+    self.displayDoorImageView.image = image;
+    [self.view insertSubview:self.displayDoorImageView atIndex:2];
     [self.currentResizableView removeFromSuperview];
     [self.lastResizableView removeFromSuperview];
     self.lastResizableView = nil;
