@@ -16,7 +16,7 @@
 #define kSelect @"select"
 #define kHostAddress @"10.0.1.22"
 #define currentState @"door"
-#define DEFAULT_RECT CGRectMake(100,100,50,50)
+#define DEFAULT_RECT CGRectMake(100,100,250,250)
 
 
 @interface TACDIYViewController ()
@@ -319,21 +319,23 @@
 }
 
 
-- (void)prepareForRequestData:(NSInteger)index{
+- (void)loadImageAtIndex:(NSInteger)index{
     if (self.isEditing) {
         return;
     } else {
-        NSString *dataUrl = [[[self.imageData objectForKey:currentState] objectForKey:kDisplay] objectAtIndex:index];
+        NSString *dataUrl = [[self.shownProduct objectAtIndex:index] objectForKey:@"origion"];
         NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
         NSString *key = [url MD5Hash];
         NSData *data = [FTWCache objectForKey:key];
-        
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
             UIImage *image = [[UIImage alloc] init];
             if (data) {
                 image = [UIImage imageWithData:data];
             } else {
                 [self setHudStatus:@"正在加载"];
+                NSURL *imgUrl = [NSURL URLWithString:url];
+                NSData *imgData = [NSData dataWithContentsOfURL:imgUrl];
+                image = [UIImage imageWithData:imgData];
                 //image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
             }
             [self.displayDoorImageView removeFromSuperview];
@@ -349,7 +351,7 @@
     }
 }
 
-- (void)requestImageForUse:(NSString *)usage AtIndex:(NSInteger)index forView:(UIImageView *)imageView{
+- (void)requestImageAtIndex:(NSInteger)index forView:(UIImageView *)imageView{
     NSMutableArray *products = self.shownProduct;
     NSMutableDictionary *dict = [self.shownProduct objectAtIndex:index];
     NSString *photo_id = [dict objectForKey:@"photo_id"];
@@ -475,7 +477,7 @@
     }
     
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self requestImageForUse:kSelect AtIndex:index forView:imageView];
+        [self requestImageAtIndex:index forView:imageView];
     });
     
     //save cache
@@ -484,7 +486,7 @@
 }
 
 - (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index{
-    [self prepareForRequestData:index];
+    [self loadImageAtIndex:index];
 }
 
 - (void)carousel:(iCarousel *)carousel didSwipeItemAtIndex:(NSInteger)index{
