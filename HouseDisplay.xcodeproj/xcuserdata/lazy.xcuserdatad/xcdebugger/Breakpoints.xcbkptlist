@@ -8,11 +8,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "HouseDisplay/TACDIYMenuViewController.m"
-         timestampString = "389447106.242847"
+         timestampString = "389449262.847581"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "184"
-         endingLineNumber = "184"
+         startingLineNumber = "188"
+         endingLineNumber = "188"
          landmarkName = "-loadInformation"
          landmarkType = "5">
       </FileBreakpoint>
@@ -21,11 +21,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "HouseDisplay/TACDIYMenuViewController.m"
-         timestampString = "389447106.242847"
+         timestampString = "389449262.847581"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "360"
-         endingLineNumber = "360"
+         startingLineNumber = "364"
+         endingLineNumber = "364"
          landmarkName = "-collectionView:cellForItemAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -34,20 +34,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "HouseDisplay/TACDIYMenuViewController.m"
-         timestampString = "389447167.46014"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "365"
-         endingLineNumber = "365"
-         landmarkName = "-collectionView:cellForItemAtIndexPath:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "No"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         filePath = "HouseDisplay/TACDIYMenuViewController.m"
-         timestampString = "389447194.354222"
+         timestampString = "389449262.847581"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "369"
@@ -60,12 +47,77 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "HouseDisplay/TACDIYMenuViewController.m"
-         timestampString = "389447355.473424"
+         timestampString = "389449262.847581"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "421"
-         endingLineNumber = "421"
+         startingLineNumber = "373"
+         endingLineNumber = "373"
+         landmarkName = "-collectionView:cellForItemAtIndexPath:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "HouseDisplay/TACDIYMenuViewController.m"
+         timestampString = "389449262.847581"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "425"
+         endingLineNumber = "425"
          landmarkName = "-performSelection:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "HouseDisplay/TACAppDelegate.m"
+         timestampString = "389448010.199508"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "35"
+         endingLineNumber = "35"
+         landmarkName = "-applicationDidEnterBackground:"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "HouseDisplay/TACDIYMenuViewController.m"
+         timestampString = "389448978.437651"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "147"
+         endingLineNumber = "147"
+         landmarkName = "-writeThumbnailToFile"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "HouseDisplay/TACDIYMenuViewController.m"
+         timestampString = "389449262.847581"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "161"
+         endingLineNumber = "161"
+         landmarkName = "-writeInformationToFile"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "HouseDisplay/TACDIYMenuViewController.m"
+         timestampString = "389449262.847581"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "167"
+         endingLineNumber = "167"
+         landmarkName = "-writeBackgroundsToFile"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

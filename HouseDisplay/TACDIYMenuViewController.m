@@ -144,15 +144,17 @@
 
 #pragma mark Save and Load Methods
 - (void)writeThumbnailToFile{
-    NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     NSData *data = nil;
-    for (UIImage *image in self.thumbnails) {
+    NSArray *keys = [self.thumbnails allKeys];
+    for (NSString *key in keys) {
+        UIImage *image = [self.thumbnails objectForKey:key];
         data = UIImagePNGRepresentation(image);
-        [array addObject:data];
+        [dict setObject:data forKey:key];
     }
     NSString *fileName = @"/thumbnail.data2";
     NSString *filePath = [self dataFilePath:fileName];
-    [array writeToFile:filePath atomically:YES];
+    [dict writeToFile:filePath atomically:YES];
 }
 
 - (void)writeInformationToFile{
@@ -162,15 +164,17 @@
 }
 
 - (void)writeBackgroundsToFile{
-    NSMutableArray *array = [[NSMutableArray alloc] init];
+    NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     NSData *data = nil;
-    for (UIImage *image in self.backgrounds) {
-        data = UIImageJPEGRepresentation(image, 1.0);
-        [array addObject:data];
+    NSArray *keys = [self.backgrounds allKeys];
+    for (NSString *key in keys) {
+        UIImage *image = [self.backgrounds objectForKey:key];
+        data = UIImagePNGRepresentation(image);
+        [dict setObject:data forKey:key];
     }
     NSString *fileName = @"/background.data";
     NSString *filePath = [self dataFilePath:fileName];
-    [array writeToFile:filePath atomically:YES];
+    [dict writeToFile:filePath atomically:YES];
 }
 
 - (NSString *)dataFilePath:(NSString *)fileName{

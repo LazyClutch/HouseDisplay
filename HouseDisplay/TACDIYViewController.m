@@ -351,7 +351,6 @@
     self.productConnection = connection;
     [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/html"]];
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSLog(@"%@", JSON);
         NSArray *array = (NSArray *)JSON;
         NSMutableDictionary *arrayInfo = (NSMutableDictionary *)[array objectAtIndex:0];
         [dict addEntriesFromDictionary:arrayInfo];

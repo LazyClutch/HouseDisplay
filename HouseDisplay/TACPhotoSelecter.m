@@ -106,11 +106,6 @@ static UIImage *shrinkImage(UIImage *original, CGSize size){
         }
         shrunkenImage = shrinkImage(newImage,size);
         shrunkenCoverImage = shrinkImage(newImage, coverSize);
-//        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-//        if (orientation == UIInterfaceOrientationLandscapeLeft) {
-//            shrunkenImage = [UIImage imageWithCGImage:shrunkenImage.CGImage scale:1.0 orientation:UIImageOrientationDown];
-//            shrunkenCoverImage = [UIImage imageWithCGImage:shrunkenCoverImage.CGImage scale:1.0 orientation:UIImageOrientationDown];
-//        }
         NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
         NSString *system = [NSString stringWithFormat:@"%d",2];
         [dict setObject:system forKey:@"system"];
