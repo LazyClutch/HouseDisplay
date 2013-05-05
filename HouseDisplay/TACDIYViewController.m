@@ -361,8 +361,9 @@
     [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/html"]];
     AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
         NSLog(@"%@", JSON);
-        //NSArray *array = (NSArray *)JSON;
-        //[dict addEntriesFromDictionary:array];
+        NSArray *array = (NSArray *)JSON;
+        NSMutableDictionary *arrayInfo = (NSMutableDictionary *)[array objectAtIndex:0];
+        [dict addEntriesFromDictionary:arrayInfo];
         [products replaceObjectAtIndex:index withObject:dict];
         NSString *thumb = [dict objectForKey:@"thumb"];
         NSString *thumbUrl = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,thumb];
@@ -410,8 +411,6 @@
         }
         self.jsonTempDataArray = nil;
         NSMutableArray *json = [jsonStr JSONValue];
-        
-
     } else {
         NSString *jsonStr = [[NSString alloc] init];
         for (NSString *str in self.jsonTempDataArray) {
