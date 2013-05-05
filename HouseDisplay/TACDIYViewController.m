@@ -137,16 +137,21 @@
 }
 
 - (void)loadCatalog{
-
-    NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/catalog.php?room_id=%d",kHostAddress,self.viewTag];
-    NSLog(@"%@",requestURL);
-    NSURL *url = [NSURL URLWithString:requestURL];
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
-    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-    self.catalogConnection = connection;
-    NSString *text = @"正在请求数据";
-    [self setHudStatus:text];
-    
+    NSMutableDictionary *dict = [[TACDataCenter sharedInstance] shownProduct];
+    if (dict) {
+        NSString *key = [NSString stringWithFormat:@"%d",self.viewTag - 1];
+        self.shownProduct = [dict objectForKey:key];
+        [self.coverFlow reloadData];
+    } else {
+        NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/catalog.php?room_id=%d",kHostAddress,self.viewTag];
+        NSLog(@"%@",requestURL);
+        NSURL *url = [NSURL URLWithString:requestURL];
+        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
+        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        self.catalogConnection = connection;
+        NSString *text = @"正在请求数据";
+        [self setHudStatus:text];
+    }
 }
 
 - (void)loadProduct{
@@ -203,6 +208,16 @@
     [self.view removeFromSuperview];
 }
 
+- (void)updateDataCenter:(NSMutableArray *)array{
+    NSMutableDictionary *dict = [[TACDataCenter sharedInstance] shownProduct];
+    if (!dict) {
+        dict = [[NSMutableDictionary alloc] init];
+    }
+    NSString *key = [NSString stringWithFormat:@"%d",self.viewTag - 1];
+    [dict setObject:array forKey:key];
+    [[TACDataCenter sharedInstance] setShownProduct:dict];
+}
+
 - (void)setCover{
 
     self.returnButton.hidden = YES;
@@ -254,6 +269,7 @@
     [dict removeObjectAtIndex:index];
     
     self.shownProduct = dict;
+    [self updateDataCenter:self.shownProduct];
     [self.coverFlow removeItemAtIndex:index animated:YES];
     //[self.coverFlow remo]
 }
@@ -312,6 +328,7 @@
     self.currentResizableView = nil;
 }
 
+#pragma mark Load Image Methods
 
 - (void)loadImageAtIndex:(NSInteger)index{
     if (self.isEditing) {
@@ -329,6 +346,7 @@
                 [self setHudStatus:@"正在加载"];
                 NSURL *imgUrl = [NSURL URLWithString:url];
                 NSData *imgData = [NSData dataWithContentsOfURL:imgUrl];
+                [FTWCache setObject:imgData forKey:key];
                 image = [UIImage imageWithData:imgData];
                 //image = [self requestImageForType:currentState ForUse:kDisplay AtIndex:index];
             }
@@ -354,19 +372,29 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     self.productConnection = connection;
-    [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/html"]];
-    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-        NSArray *array = (NSArray *)JSON;
-        NSMutableDictionary *arrayInfo = (NSMutableDictionary *)[array objectAtIndex:0];
-        [dict addEntriesFromDictionary:arrayInfo];
-        [products replaceObjectAtIndex:index withObject:dict];
-        NSString *thumb = [dict objectForKey:@"thumb"];
-        NSString *thumbUrl = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,thumb];
-        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:thumbUrl]];
-        UIImage *image = [UIImage imageWithData:data];
+    NSString *thumb = [dict objectForKey:@"thumb"];
+    NSString *thumbUrl = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,thumb];
+    NSString *key = [thumbUrl MD5Hash];
+    NSData *data = [FTWCache objectForKey:key];
+    UIImage *image = [[UIImage alloc] init];
+    if (data) {
+        image = [UIImage imageWithData:data];
         imageView.image = image;
-    } failure:nil];
-    [operation start];
+    } else {
+        [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/html"]];
+        AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+            NSArray *array = (NSArray *)JSON;
+            NSMutableDictionary *arrayInfo = (NSMutableDictionary *)[array objectAtIndex:0];
+            [dict addEntriesFromDictionary:arrayInfo];
+            [products replaceObjectAtIndex:index withObject:dict];
+            NSURL *url = [NSURL URLWithString:thumbUrl];
+            NSData *imgData = [NSData dataWithContentsOfURL:url];
+            UIImage *img = [UIImage imageWithData:imgData];
+            [FTWCache setObject:imgData forKey:key];
+            imageView.image = img;
+        } failure:nil];
+        [operation start];
+    }
 }
 
 
@@ -418,6 +446,8 @@
             [allPro addObject:dict];
         }
         self.shownProduct = allPro;
+        
+        [self updateDataCenter:self.shownProduct];
         [self.coverFlow reloadData];
     }
 }

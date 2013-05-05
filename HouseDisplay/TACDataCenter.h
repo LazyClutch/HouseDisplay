@@ -13,6 +13,7 @@
 @property (strong, nonatomic) NSMutableDictionary *menuThumbnails;
 @property (strong, nonatomic) NSMutableArray *viewsInformation;
 @property (strong, nonatomic) NSMutableDictionary *backgrounds;
+@property (strong, nonatomic) NSMutableDictionary *shownProduct;
 
 + (TACDataCenter *) sharedInstance;
 - (void) operation;

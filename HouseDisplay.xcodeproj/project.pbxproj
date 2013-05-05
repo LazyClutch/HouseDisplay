@@ -522,13 +522,6 @@
 			name = CoverFlowView;
 			sourceTree = "<group>";
 		};
-		6326BCD7172BFF5B006804AC /* Network */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = Network;
-			sourceTree = "<group>";
-		};
 		633F09671712A319001DB3A3 /* DIY */ = {
 			isa = PBXGroup;
 			children = (
@@ -645,7 +638,6 @@
 		63746DB61709C6CC00DC7874 /* HouseDisplay */ = {
 			isa = PBXGroup;
 			children = (
-				6326BCD7172BFF5B006804AC /* Network */,
 				633FDF7D1728ED7D0067A2CE /* photo */,
 				6360E8191723B25F0049AAED /* data */,
 				63A2B723170AF4A400CA6AD9 /* DIY */,

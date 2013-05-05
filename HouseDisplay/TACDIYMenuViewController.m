@@ -163,6 +163,13 @@
     [self.viewsInfomation writeToFile:filePath atomically:YES];
 }
 
+- (void)writeShownProductToFile{
+    NSString *fileName = @"/shownProduct.data";
+    NSString *filePath = [self dataFilePath:fileName];
+    NSMutableDictionary *dict = [[TACDataCenter sharedInstance] shownProduct];
+    [dict writeToFile:filePath atomically:YES];
+}
+
 - (void)writeBackgroundsToFile{
     NSMutableDictionary *dict = [[NSMutableDictionary alloc] init];
     NSData *data = nil;
@@ -192,8 +199,18 @@
         [[TACDataCenter sharedInstance] setViewsInformation:self.viewsInfomation];
         [self loadThumbnail];
         [self loadBackgrounds];
+        [self loadShownProduct];
     } else {
         [self receiveData];
+    }
+}
+
+- (void)loadShownProduct{
+    NSString *fileName = @"/shownProduct.data";
+    NSString *filePath = [self dataFilePath:fileName];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
+        NSMutableDictionary *dict = [[NSMutableDictionary alloc] initWithContentsOfFile:filePath];
+        [[TACDataCenter sharedInstance] setShownProduct:dict];
     }
 }
 
@@ -237,6 +254,7 @@
     [self writeThumbnailToFile];
     [self writeInformationToFile];
     [self writeBackgroundsToFile];
+    [self writeShownProductToFile];
 }
 
 #pragma mark Network Methods
