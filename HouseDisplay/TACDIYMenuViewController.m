@@ -78,6 +78,7 @@
 - (void)initParameter{
     self.thumbnails = [[NSMutableDictionary alloc] init];
     self.backgrounds = [[NSMutableDictionary alloc] init];
+    self.viewsInfomation = [[NSMutableDictionary alloc] init];
 }
 
 - (void)showLoginSuccess{
@@ -195,11 +196,12 @@
     NSString *fileName = @"/roomInfo.data";
     NSString *filePath = [self dataFilePath:fileName];
     if ([[NSFileManager defaultManager] fileExistsAtPath:filePath]) {
-        self.viewsInfomation = [[NSMutableArray alloc] initWithContentsOfFile:filePath];
+        self.viewsInfomation = [[NSMutableDictionary alloc] initWithContentsOfFile:filePath];
         [[TACDataCenter sharedInstance] setViewsInformation:self.viewsInfomation];
         [self loadThumbnail];
         [self loadBackgrounds];
         [self loadShownProduct];
+        [self.collectionView reloadData];
     } else {
         [self receiveData];
     }
@@ -296,11 +298,12 @@
     }
     NSMutableArray *json = [jsonStr JSONValue];
     [self setHudFinishStatus:@"数据接受完毕" withTime:1.0];
-//    BOOL isDataEmpty = [self analyzeData:json];
-//    if (isDataEmpty) {
-//        return;
-//    }
-    self.viewsInfomation = json;
+    NSMutableDictionary *views = self.viewsInfomation;
+    for (NSMutableDictionary *dict in json) {
+        NSString *key = [NSString stringWithFormat:@"%d",[views count]];
+        [views setObject:dict forKey:key];
+    }
+    self.viewsInfomation = views;
     [self.collectionView reloadData];
     [[TACDataCenter sharedInstance] setViewsInformation:self.viewsInfomation];
 }
@@ -318,7 +321,7 @@
 }
 
 - (void)updateData:(NSMutableDictionary *)dict atIndex:(NSInteger)index{
-    NSMutableArray *views = self.viewsInfomation;
+    NSMutableDictionary *views = self.viewsInfomation;
     NSMutableDictionary *newDict = dict;
     NSString *system = [NSString stringWithFormat:@"%d",1];
     [newDict setObject:system forKey:@"system"];
@@ -341,7 +344,8 @@
     [backs setObject:image forKey:indexStr];
     
     self.backgrounds = backs;
-    [views replaceObjectAtIndex:index withObject:newDict];
+    NSString *dictKey = [NSString stringWithFormat:@"%d",index];
+    [views setObject:newDict forKey:dictKey];
     
     [[TACDataCenter sharedInstance] setBackgrounds:backs];
 }
@@ -385,7 +389,8 @@
             cell.thumbnails.image = image;
         } else {
             cell.thumbnails.image = nil;
-            NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:[indexPath row]];
+            NSString *imgkey = [NSString stringWithFormat:@"%d",[indexPath row]];
+            NSMutableDictionary *dict = [self.viewsInfomation objectForKey:imgkey];
             NSString *thumb = [dict objectForKey:@"thumb"];
             dispatch_async(dispatch_get_global_queue(0, 0), ^{
                 NSString *thumbStr = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,thumb];
@@ -439,8 +444,8 @@
     if ([indexPath row] < [self.viewsInfomation
                            count]) {
         self.DIYViewController = [[TACDIYViewController alloc] initWithNibName:@"TACDIYViewController" bundle:nil];
-        
-        NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:[indexPath row]];
+        NSString *imgkey = [NSString stringWithFormat:@"%d",[indexPath row]];
+        NSMutableDictionary *dict = [self.viewsInfomation objectForKey:imgkey];
         [self.DIYViewController setViewInfomation:dict];
         
         NSInteger tag = [indexPath row];
@@ -488,11 +493,12 @@
     [thumbArray setObject:coverImage forKey:thumbKey];
     [[TACDataCenter sharedInstance] setMenuThumbnails:thumbArray];
     
-    NSMutableArray *viewsInfo = [NSMutableArray arrayWithArray:self.viewsInfomation];
+    NSMutableDictionary *viewsInfo = self.viewsInfomation;
     [dict removeObjectForKey:@"image"];
     [dict removeObjectForKey:@"indexpath"];
     [dict removeObjectForKey:@"coverImage"];
-    [viewsInfo addObject:dict];
+    NSString *viewsKey = [NSString stringWithFormat:@"%d",[indexPath row]];
+    [viewsInfo setObject:dict forKey:viewsKey];
     [[TACDataCenter sharedInstance] setViewsInformation:viewsInfo];
     
     self.viewsInfomation = viewsInfo;
@@ -570,7 +576,8 @@
 - (void)processDelete:(NSInteger)buttonIndex{
     if (self.isDeleting && buttonIndex == 0) {
         NSInteger row = [lastSelectedIndex row];
-        NSMutableDictionary *dict = [self.viewsInfomation objectAtIndex:row];
+        NSString *key = [NSString stringWithFormat:@"%d",row];
+        NSMutableDictionary *dict = [self.viewsInfomation objectForKey:key];
         NSString *system = [dict objectForKey:@"system"];
         NSInteger ix = [system integerValue];
         //BOOL isSystem = [[[self.viewsInfomation objectAtIndex:[lastSelectedIndex row]] objectForKey:@"system"] boolValue];
@@ -593,10 +600,10 @@
 - (void)modifyDataByDelete{
     NSInteger index = [lastSelectedIndex row];
     NSString *key = [NSString stringWithFormat:@"%d",index];
-    NSMutableArray *view = [[TACDataCenter sharedInstance] viewsInformation];
+    NSMutableDictionary *view = [[TACDataCenter sharedInstance] viewsInformation];
     NSMutableDictionary *thumbnails = [[TACDataCenter sharedInstance] menuThumbnails];
     NSMutableDictionary *backgrounds = [[TACDataCenter sharedInstance] backgrounds];
-    [view removeObjectAtIndex:index];
+    [view removeObjectForKey:key];
     [thumbnails removeObjectForKey:key];
     [backgrounds removeObjectForKey:key];
     [[TACDataCenter sharedInstance] setViewsInformation:view];

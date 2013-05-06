@@ -33,7 +33,7 @@
 @property (strong, nonatomic) NSMutableDictionary *thumbnails;
 
 //viewsinformation contain the information of all rooms including ID, url for thumb, url for background
-@property (strong, nonatomic) NSMutableArray *viewsInfomation;
+@property (strong, nonatomic) NSMutableDictionary *viewsInfomation;
 
 @property (strong, nonatomic) NSMutableDictionary *backgrounds;
 @property (strong, nonatomic) NSMutableArray *jsonTempDataArray;

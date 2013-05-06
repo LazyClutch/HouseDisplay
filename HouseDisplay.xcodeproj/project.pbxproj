@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6302D4421737E1EF0048781B /* TACSeriesSelectController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6302D4401737E1EF0048781B /* TACSeriesSelectController.m */; };
+		6302D4431737E1EF0048781B /* TACSeriesSelectController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6302D4411737E1EF0048781B /* TACSeriesSelectController.xib */; };
+		6302D4471737E3DB0048781B /* TACSeriesSelectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6302D4461737E3DB0048781B /* TACSeriesSelectCell.m */; };
+		6302D44B1737E42A0048781B /* TACSeriesSelectCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6302D44A1737E42A0048781B /* TACSeriesSelectCell.xib */; };
+		6302D44F1737EA2A0048781B /* TACSeriesDetailController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6302D44D1737EA2A0048781B /* TACSeriesDetailController.m */; };
+		6302D4501737EA2A0048781B /* TACSeriesDetailController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6302D44E1737EA2A0048781B /* TACSeriesDetailController.xib */; };
+		6302D4531737EA530048781B /* TACSeriesDetailCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6302D4521737EA530048781B /* TACSeriesDetailCell.m */; };
+		6302D4551737EA690048781B /* TACSeriesDetailCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6302D4541737EA690048781B /* TACSeriesDetailCell.xib */; };
 		630C18C61716E4CB001F68E9 /* ASIAuthenticationDialog.m in Sources */ = {isa = PBXBuildFile; fileRef = 630C18751716E4CB001F68E9 /* ASIAuthenticationDialog.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		630C18C71716E4CB001F68E9 /* ASIDataCompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = 630C18781716E4CB001F68E9 /* ASIDataCompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		630C18C81716E4CB001F68E9 /* ASIDataDecompressor.m in Sources */ = {isa = PBXBuildFile; fileRef = 630C187A1716E4CB001F68E9 /* ASIDataDecompressor.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
@@ -136,6 +144,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6302D43F1737E1EF0048781B /* TACSeriesSelectController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACSeriesSelectController.h; sourceTree = "<group>"; };
+		6302D4401737E1EF0048781B /* TACSeriesSelectController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACSeriesSelectController.m; sourceTree = "<group>"; };
+		6302D4411737E1EF0048781B /* TACSeriesSelectController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACSeriesSelectController.xib; sourceTree = "<group>"; };
+		6302D4451737E3DB0048781B /* TACSeriesSelectCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACSeriesSelectCell.h; sourceTree = "<group>"; };
+		6302D4461737E3DB0048781B /* TACSeriesSelectCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACSeriesSelectCell.m; sourceTree = "<group>"; };
+		6302D44A1737E42A0048781B /* TACSeriesSelectCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACSeriesSelectCell.xib; sourceTree = "<group>"; };
+		6302D44C1737EA2A0048781B /* TACSeriesDetailController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACSeriesDetailController.h; sourceTree = "<group>"; };
+		6302D44D1737EA2A0048781B /* TACSeriesDetailController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACSeriesDetailController.m; sourceTree = "<group>"; };
+		6302D44E1737EA2A0048781B /* TACSeriesDetailController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACSeriesDetailController.xib; sourceTree = "<group>"; };
+		6302D4511737EA530048781B /* TACSeriesDetailCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACSeriesDetailCell.h; sourceTree = "<group>"; };
+		6302D4521737EA530048781B /* TACSeriesDetailCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACSeriesDetailCell.m; sourceTree = "<group>"; };
+		6302D4541737EA690048781B /* TACSeriesDetailCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACSeriesDetailCell.xib; sourceTree = "<group>"; };
 		630C18711716E43C001F68E9 /* ASIHTTPRequest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ASIHTTPRequest.framework; path = System/Library/Frameworks/ASIHTTPRequest.framework; sourceTree = SDKROOT; };
 		630C18741716E4CB001F68E9 /* ASIAuthenticationDialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ASIAuthenticationDialog.h; sourceTree = "<group>"; };
 		630C18751716E4CB001F68E9 /* ASIAuthenticationDialog.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ASIAuthenticationDialog.m; sourceTree = "<group>"; };
@@ -355,6 +375,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6302D4441737E1FE0048781B /* Series */ = {
+			isa = PBXGroup;
+			children = (
+				6302D43F1737E1EF0048781B /* TACSeriesSelectController.h */,
+				6302D4401737E1EF0048781B /* TACSeriesSelectController.m */,
+				6302D4411737E1EF0048781B /* TACSeriesSelectController.xib */,
+				6302D4451737E3DB0048781B /* TACSeriesSelectCell.h */,
+				6302D4461737E3DB0048781B /* TACSeriesSelectCell.m */,
+				6302D44A1737E42A0048781B /* TACSeriesSelectCell.xib */,
+				6302D44C1737EA2A0048781B /* TACSeriesDetailController.h */,
+				6302D44D1737EA2A0048781B /* TACSeriesDetailController.m */,
+				6302D44E1737EA2A0048781B /* TACSeriesDetailController.xib */,
+				6302D4511737EA530048781B /* TACSeriesDetailCell.h */,
+				6302D4521737EA530048781B /* TACSeriesDetailCell.m */,
+				6302D4541737EA690048781B /* TACSeriesDetailCell.xib */,
+			);
+			name = Series;
+			sourceTree = "<group>";
+		};
 		630C18731716E4CB001F68E9 /* ASIHttpRequest */ = {
 			isa = PBXGroup;
 			children = (
@@ -638,6 +677,7 @@
 		63746DB61709C6CC00DC7874 /* HouseDisplay */ = {
 			isa = PBXGroup;
 			children = (
+				6302D4441737E1FE0048781B /* Series */,
 				633FDF7D1728ED7D0067A2CE /* photo */,
 				6360E8191723B25F0049AAED /* data */,
 				63A2B723170AF4A400CA6AD9 /* DIY */,
@@ -904,6 +944,10 @@
 				6360E81E1723CE8D0049AAED /* addMark.png in Resources */,
 				6360E8231723DE230049AAED /* TACDIYPhotoLibraryController.xib in Resources */,
 				6329DEBC172963CF00E41290 /* houseInfomation.plist in Resources */,
+				6302D4431737E1EF0048781B /* TACSeriesSelectController.xib in Resources */,
+				6302D44B1737E42A0048781B /* TACSeriesSelectCell.xib in Resources */,
+				6302D4501737EA2A0048781B /* TACSeriesDetailController.xib in Resources */,
+				6302D4551737EA690048781B /* TACSeriesDetailCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -972,6 +1016,10 @@
 				631B9F4517352FFD00C01AF3 /* AFXMLRequestOperation.m in Sources */,
 				631B9F4617352FFD00C01AF3 /* UIImageView+AFNetworking.m in Sources */,
 				631B9F4917354C4500C01AF3 /* NSString+Encode.m in Sources */,
+				6302D4421737E1EF0048781B /* TACSeriesSelectController.m in Sources */,
+				6302D4471737E3DB0048781B /* TACSeriesSelectCell.m in Sources */,
+				6302D44F1737EA2A0048781B /* TACSeriesDetailController.m in Sources */,
+				6302D4531737EA530048781B /* TACSeriesDetailCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

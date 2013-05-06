@@ -7,6 +7,7 @@
 //
 
 #import "TACDIYViewController.h"
+#import "TACSeriesSelectController.h"
 
 
 #define kItemWidth 110
@@ -20,6 +21,8 @@
 
 
 @interface TACDIYViewController ()
+
+@property (strong, nonatomic) TACSeriesSelectController *seriesController;
 
 @end
 
@@ -264,6 +267,11 @@
     self.dropDownMenu = array;
 }
 
+- (void)chooseSeries{
+    self.seriesController = [[TACSeriesSelectController alloc] init];
+    [self.view addSubview:self.seriesController.view];
+}
+
 - (void)deleteProduct:(NSInteger)index{
     NSMutableArray *dict = self.shownProduct;
     [dict removeObjectAtIndex:index];
@@ -271,7 +279,6 @@
     self.shownProduct = dict;
     [self updateDataCenter:self.shownProduct];
     [self.coverFlow removeItemAtIndex:index animated:YES];
-    //[self.coverFlow remo]
 }
 
 - (BOOL)analyzeData:(NSMutableDictionary *)dict{
@@ -568,7 +575,7 @@
             [self setCover];
             break;
         case 1:
-            //[self chooseSeries];
+            [self chooseSeries];
             break;
         case 2:
             [self reDraw];
