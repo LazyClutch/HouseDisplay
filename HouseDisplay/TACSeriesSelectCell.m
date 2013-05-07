@@ -17,9 +17,10 @@
         // Initialization code
         [self.contentView setFrame:CGRectMake(0, 0, 320, 200)];
         CGRect thumbRect = CGRectMake(0, 0, 320, 160);
-        CGRect labelRect = CGRectMake(160, 0, 320, 40);
+        CGRect labelRect = CGRectMake(0, 160, 320, 40);
         self.thumbnail = [[UIImageView alloc] initWithFrame:thumbRect];
         self.description = [[UILabel alloc] initWithFrame:labelRect];
+        self.description.backgroundColor = [UIColor clearColor];
         [self.contentView addSubview:self.thumbnail];
         [self.contentView addSubview:self.description];
     }

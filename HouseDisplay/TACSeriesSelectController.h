@@ -7,16 +7,30 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "MBProgressHUD.h"
+#import "JSON.h"
+#import "NSString+Encode.h"
+#import "AFNetworking.h"
+#import "FTWCache.h"
+#import "NSString+MD5.h"
 
-@interface TACSeriesSelectController : UIViewController <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout>
+@interface TACSeriesSelectController : UIViewController <UICollectionViewDataSource,UICollectionViewDelegate,UICollectionViewDelegateFlowLayout,NSURLConnectionDataDelegate,MBProgressHUDDelegate>{
+    NSString *outString;
+}
 
 @property (strong, nonatomic) IBOutlet UIButton *returnButton;
 @property (strong, nonatomic) IBOutlet UIButton *editButton;
 @property (strong, nonatomic) IBOutlet UILabel *titleLabel;
 @property (strong, nonatomic) IBOutlet UICollectionView *collectionView;
 
-@property (strong, nonatomic) NSMutableDictionary *seriesInfo;
+@property (strong, nonatomic) NSMutableArray *seriesInfo;
+@property (strong, nonatomic) NSMutableArray *seriesDetails;
 @property (strong, nonatomic) NSMutableArray *jsonTempDataArray;
+
+@property (strong, nonatomic) NSURLConnection *seriesConnection;
+@property (strong, nonatomic) NSURLConnection *productConnection;
+
+@property (strong, nonatomic) MBProgressHUD *hud;
 
 @property BOOL isSelecting;
 

@@ -430,6 +430,7 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if (self.isDeleting) {
+        NSLog(@"%d%d",[indexPath row],[self.thumbnails count]);
         if ([indexPath row] < [self.thumbnails count]) {
             [self deleteItem:indexPath];
         }

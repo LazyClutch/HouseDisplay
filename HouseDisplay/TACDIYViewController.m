@@ -141,9 +141,9 @@
 
 - (void)loadCatalog{
     NSMutableDictionary *dict = [[TACDataCenter sharedInstance] shownProduct];
-    if (dict) {
-        NSString *key = [NSString stringWithFormat:@"%d",self.viewTag - 1];
-        self.shownProduct = [dict objectForKey:key];
+    NSString *key = [NSString stringWithFormat:@"%d",self.viewTag - 1];
+    self.shownProduct = [dict objectForKey:key];
+    if (self.shownProduct) {
         [self.coverFlow reloadData];
     } else {
         NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/catalog.php?room_id=%d",kHostAddress,self.viewTag];
@@ -370,6 +370,7 @@
     }
 }
 
+//要大改！！！
 - (void)requestImageAtIndex:(NSInteger)index forView:(UIImageView *)imageView{
     NSMutableArray *products = self.shownProduct;
     NSMutableDictionary *dict = [self.shownProduct objectAtIndex:index];
@@ -457,10 +458,10 @@
         [self updateDataCenter:self.shownProduct];
         [self.coverFlow reloadData];
     }
+    [self setHudFinishStatus:@"数据读取完毕" withTime:1.0];
 }
 
 - (void)catalogDidLoad{
-    [self setHudFinishStatus:@"数据读取完毕" withTime:1.0];
     NSMutableArray *array = [[NSMutableArray alloc] init];
     NSString *jsonStr = [[NSString alloc] init];
     for (NSString *str in self.jsonTempDataArray) {
@@ -497,19 +498,24 @@
     
     //init view
     UIImageView *imageView = nil;
+    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
     if (view == nil) {
         view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 80, 130)];
         imageView = [[UIImageView alloc] initWithFrame:view.bounds];
         imageView.hidden = NO;
         [view addSubview:imageView];
+        [view addSubview:indicator];
     } else {
         imageView = [[view subviews] lastObject];
     }
     
+    [indicator setBounds:view.bounds];
+    [indicator setHidesWhenStopped:YES];
+    [indicator startAnimating];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         [self requestImageAtIndex:index forView:imageView];
     });
-    
+    [indicator stopAnimating];
     //save cache
     
     return view;
