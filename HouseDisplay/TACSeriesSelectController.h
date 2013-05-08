@@ -26,6 +26,7 @@
 @property (strong, nonatomic) NSMutableArray *seriesInfo;
 @property (strong, nonatomic) NSMutableArray *seriesDetails;
 @property (strong, nonatomic) NSMutableArray *jsonTempDataArray;
+@property (strong, nonatomic) NSMutableArray *roomCatalog;
 
 @property (strong, nonatomic) NSURLConnection *seriesConnection;
 @property (strong, nonatomic) NSURLConnection *productConnection;

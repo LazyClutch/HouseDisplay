@@ -143,18 +143,15 @@
     NSMutableDictionary *dict = [[TACDataCenter sharedInstance] shownProduct];
     NSString *key = [NSString stringWithFormat:@"%d",self.viewTag - 1];
     self.shownProduct = [dict objectForKey:key];
-    if (self.shownProduct) {
-        [self.coverFlow reloadData];
-    } else {
-        NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/catalog.php?room_id=%d",kHostAddress,self.viewTag];
-        NSLog(@"%@",requestURL);
-        NSURL *url = [NSURL URLWithString:requestURL];
-        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
-        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-        self.catalogConnection = connection;
-        NSString *text = @"正在请求数据";
-        [self setHudStatus:text];
-    }
+    NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/catalog.php?room_id=%d",kHostAddress,self.viewTag];
+    NSLog(@"%@",requestURL);
+    NSURL *url = [NSURL URLWithString:requestURL];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
+    NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    self.catalogConnection = connection;
+    NSString *text = @"正在请求数据";
+    [self setHudStatus:text];
+
 }
 
 - (void)loadProduct{
@@ -166,6 +163,7 @@
         NSURLRequest *request = [NSURLRequest requestWithURL:url];
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     }
+    
 }
 
 #pragma mark -
@@ -269,7 +267,10 @@
 
 - (void)chooseSeries{
     self.seriesController = [[TACSeriesSelectController alloc] init];
+    [self.seriesController setRoomCatalog:self.catalogs];
     [self.view addSubview:self.seriesController.view];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"chooseSeries" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(seriesDisChosen:) name:@"chooseSeries" object:nil];
 }
 
 - (void)deleteProduct:(NSInteger)index{
@@ -335,6 +336,15 @@
     self.currentResizableView = nil;
 }
 
+- (void)seriesDisChosen:(NSNotification *)notification{
+    NSMutableArray *array = (NSMutableArray *)[notification object];
+    NSMutableArray *combineArray = self.catalogs;
+    for (NSMutableDictionary *dict in array) {
+        [combineArray addObject:dict];
+    }
+    [self loadProduct];
+}
+
 #pragma mark Load Image Methods
 
 - (void)loadImageAtIndex:(NSInteger)index{
@@ -370,7 +380,6 @@
     }
 }
 
-//要大改！！！
 - (void)requestImageAtIndex:(NSInteger)index forView:(UIImageView *)imageView{
     NSMutableArray *products = self.shownProduct;
     NSMutableDictionary *dict = [self.shownProduct objectAtIndex:index];
@@ -380,29 +389,29 @@
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     self.productConnection = connection;
-    NSString *thumb = [dict objectForKey:@"thumb"];
-    NSString *thumbUrl = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,thumb];
-    NSString *key = [thumbUrl MD5Hash];
-    NSData *data = [FTWCache objectForKey:key];
-    UIImage *image = [[UIImage alloc] init];
-    if (data) {
-        image = [UIImage imageWithData:data];
-        imageView.image = image;
-    } else {
-        [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/html"]];
-        AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-            NSArray *array = (NSArray *)JSON;
+    [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/html"]];
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSArray *array = (NSArray *)JSON;
+        if ([array count] >= 1) {
             NSMutableDictionary *arrayInfo = (NSMutableDictionary *)[array objectAtIndex:0];
             [dict addEntriesFromDictionary:arrayInfo];
             [products replaceObjectAtIndex:index withObject:dict];
+            NSString *thumb = [arrayInfo objectForKey:@"thumb"];
+            NSString *thumbUrl = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,thumb];
+            NSString *key = [thumbUrl MD5Hash];
             NSURL *url = [NSURL URLWithString:thumbUrl];
-            NSData *imgData = [NSData dataWithContentsOfURL:url];
-            UIImage *img = [UIImage imageWithData:imgData];
-            [FTWCache setObject:imgData forKey:key];
-            imageView.image = img;
-        } failure:nil];
-        [operation start];
-    }
+            NSData *data = [FTWCache objectForKey:key];
+            if (data) {
+                imageView.image = [UIImage imageWithData:data];
+            } else {
+                NSData *imgData = [NSData dataWithContentsOfURL:url];
+                UIImage *img = [UIImage imageWithData:imgData];
+                [FTWCache setObject:imgData forKey:key];
+                imageView.image = img;
+            }
+        }
+    } failure:nil];
+    [operation start];
 }
 
 
@@ -450,6 +459,9 @@
         self.jsonTempDataArray = nil;
         NSMutableArray *json = [jsonStr JSONValue];
         NSMutableArray *allPro = self.shownProduct;
+        if (!allPro) {
+            allPro = [[NSMutableArray alloc] init];
+        }
         for (NSMutableDictionary *dict in json) {
             [allPro addObject:dict];
         }

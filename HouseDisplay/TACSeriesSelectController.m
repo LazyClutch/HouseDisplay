@@ -53,7 +53,22 @@
 }
 
 - (IBAction)editButtonPressed:(id)sender {
-    
+    if (self.isSelecting) {
+        [self.editButton setTitle:@"选择系列" forState:UIControlStateNormal];
+        self.collectionView.allowsMultipleSelection = NO;
+        NSArray *array = self.collectionView.indexPathsForSelectedItems;
+        NSMutableArray *chosenCata = [[NSMutableArray alloc] init];
+        for (NSIndexPath *indexPath in array) {
+            NSMutableDictionary *dict = [self.seriesInfo objectAtIndex:[indexPath row]];
+            [chosenCata addObject:dict];
+        }
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"chooseSeries" object:chosenCata];
+        [self.view removeFromSuperview];
+    } else {
+        [self.editButton setTitle:@"完成选择" forState:UIControlStateNormal];
+        self.collectionView.allowsMultipleSelection = YES;
+    }
+    [self setIsSelecting:!self.isSelecting];
 }
 
 - (void)loadSeries{
@@ -67,11 +82,18 @@
 
 - (void)loadProduct{
     for (NSMutableDictionary *dict in self.seriesInfo) {
-        NSString *name = [[dict objectForKey:@"number"] URLEncodedString];
-        NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/product.php?catalog_number=%@",kHostAddress,name];
-        NSURL *url = [NSURL URLWithString:requestURL];
-        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
-        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+        NSString *number = [dict objectForKey:@"number"];
+        NSString *name = [number URLEncodedString];
+        for (NSMutableDictionary *catalog in self.roomCatalog) {
+            NSString *cataName = [catalog objectForKey:@"number"];
+            if (![number isEqualToString:cataName]) {
+                NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/product.php?catalog_number=%@",kHostAddress,name];
+                NSLog(@"%@",requestURL);
+                NSURL *url = [NSURL URLWithString:requestURL];
+                NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
+                NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+            }
+        }
     }
 }
 
@@ -136,7 +158,7 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    return [self.seriesInfo count];
+    return [self.seriesDetails count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
@@ -146,7 +168,9 @@
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
-    
+    if (!self.isSelecting) {
+        
+    }
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{

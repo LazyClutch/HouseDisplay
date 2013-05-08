@@ -410,7 +410,7 @@
                     UIImage *thumbImage = [UIImage imageWithData:thumbData];
                     if (thumbImage != nil) {
                         NSMutableDictionary *thumbs = self.thumbnails;
-                        [thumbs setObject:cell.thumbnails.image forKey:imgkey];
+                        [thumbs setObject:thumbImage forKey:imgkey];
                         self.thumbnails = thumbs;
                         [[TACDataCenter sharedInstance] setMenuThumbnails:thumbs];
                         dispatch_async(dispatch_get_main_queue(), ^{
