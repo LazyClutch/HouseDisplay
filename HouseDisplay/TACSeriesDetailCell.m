@@ -14,7 +14,12 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
-        // Initialization code
+        [self.contentView setFrame:CGRectMake(0, 0, 320, 200)];
+        CGRect thumbRect = CGRectMake(0, 0, 320, 200);
+        
+        self.detailImage = [[UIImageView alloc] initWithFrame:thumbRect];
+        
+        [self.contentView addSubview:self.detailImage];
     }
     return self;
 }

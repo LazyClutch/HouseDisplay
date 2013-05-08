@@ -9,6 +9,11 @@
 #import "TACSeriesDetailController.h"
 #import "TACSeriesDetailCell.h"
 
+#define kHostAddress @"10.0.1.22"
+#define kMenuCellWidth  313
+#define kMenuCellHeight 163
+
+
 @interface TACSeriesDetailController ()
 
 @end
@@ -29,6 +34,7 @@
     [super viewDidLoad];
     self.collectionView.backgroundColor = [UIColor clearColor];
     [self.collectionView registerClass:[TACSeriesDetailCell class] forCellWithReuseIdentifier:@"SeriesDetailViewCellIdentifier"];
+    [self.collectionView reloadData];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -36,6 +42,40 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)requestImage:(TACSeriesDetailCell *)cell atIndex:(NSInteger)index{
+    NSMutableArray *products = self.seriesImages;
+    NSMutableDictionary *dict = [self.seriesImages objectAtIndex:index];
+    NSString *photo_id = [dict objectForKey:@"photo_id"];
+    NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/photo.php?id=%@",kHostAddress,photo_id];
+    NSLog(@"%@",requestURL);
+    NSURL *url = [NSURL URLWithString:requestURL];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+    [AFJSONRequestOperation addAcceptableContentTypes:[NSSet setWithObject:@"text/html"]];
+    AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+        NSArray *array = (NSArray *)JSON;
+        NSMutableDictionary *arrayInfo = (NSMutableDictionary *)[array objectAtIndex:0];
+        [products replaceObjectAtIndex:index withObject:dict];
+        NSString *thumb = [arrayInfo objectForKey:@"origion"];
+        NSString *thumbUrl = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,thumb];
+        NSLog(@"%@",thumbUrl);
+        NSString *key = [thumbUrl MD5Hash];
+        NSData *data = [FTWCache objectForKey:key];
+        if (data) {
+            cell.detailImage.image = [UIImage imageWithData:data];
+        } else {
+            NSURL *url = [NSURL URLWithString:thumbUrl];
+            NSData *imgData = [NSData dataWithContentsOfURL:url];
+            UIImage *img = [UIImage imageWithData:imgData];
+            [FTWCache setObject:imgData forKey:key];
+            cell.detailImage.image = img;
+        }
+    } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error,id JSON){
+        NSLog(@"%@",error);
+    }];
+    [operation start];
+    
 }
 
 - (IBAction)returnButtonPressed:(id)sender {
@@ -54,11 +94,17 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     TACSeriesDetailCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SeriesDetailViewCellIdentifier" forIndexPath:indexPath];
-    
+    [self requestImage:cell atIndex:[indexPath row]];
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     
 }
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath{
+    CGSize size = CGSizeMake(kMenuCellWidth, kMenuCellHeight);
+    return size;
+}
+
 @end

@@ -59,6 +59,8 @@
     [super viewWillDisappear:animated];
     self.mainImageView = nil;
     self.jsonTempDataArray = nil;
+    self.shownProduct = nil;
+    self.catalogs = nil;
 }
 
 - (void)didReceiveMemoryWarning

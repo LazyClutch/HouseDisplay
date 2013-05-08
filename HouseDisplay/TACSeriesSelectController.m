@@ -8,6 +8,7 @@
 
 #import "TACSeriesSelectController.h"
 #import "TACSeriesSelectCell.h"
+#import "TACSeriesDetailController.h"
 
 #define kHostAddress @"10.0.1.22"
 #define kMenuCellWidth  313
@@ -15,6 +16,8 @@
 
 
 @interface TACSeriesSelectController ()
+
+@property (strong, nonatomic) TACSeriesDetailController *detailController;
 
 @end
 
@@ -55,8 +58,8 @@
 - (IBAction)editButtonPressed:(id)sender {
     if (self.isSelecting) {
         [self.editButton setTitle:@"选择系列" forState:UIControlStateNormal];
-        self.collectionView.allowsMultipleSelection = NO;
         NSArray *array = self.collectionView.indexPathsForSelectedItems;
+        self.collectionView.allowsMultipleSelection = NO;
         NSMutableArray *chosenCata = [[NSMutableArray alloc] init];
         for (NSIndexPath *indexPath in array) {
             NSMutableDictionary *dict = [self.seriesInfo objectAtIndex:[indexPath row]];
@@ -84,12 +87,6 @@
     for (NSMutableDictionary *dict in self.seriesInfo) {
         NSString *number = [dict objectForKey:@"number"];
         NSString *name = [number URLEncodedString];
-//        for (NSMutableDictionary *catalog in self.roomCatalog) {
-//            NSString *cataName = [catalog objectForKey:@"number"];
-//            if (![number isEqualToString:cataName]) {
-//                
-//            }
-//        }
         NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/product.php?catalog_number=%@",kHostAddress,name];
         NSLog(@"%@",requestURL);
         NSURL *url = [NSURL URLWithString:requestURL];
@@ -170,7 +167,9 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     if (!self.isSelecting) {
-        
+        self.detailController = [[TACSeriesDetailController alloc] init];
+        [self.detailController setSeriesImages:[self.seriesDetails objectAtIndex:[indexPath row]]];
+        [self.view addSubview:self.detailController.view];
     }
 }
 
