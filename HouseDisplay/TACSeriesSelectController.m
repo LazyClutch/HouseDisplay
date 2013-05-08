@@ -84,16 +84,17 @@
     for (NSMutableDictionary *dict in self.seriesInfo) {
         NSString *number = [dict objectForKey:@"number"];
         NSString *name = [number URLEncodedString];
-        for (NSMutableDictionary *catalog in self.roomCatalog) {
-            NSString *cataName = [catalog objectForKey:@"number"];
-            if (![number isEqualToString:cataName]) {
-                NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/product.php?catalog_number=%@",kHostAddress,name];
-                NSLog(@"%@",requestURL);
-                NSURL *url = [NSURL URLWithString:requestURL];
-                NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
-                NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
-            }
-        }
+//        for (NSMutableDictionary *catalog in self.roomCatalog) {
+//            NSString *cataName = [catalog objectForKey:@"number"];
+//            if (![number isEqualToString:cataName]) {
+//                
+//            }
+//        }
+        NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/product.php?catalog_number=%@",kHostAddress,name];
+        NSLog(@"%@",requestURL);
+        NSURL *url = [NSURL URLWithString:requestURL];
+        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
+        NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     }
 }
 
@@ -212,6 +213,11 @@
     if (connection == self.seriesConnection) {
         NSMutableArray *json = [jsonStr JSONValue];
         self.seriesInfo = json;
+        for (NSMutableDictionary *dict in self.roomCatalog) {
+            if ([self.seriesInfo containsObject:dict]) {
+                [self.seriesInfo removeObject:dict];
+            }
+        }
         [self loadProduct];
     } else {
         NSMutableDictionary *json = [jsonStr JSONValue];

@@ -154,8 +154,8 @@
 
 }
 
-- (void)loadProduct{
-    for (NSMutableDictionary *dict in self.catalogs) {
+- (void)loadProduct:(NSMutableArray *)array{
+    for (NSMutableDictionary *dict in array) {
         NSString *number = [[dict objectForKey:@"number"] URLEncodedString];
         NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/product.php?catalog_number=%@",kHostAddress,number];
         NSURL *url = [NSURL URLWithString:requestURL];
@@ -338,11 +338,11 @@
 
 - (void)seriesDisChosen:(NSNotification *)notification{
     NSMutableArray *array = (NSMutableArray *)[notification object];
-    NSMutableArray *combineArray = self.catalogs;
-    for (NSMutableDictionary *dict in array) {
-        [combineArray addObject:dict];
-    }
-    [self loadProduct];
+//    NSMutableArray *combineArray = self.catalogs;
+//    for (NSMutableDictionary *dict in array) {
+//        [combineArray addObject:dict];
+//    }
+    [self loadProduct:array];
 }
 
 #pragma mark Load Image Methods
@@ -463,7 +463,9 @@
             allPro = [[NSMutableArray alloc] init];
         }
         for (NSMutableDictionary *dict in json) {
-            [allPro addObject:dict];
+            if (![allPro containsObject:dict]) {
+                [allPro addObject:dict];
+            }
         }
         self.shownProduct = allPro;
         
@@ -493,7 +495,7 @@
         [self initScene];
         self.firstLogin = NO;
     }
-    [self loadProduct];
+    [self loadProduct:self.catalogs];
 }
 
 #pragma mark Cover View Methods
