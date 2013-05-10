@@ -226,6 +226,7 @@
 
     self.returnButton.hidden = YES;
     self.setCoverButton.hidden = YES;
+    self.searchBar.hidden = YES;
     
     UIGraphicsBeginImageContext(self.view.bounds.size);     
     [self.view.layer renderInContext:UIGraphicsGetCurrentContext()];
@@ -246,6 +247,7 @@
     
     self.returnButton.hidden = NO;
     self.setCoverButton.hidden = NO;
+    self.searchBar.hidden = NO;
       
     self.hud = [MBProgressHUD showHUDAddedTo:self.view animated:YES];
     self.hud.customView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"37x-Checkmark.png"]];
@@ -298,6 +300,7 @@
 
 - (void)reDraw{
     [self.setCoverButton setTitle:@"完成" forState:UIControlStateNormal];
+    self.coverFlow.userInteractionEnabled = NO;
     
     self.mainImageView.userInteractionEnabled = YES;
     CGRect gripFrame = doorPicRect;
@@ -318,6 +321,8 @@
 
 - (void)reDrawDidFinish{
     self.mainImageView.userInteractionEnabled = NO;
+    self.coverFlow.userInteractionEnabled = YES;
+    
     doorPicRect = CGRectMake(self.lastResizableView.frame.origin.x, self.lastResizableView.frame.origin.y, self.lastResizableView.bounds.size.width, self.lastResizableView.bounds.size.height);
     NSString *x = [NSString stringWithFormat:@"%f",self.lastResizableView.frame.origin.x];
     NSString *y = [NSString stringWithFormat:@"%f",self.lastResizableView.frame.origin.y];
@@ -330,6 +335,7 @@
     [dict setObject:h forKey:@"displayDoorHeight"];
     UIImage *image = self.displayDoorImageView.image;
     UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
+    
     self.displayDoorImageView = imageView;
     self.displayDoorImageView.image = image;
     [self.view insertSubview:self.displayDoorImageView atIndex:2];
