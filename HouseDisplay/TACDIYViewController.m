@@ -463,6 +463,7 @@
         NSMutableArray *json = [jsonStr JSONValue];
     } else {
         [self productDidLoad];
+        [self resetSearch];
         [self.coverFlow reloadData];
     }
     [self setHudFinishStatus:@"数据读取完毕" withTime:1.0];
