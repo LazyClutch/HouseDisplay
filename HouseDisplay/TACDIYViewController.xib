@@ -118,6 +118,7 @@
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<int key="IBUIContentMode">3</int>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
+						<bool key="IBShowsCancelButton">YES</bool>
 						<reference key="IBTintColor" ref="893706562"/>
 						<object class="IBUITextInputTraits" key="IBTextInputTraits">
 							<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>

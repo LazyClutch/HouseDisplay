@@ -48,6 +48,7 @@
     [self showBackgroundImage];
     [self loadViewInfo];
     [self loadCatalog];
+    [self resetSearch];
     
     self.coverFlow.type = iCarouselTypeLinear;
     [self.coverFlow reloadData];
@@ -360,7 +361,7 @@
     if (self.isEditing) {
         return;
     } else {
-        NSString *dataUrl = [[self.shownProduct objectAtIndex:index] objectForKey:@"origion"];
+        NSString *dataUrl = [[self.shownProductForSearch objectAtIndex:index] objectForKey:@"origion"];
         NSString *url = [NSString stringWithFormat:@"http://%@/db_image/%@",kHostAddress,dataUrl];
         NSString *key = [url MD5Hash];
         NSData *data = [FTWCache objectForKey:key];
@@ -461,24 +462,7 @@
         self.jsonTempDataArray = nil;
         NSMutableArray *json = [jsonStr JSONValue];
     } else {
-        NSString *jsonStr = [[NSString alloc] init];
-        for (NSString *str in self.jsonTempDataArray) {
-            jsonStr = [jsonStr stringByAppendingString:str];
-        }
-        self.jsonTempDataArray = nil;
-        NSMutableArray *json = [jsonStr JSONValue];
-        NSMutableArray *allPro = self.shownProduct;
-        if (!allPro) {
-            allPro = [[NSMutableArray alloc] init];
-        }
-        for (NSMutableDictionary *dict in json) {
-            if (![allPro containsObject:dict]) {
-                [allPro addObject:dict];
-            }
-        }
-        self.shownProduct = allPro;
-        
-        [self updateDataCenter:self.shownProduct];
+        [self productDidLoad];
         [self.coverFlow reloadData];
     }
     [self setHudFinishStatus:@"数据读取完毕" withTime:1.0];
@@ -507,10 +491,42 @@
     [self loadProduct:self.catalogs];
 }
 
+- (void)productDidLoad{
+    NSString *jsonStr = [[NSString alloc] init];
+    for (NSString *str in self.jsonTempDataArray) {
+        jsonStr = [jsonStr stringByAppendingString:str];
+    }
+    self.jsonTempDataArray = nil;
+    NSMutableArray *json = [jsonStr JSONValue];
+    NSMutableArray *allPro = self.shownProduct;
+    if (!allPro) {
+        allPro = [[NSMutableArray alloc] init];
+    }
+    BOOL isEdit = YES;
+    for (NSMutableDictionary *dict in json) {
+        NSString *key = [dict objectForKey:@"photo_id"];
+        for (NSMutableDictionary *elem in allPro) {
+            NSString *photoId = [elem objectForKey:@"photo_id"];
+            if ([photoId isEqualToString:key]) {
+                isEdit = NO;
+                break;
+            }
+        }
+        if (isEdit) {
+            [allPro addObject:dict];
+        } else {
+            isEdit = YES;
+        }
+    }
+    self.shownProduct = allPro;
+    
+    [self updateDataCenter:self.shownProduct];
+}
+
 #pragma mark Cover View Methods
 
 - (NSUInteger)numberOfItemsInCarousel:(iCarousel *)carousel{
-    return [self.shownProduct count];
+    return [self.shownProductForSearch count];
 }
 
 - (NSUInteger)numberOfVisibleItemsInCarousel:(iCarousel *)carousel{
@@ -531,19 +547,13 @@
     } else {
         imageView = [[view subviews] lastObject];
     }
-    if (self.isSearching) {
-        
-        self.isSearching = NO;
-    } else {
-        [indicator setBounds:view.bounds];
-        [indicator setHidesWhenStopped:YES];
-        [indicator startAnimating];
-        dispatch_async(dispatch_get_global_queue(0, 0), ^{
-            [self requestImageAtIndex:index forView:imageView inArray:self.shownProduct];
-        });
-        [indicator stopAnimating];
-    }
-    
+    [indicator setBounds:view.bounds];
+    [indicator setHidesWhenStopped:YES];
+    [indicator startAnimating];
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        [self requestImageAtIndex:index forView:imageView inArray:self.shownProductForSearch];
+    });
+    [indicator stopAnimating];
     return view;
 }
 
@@ -591,19 +601,27 @@
 }
 
 - (void)handleSearch:(NSString *)text{
+    [self setHudStatus:@"正在搜索"];
     NSMutableArray *objectToRemove = [[NSMutableArray alloc] init];
     for (NSMutableDictionary *dict in self.shownProductForSearch) {
-        NSString *name = [dict objectForKey:@""]; //todo
+        NSString *name = [dict objectForKey:@"name"];
         if ([name rangeOfString:text options:NSCaseInsensitiveSearch].location == NSNotFound) {
             [objectToRemove addObject:dict];
         }
     }
     [self.shownProductForSearch removeObjectsInArray:objectToRemove];
     [self.coverFlow reloadData];
+    [self setHudFinishStatus:@"搜索完毕" withTime:0.5];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    [self resetSearch];
 }
 
 - (void)resetSearch{
     self.shownProductForSearch = [self.shownProduct mutableDeepCopy];
+    [self.coverFlow reloadData];
+    [self.searchBar resignFirstResponder];
 }
 
 #pragma mark Dropdown Methods
