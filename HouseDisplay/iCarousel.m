@@ -1065,7 +1065,6 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
     {
         view = [dataSource carousel:self viewForItemAtIndex:index reusingView:[self dequeueItemView]];
     }
-    
 	//deprecated code path
 	else
     {

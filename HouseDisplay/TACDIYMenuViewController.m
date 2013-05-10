@@ -279,6 +279,7 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [alert show];
     self.hud.hidden = YES;
+    [self.collectionView reloadData];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data{

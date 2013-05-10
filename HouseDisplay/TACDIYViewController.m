@@ -82,7 +82,7 @@
             [[NSNotificationCenter defaultCenter] removeObserver:self name:@"dropDown" object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dropDownCellSelected:) name:@"dropDown" object:nil];
             self.dropDown = [[NIDropDown alloc] init];
-            CGFloat height = 240;
+            CGFloat height = 200;
             [self.dropDown showDropDown:sender withHeight:height usingArray:self.dropDownMenu];
             self.dropDown.delegate = self;
         } else {
@@ -102,8 +102,9 @@
     self.isInCell = NO;
     self.firstLogin = YES;
     self.isEditing = NO;
+    self.isSearching = NO;
     self.jsonTempDataArray = [[NSMutableArray alloc] init];
-    self.dropDownMenu = @[@"设为封面",@"选择产品系列",@"重新框选区域",@"进入编辑模式",@"搜索产品",@"刷新数据"];
+    self.dropDownMenu = @[@"设为封面",@"选择产品系列",@"重新框选区域",@"进入编辑模式",@"刷新数据"];
     self.shownProduct = [[NSMutableArray alloc] init];
 }
 
@@ -129,8 +130,8 @@
 
 - (void)showBackgroundImage{
     
-    self.mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
-    self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1000, 600)];
+    self.mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1024, 600)];
+    self.frontImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 1024, 600)];
     
     NSMutableDictionary *dict = [[TACDataCenter sharedInstance] backgrounds];
     NSString *key = [NSString stringWithFormat:@"%d",self.viewTag - 1];
@@ -382,9 +383,9 @@
     }
 }
 
-- (void)requestImageAtIndex:(NSInteger)index forView:(UIImageView *)imageView{
-    NSMutableArray *products = self.shownProduct;
-    NSMutableDictionary *dict = [self.shownProduct objectAtIndex:index];
+- (void)requestImageAtIndex:(NSInteger)index forView:(UIImageView *)imageView inArray:(NSMutableArray *)shownProducts{
+    NSMutableArray *products = shownProducts;
+    NSMutableDictionary *dict = [shownProducts objectAtIndex:index];
     NSString *photo_id = [dict objectForKey:@"photo_id"];
     NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/photo.php?id=%@",kHostAddress,photo_id];
     NSURL *url = [NSURL URLWithString:requestURL];
@@ -524,15 +525,18 @@
     } else {
         imageView = [[view subviews] lastObject];
     }
-    
-    [indicator setBounds:view.bounds];
-    [indicator setHidesWhenStopped:YES];
-    [indicator startAnimating];
-    dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self requestImageAtIndex:index forView:imageView];
-    });
-    [indicator stopAnimating];
-    //save cache
+    if (self.isSearching) {
+        
+        self.isSearching = NO;
+    } else {
+        [indicator setBounds:view.bounds];
+        [indicator setHidesWhenStopped:YES];
+        [indicator startAnimating];
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+            [self requestImageAtIndex:index forView:imageView inArray:self.shownProduct];
+        });
+        [indicator stopAnimating];
+    }
     
     return view;
 }
@@ -572,6 +576,30 @@
     [self.lastResizableView hideEditingHandles];
 }
 
+#pragma mark Searbar Delegate Methods
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+    self.isSearching = YES;
+    NSString *text = [searchBar text];
+    [self handleSearch:text];
+    [searchBar resignFirstResponder];
+}
+
+- (void)handleSearch:(NSString *)text{
+    NSMutableArray *objectToRemove = [[NSMutableArray alloc] init];
+    for (NSMutableDictionary *dict in self.shownProductForSearch) {
+        NSString *name = [dict objectForKey:@""]; //todo
+        if ([name rangeOfString:text options:NSCaseInsensitiveSearch].location == NSNotFound) {
+            [objectToRemove addObject:dict];
+        }
+    }
+    [self.shownProductForSearch removeObjectsInArray:objectToRemove];
+    [self.coverFlow reloadData];
+}
+
+- (void)resetSearch{
+    self.shownProductForSearch = [self.shownProduct mutableDeepCopy];
+}
+
 #pragma mark Dropdown Methods
 - (void)niDropDownDelegateMethod:(NIDropDown *)sender{
     self.dropDown = nil;
@@ -606,9 +634,6 @@
             [self toggleEdit];
             break;
         case 4:
-            //[self searchProduct];
-            break;
-        case 5:
             self.jsonTempDataArray = nil;
             [self loadCatalog];
             break;
