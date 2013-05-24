@@ -60,7 +60,12 @@
             [self.imgPopoverController presentPopoverFromRect:CGRectMake(413, -30, 1, 1) inView:self permittedArrowDirections:UIPopoverArrowDirectionUp animated:YES];
             self.multipleTouchEnabled = NO;
         } else {
+            UIDevice *currentDevice = [UIDevice currentDevice];
+            while ([currentDevice isGeneratingDeviceOrientationNotifications])
+                [currentDevice endGeneratingDeviceOrientationNotifications];
             [self.parentViewController presentViewController:picker animated:YES completion:nil];
+            while ([currentDevice isGeneratingDeviceOrientationNotifications])
+                [currentDevice endGeneratingDeviceOrientationNotifications];
         }
         
     } else {
