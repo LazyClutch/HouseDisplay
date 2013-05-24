@@ -15,7 +15,7 @@
 #define kGlass @"glass"
 #define kDisplay @"display"
 #define kSelect @"select"
-#define kHostAddress @"10.0.1.22"
+#define kHostAddress @"115.28.39.103"
 #define currentState @"door"
 #define DEFAULT_RECT CGRectMake(100,100,250,250)
 
@@ -107,6 +107,7 @@
     self.jsonTempDataArray = [[NSMutableArray alloc] init];
     self.dropDownMenu = @[@"设为封面",@"选择产品系列",@"重新框选区域",@"进入编辑模式",@"刷新数据"];
     self.shownProduct = [[NSMutableArray alloc] init];
+    self.loadImage = [UIImage imageNamed:@"loading.png"];
 }
 
 
@@ -542,6 +543,7 @@
     if (view == nil) {
         view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 80, 130)];
         imageView = [[UIImageView alloc] initWithFrame:view.bounds];
+        imageView.image = self.loadImage;
         imageView.hidden = NO;
         [view addSubview:imageView];
         [view addSubview:indicator];

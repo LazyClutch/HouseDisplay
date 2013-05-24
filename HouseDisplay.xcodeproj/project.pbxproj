@@ -99,6 +99,7 @@
 		63862B861711DB7700F031EA /* content_background@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63862B821711DB7700F031EA /* content_background@2x.jpg */; };
 		63862B871711DB7700F031EA /* diy_banner.png in Resources */ = {isa = PBXBuildFile; fileRef = 63862B831711DB7700F031EA /* diy_banner.png */; };
 		63862B881711DB7700F031EA /* diy_banner@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63862B841711DB7700F031EA /* diy_banner@2x.png */; };
+		63875033174FAA940014DB25 /* loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 63875032174FAA940014DB25 /* loading.png */; };
 		63A2B70B170AEF9900CA6AD9 /* menu_360.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63A2B6F5170AEF9900CA6AD9 /* menu_360.jpg */; };
 		63A2B70C170AEF9900CA6AD9 /* menu_360@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63A2B6F6170AEF9900CA6AD9 /* menu_360@2x.jpg */; };
 		63A2B70D170AEF9900CA6AD9 /* menu_about.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63A2B6F7170AEF9900CA6AD9 /* menu_about.jpg */; };
@@ -304,6 +305,7 @@
 		63862B821711DB7700F031EA /* content_background@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "content_background@2x.jpg"; sourceTree = "<group>"; };
 		63862B831711DB7700F031EA /* diy_banner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = diy_banner.png; sourceTree = "<group>"; };
 		63862B841711DB7700F031EA /* diy_banner@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "diy_banner@2x.png"; sourceTree = "<group>"; };
+		63875032174FAA940014DB25 /* loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading.png; sourceTree = "<group>"; };
 		63A2B6F5170AEF9900CA6AD9 /* menu_360.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = menu_360.jpg; sourceTree = "<group>"; };
 		63A2B6F6170AEF9900CA6AD9 /* menu_360@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "menu_360@2x.jpg"; sourceTree = "<group>"; };
 		63A2B6F7170AEF9900CA6AD9 /* menu_about.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = menu_about.jpg; sourceTree = "<group>"; };
@@ -693,6 +695,7 @@
 		63746DB71709C6CC00DC7874 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				63875032174FAA940014DB25 /* loading.png */,
 				6360E81D1723CE8D0049AAED /* addMark.png */,
 				63A2B729170AF5D100CA6AD9 /* DIY */,
 				63A2B6F4170AEF7400CA6AD9 /* Menu */,
@@ -961,6 +964,7 @@
 				6302D44B1737E42A0048781B /* TACSeriesSelectCell.xib in Resources */,
 				6302D4501737EA2A0048781B /* TACSeriesDetailController.xib in Resources */,
 				6302D4551737EA690048781B /* TACSeriesDetailCell.xib in Resources */,
+				63875033174FAA940014DB25 /* loading.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1125,6 +1129,7 @@
 				GCC_PREFIX_HEADER = "HouseDisplay/HouseDisplay-Prefix.pch";
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "HouseDisplay/HouseDisplay-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1138,6 +1143,7 @@
 				GCC_PREFIX_HEADER = "HouseDisplay/HouseDisplay-Prefix.pch";
 				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = "HouseDisplay/HouseDisplay-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

@@ -36,6 +36,7 @@
 @property (strong, nonatomic) UIImageView *mainImageView;
 @property (strong, nonatomic) UIImageView *displayDoorImageView;
 @property (strong, nonatomic) UIImageView *frontImageView;
+@property (strong, nonatomic) UIImage *loadImage;
 
 
 @property (strong, nonatomic) NIDropDown *dropDown;

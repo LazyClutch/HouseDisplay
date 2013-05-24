@@ -17,7 +17,7 @@
 #define kMenuCellHeight 163
 #define kActionSheetDelete 10
 #define kActionSheetSelect 6
-#define kHostAddress @"10.0.1.22"
+#define kHostAddress @"115.28.39.103"
 
 @interface TACDIYMenuViewController ()
 
