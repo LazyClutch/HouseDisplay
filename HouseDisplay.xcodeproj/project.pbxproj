@@ -100,6 +100,8 @@
 		63862B871711DB7700F031EA /* diy_banner.png in Resources */ = {isa = PBXBuildFile; fileRef = 63862B831711DB7700F031EA /* diy_banner.png */; };
 		63862B881711DB7700F031EA /* diy_banner@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63862B841711DB7700F031EA /* diy_banner@2x.png */; };
 		63875033174FAA940014DB25 /* loading.png in Resources */ = {isa = PBXBuildFile; fileRef = 63875032174FAA940014DB25 /* loading.png */; };
+		63875036174FBF240014DB25 /* TACDIYSelectViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 63875035174FBF240014DB25 /* TACDIYSelectViewCell.m */; };
+		63875038174FBF380014DB25 /* TACDIYSelectViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63875037174FBF380014DB25 /* TACDIYSelectViewCell.xib */; };
 		63A2B70B170AEF9900CA6AD9 /* menu_360.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63A2B6F5170AEF9900CA6AD9 /* menu_360.jpg */; };
 		63A2B70C170AEF9900CA6AD9 /* menu_360@2x.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63A2B6F6170AEF9900CA6AD9 /* menu_360@2x.jpg */; };
 		63A2B70D170AEF9900CA6AD9 /* menu_about.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 63A2B6F7170AEF9900CA6AD9 /* menu_about.jpg */; };
@@ -306,6 +308,9 @@
 		63862B831711DB7700F031EA /* diy_banner.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = diy_banner.png; sourceTree = "<group>"; };
 		63862B841711DB7700F031EA /* diy_banner@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "diy_banner@2x.png"; sourceTree = "<group>"; };
 		63875032174FAA940014DB25 /* loading.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = loading.png; sourceTree = "<group>"; };
+		63875034174FBF240014DB25 /* TACDIYSelectViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACDIYSelectViewCell.h; sourceTree = "<group>"; };
+		63875035174FBF240014DB25 /* TACDIYSelectViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACDIYSelectViewCell.m; sourceTree = "<group>"; };
+		63875037174FBF380014DB25 /* TACDIYSelectViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACDIYSelectViewCell.xib; sourceTree = "<group>"; };
 		63A2B6F5170AEF9900CA6AD9 /* menu_360.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = menu_360.jpg; sourceTree = "<group>"; };
 		63A2B6F6170AEF9900CA6AD9 /* menu_360@2x.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "menu_360@2x.jpg"; sourceTree = "<group>"; };
 		63A2B6F7170AEF9900CA6AD9 /* menu_about.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = menu_about.jpg; sourceTree = "<group>"; };
@@ -772,6 +777,9 @@
 				6348C45D1710F3C200425773 /* TACDIYMenuViewCell.xib */,
 				63131164172398BC007C326F /* TACDIYMenuViewCell.h */,
 				63131165172398BC007C326F /* TACDIYMenuViewCell.m */,
+				63875034174FBF240014DB25 /* TACDIYSelectViewCell.h */,
+				63875035174FBF240014DB25 /* TACDIYSelectViewCell.m */,
+				63875037174FBF380014DB25 /* TACDIYSelectViewCell.xib */,
 			);
 			name = DIY;
 			sourceTree = "<group>";
@@ -965,6 +973,7 @@
 				6302D4501737EA2A0048781B /* TACSeriesDetailController.xib in Resources */,
 				6302D4551737EA690048781B /* TACSeriesDetailCell.xib in Resources */,
 				63875033174FAA940014DB25 /* loading.png in Resources */,
+				63875038174FBF380014DB25 /* TACDIYSelectViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1038,6 +1047,7 @@
 				6302D44F1737EA2A0048781B /* TACSeriesDetailController.m in Sources */,
 				6302D4531737EA530048781B /* TACSeriesDetailCell.m in Sources */,
 				63CA483B173C8769002F0DC6 /* NSMutableArray+MutableDeepCopy.m in Sources */,
+				63875036174FBF240014DB25 /* TACDIYSelectViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

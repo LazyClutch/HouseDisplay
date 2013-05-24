@@ -8,6 +8,7 @@
 
 #import "TACDIYViewController.h"
 #import "TACSeriesSelectController.h"
+#import "TACDIYSelectViewCell.h"
 
 
 #define kItemWidth 110
@@ -391,7 +392,7 @@
     }
 }
 
-- (void)requestImageAtIndex:(NSInteger)index forView:(UIImageView *)imageView inArray:(NSMutableArray *)shownProducts{
+- (void)requestImageAtIndex:(NSInteger)index forView:(TACDIYSelectViewCell *)view inArray:(NSMutableArray *)shownProducts{
     NSMutableArray *products = shownProducts;
     NSMutableDictionary *dict = [shownProducts objectAtIndex:index];
     NSString *photo_id = [dict objectForKey:@"photo_id"];
@@ -413,13 +414,14 @@
             NSURL *url = [NSURL URLWithString:thumbUrl];
             NSData *data = [FTWCache objectForKey:key];
             if (data) {
-                imageView.image = [UIImage imageWithData:data];
+                view.imageView.image = [UIImage imageWithData:data];
             } else {
                 NSData *imgData = [NSData dataWithContentsOfURL:url];
                 UIImage *img = [UIImage imageWithData:imgData];
                 [FTWCache setObject:imgData forKey:key];
-                imageView.image = img;
+                view.imageView.image = img;
             }
+            view.labelView.text = [dict objectForKey:@"product_describe"];
         }
     } failure:nil];
     [operation start];
@@ -535,29 +537,22 @@
     return 15;
 }
 
-- (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(UIView *)view{
+- (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(TACDIYSelectViewCell *)view{
     
+    TACDIYSelectViewCell *cell;
     //init view
-    UIImageView *imageView = nil;
     UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    if (view == nil) {
-        view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 80, 130)];
-        imageView = [[UIImageView alloc] initWithFrame:view.bounds];
-        imageView.image = self.loadImage;
-        imageView.hidden = NO;
-        [view addSubview:imageView];
-        [view addSubview:indicator];
-    } else {
-        imageView = [[view subviews] lastObject];
-    }
+    if (cell == nil) {
+        cell = [[TACDIYSelectViewCell alloc] init];
+    } 
     [indicator setBounds:view.bounds];
     [indicator setHidesWhenStopped:YES];
     [indicator startAnimating];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self requestImageAtIndex:index forView:imageView inArray:self.shownProductForSearch];
+        [self requestImageAtIndex:index forView:cell inArray:self.shownProductForSearch];
     });
     [indicator stopAnimating];
-    return view;
+    return cell;
 }
 
 - (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index{
