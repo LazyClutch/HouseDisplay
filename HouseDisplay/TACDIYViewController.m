@@ -281,11 +281,11 @@
 }
 
 - (void)deleteProduct:(NSInteger)index{
-    NSMutableArray *dict = self.shownProduct;
+    NSMutableArray *dict = self.shownProductForSearch;
     [dict removeObjectAtIndex:index];
     
-    self.shownProduct = dict;
-    self.shownProductForSearch = self.shownProduct;
+    self.shownProductForSearch = dict;
+    self.shownProduct = self.shownProductForSearch;
     [self updateDataCenter:self.shownProduct];
     [self.coverFlow removeItemAtIndex:index animated:YES];
 }
@@ -395,7 +395,7 @@
     }
 }
 
-- (void)requestImageAtIndex:(NSInteger)index forView:(TACDIYSelectViewCell *)view inArray:(NSMutableArray *)shownProducts{
+- (void)requestImageAtIndex:(NSInteger)index forImageView:(UIImageView *)imageView andLabel:(UILabel *)labelView inArray:(NSMutableArray *)shownProducts{
     NSMutableArray *products = shownProducts;
     NSMutableDictionary *dict = [shownProducts objectAtIndex:index];
     NSString *photo_id = [dict objectForKey:@"photo_id"];
@@ -417,14 +417,14 @@
             NSURL *url = [NSURL URLWithString:thumbUrl];
             NSData *data = [FTWCache objectForKey:key];
             if (data) {
-                view.imageView.image = [UIImage imageWithData:data];
+                imageView.image = [UIImage imageWithData:data];
             } else {
                 NSData *imgData = [NSData dataWithContentsOfURL:url];
                 UIImage *img = [UIImage imageWithData:imgData];
                 [FTWCache setObject:imgData forKey:key];
-                view.imageView.image = img;
+                imageView.image = img;
             }
-            view.labelView.text = [dict objectForKey:@"product_describe"];
+            labelView.text = [dict objectForKey:@"product_describe"];
         }
         if (index == (self.productToShow - 1)) {
             [self setHudFinishStatus:@"加载完毕" withTime:0.5];
@@ -551,23 +551,29 @@
     return 15;
 }
 
-- (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(TACDIYSelectViewCell *)view{
-
+- (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(UIView *)view{
+    UIImageView *imageView;
+    UILabel *labelView;
     
-    TACDIYSelectViewCell *cell;
     //init view
     UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleGray];
-    if (cell == nil) {
-        cell = [[TACDIYSelectViewCell alloc] init];
-    } 
+    if (view == nil) {
+        view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 80, 130)];
+        imageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 80, 100)];
+        labelView = [[UILabel alloc] initWithFrame:CGRectMake(0, 110, 80, 20)];
+        labelView.textAlignment = NSTextAlignmentCenter;
+        [view addSubview:imageView];
+        [view addSubview:labelView];
+    }
     [indicator setBounds:view.bounds];
     [indicator setHidesWhenStopped:YES];
     [indicator startAnimating];
+    [view addSubview:indicator];
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
-        [self requestImageAtIndex:index forView:cell inArray:self.shownProductForSearch];
+        [self requestImageAtIndex:index forImageView:imageView andLabel:labelView inArray:self.shownProductForSearch];
     });
     [indicator stopAnimating];
-    return cell;
+    return view;
 }
 
 - (void)carousel:(iCarousel *)carousel didSelectItemAtIndex:(NSInteger)index{

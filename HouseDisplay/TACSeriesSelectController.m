@@ -142,6 +142,9 @@
         }
         cell.description.textAlignment = NSTextAlignmentCenter;
         cell.description.text = labelTitle;
+        if (index == ([self.seriesDetails count] - 1)) {
+            [self setHudFinishStatus:@"读取完毕" withTime:0.5];
+        }
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error,id JSON){
         NSLog(@"%@",error);
     }];
@@ -163,9 +166,6 @@
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
-    if ([indexPath row] == ([self.seriesDetails count] - 1)) {
-        [self setHudFinishStatus:@"读取完毕" withTime:0.5];
-    }
     TACSeriesSelectCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SeriesViewCellIdentifier" forIndexPath:indexPath];
     [self requestCover:cell atIndex:[indexPath row]];
     return cell;
