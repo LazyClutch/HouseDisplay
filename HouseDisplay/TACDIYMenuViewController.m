@@ -185,6 +185,14 @@
     [dict writeToFile:filePath atomically:YES];
 }
 
+- (void)writeSceneToFile{
+    [self setHudStatus:@"正在保存"];
+    [self writeThumbnailToFile];
+    [self writeInformationToFile];
+    [self writeBackgroundsToFile];
+    [self setHudFinishStatus:@"保存完毕" withTime:0.5];
+}
+
 - (NSString *)dataFilePath:(NSString *)fileName{
     NSArray *path = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentDict = [path objectAtIndex:0];
@@ -253,9 +261,7 @@
 }
 
 - (void)saveData:(NSNotification *)notification{
-    [self writeThumbnailToFile];
-    [self writeInformationToFile];
-    [self writeBackgroundsToFile];
+    [self writeSceneToFile];
     [self writeShownProductToFile];
 }
 
@@ -279,7 +285,7 @@
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [alert show];
     self.hud.hidden = YES;
-    [self.collectionView reloadData];
+    [self.view removeFromSuperview];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data{
@@ -512,6 +518,7 @@
     [self.collectionView reloadData];
     
     [self insertItemForDetail:dict];
+    [self writeSceneToFile];
 }
 
 - (void)insertItemForDetail:(NSMutableDictionary *)dict{
@@ -590,8 +597,6 @@
             [self modifyDataByDelete];
             NSArray *array = [NSArray arrayWithObject:lastSelectedIndex];
             [self.collectionView deleteItemsAtIndexPaths:array];
-            [self writeThumbnailToFile];
-            [self writeInformationToFile];
             [self.toggleButton setTitle:@"编辑" forState:UIControlStateNormal];
             self.isDeleting = NO;
         }
@@ -611,6 +616,7 @@
     [[TACDataCenter sharedInstance] setViewsInformation:view];
     [[TACDataCenter sharedInstance] setMenuThumbnails:thumbnails];
     [[TACDataCenter sharedInstance] setBackgrounds:backgrounds];
+    [self writeSceneToFile];
 }
 
 @end

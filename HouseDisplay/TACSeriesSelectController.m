@@ -156,10 +156,16 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
+    if ([self.seriesDetails count] == 0) {
+        [self setHudFinishStatus:@"读取完毕" withTime:0.5];
+    }
     return [self.seriesDetails count];
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
+    if ([indexPath row] == ([self.seriesDetails count] - 1)) {
+        [self setHudFinishStatus:@"读取完毕" withTime:0.5];
+    }
     TACSeriesSelectCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"SeriesViewCellIdentifier" forIndexPath:indexPath];
     [self requestCover:cell atIndex:[indexPath row]];
     return cell;
@@ -225,7 +231,6 @@
         [array addObject:json];
         [self.collectionView reloadData];
     }
-    [self setHudFinishStatus:@"数据读取完毕" withTime:1.0];
 }
 
 @end

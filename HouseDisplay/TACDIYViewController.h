@@ -56,6 +56,7 @@
 @property (strong, nonatomic) NSURLConnection *productConnection;
 
 @property NSInteger viewTag;
+@property NSInteger productToShow;
 @property BOOL firstLogin;
 @property BOOL isEditing;
 @property BOOL isInCell;

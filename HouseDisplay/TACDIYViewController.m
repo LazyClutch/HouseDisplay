@@ -63,6 +63,7 @@
     self.jsonTempDataArray = nil;
     self.shownProduct = nil;
     self.catalogs = nil;
+    self.productToShow = 0;
 }
 
 - (void)didReceiveMemoryWarning
@@ -92,7 +93,11 @@
             self.dropDown = nil;
         }
     } else {
-        [self reDrawDidFinish];
+        if (self.isEditing) {
+            [self setIsEditing:!self.isEditing];
+        } else {
+            [self reDrawDidFinish];
+        }
         [button setTitle:@"用户选项" forState:UIControlStateNormal];                                      
     }
 }
@@ -155,12 +160,11 @@
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     self.catalogConnection = connection;
-    NSString *text = @"正在请求数据";
-    [self setHudStatus:text];
-
 }
 
 - (void)loadProduct:(NSMutableArray *)array{
+    NSString *text = @"正在加载数据";
+    [self setHudStatus:text];
     for (NSMutableDictionary *dict in array) {
         NSString *number = [[dict objectForKey:@"number"] URLEncodedString];
         NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/product.php?catalog_number=%@",kHostAddress,number];
@@ -260,17 +264,12 @@
 }
 
 - (void)toggleEdit{
-    NSMutableArray *array = [[NSMutableArray alloc] initWithArray:self.dropDownMenu];
     if (!self.isEditing) {
-        [array replaceObjectAtIndex:3 withObject:@"完成编辑"];
+        [self.setCoverButton setTitle:@"完成" forState:UIControlStateNormal];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"注意" message:@"已进入编辑模式，将图片拖出屏幕下方可删除图片" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles: nil];
         [alert show];
-    } else {
-        [array replaceObjectAtIndex:3 withObject:@"进入编辑模式"];
-        
     }
     [self setIsEditing:!self.isEditing];
-    self.dropDownMenu = array;
 }
 
 - (void)chooseSeries{
@@ -286,6 +285,7 @@
     [dict removeObjectAtIndex:index];
     
     self.shownProduct = dict;
+    self.shownProductForSearch = self.shownProduct;
     [self updateDataCenter:self.shownProduct];
     [self.coverFlow removeItemAtIndex:index animated:YES];
 }
@@ -350,11 +350,16 @@
 
 - (void)seriesDisChosen:(NSNotification *)notification{
     NSMutableArray *array = (NSMutableArray *)[notification object];
-//    NSMutableArray *combineArray = self.catalogs;
-//    for (NSMutableDictionary *dict in array) {
-//        [combineArray addObject:dict];
-//    }
-    [self loadProduct:array];
+    NSMutableArray *combineArray = self.catalogs;
+    for (NSMutableDictionary *dict in array) {
+        self.productToShow += [dict count];
+        [combineArray addObject:dict];
+    }
+    if ([array count] == 0) {
+        [self setHudFinishStatus:@"读取完毕" withTime:0.5];
+    } else {
+        [self loadProduct:array];
+    }
 }
 
 #pragma mark Load Image Methods
@@ -372,7 +377,6 @@
             if (data) {
                 image = [UIImage imageWithData:data];
             } else {
-                [self setHudStatus:@"正在加载"];
                 NSURL *imgUrl = [NSURL URLWithString:url];
                 NSData *imgData = [NSData dataWithContentsOfURL:imgUrl];
                 [FTWCache setObject:imgData forKey:key];
@@ -383,7 +387,6 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 UIImageView *imageView = [[UIImageView alloc] initWithFrame:doorPicRect];
                 imageView.image = image;
-                [self setHudFinishStatus:@"加载完毕" withTime:0.2];
                 
                 self.displayDoorImageView = imageView;
                 [self.view insertSubview:self.displayDoorImageView atIndex:2];
@@ -423,6 +426,10 @@
             }
             view.labelView.text = [dict objectForKey:@"product_describe"];
         }
+        if (index == (self.productToShow - 1)) {
+            [self setHudFinishStatus:@"加载完毕" withTime:0.5];
+            self.hud = nil;
+        }
     } failure:nil];
     [operation start];
 }
@@ -457,6 +464,7 @@
 - (void) connectionDidFinishLoading: (NSURLConnection*) connection {
     if (connection == self.catalogConnection) {
         [self catalogDidLoad];
+        [self setHudFinishStatus:@"读取完毕" withTime:0.5];
     } else if(connection == self.productConnection){
         NSString *jsonStr = [[NSString alloc] init];
         for (NSString *str in self.jsonTempDataArray) {
@@ -469,7 +477,6 @@
         [self resetSearch];
         [self.coverFlow reloadData];
     }
-    [self setHudFinishStatus:@"数据读取完毕" withTime:1.0];
 }
 
 - (void)catalogDidLoad{
@@ -492,7 +499,11 @@
         [self initScene];
         self.firstLogin = NO;
     }
-    [self loadProduct:self.catalogs];
+    if ([self.catalogs count] == 0) {
+        [self setHudFinishStatus:@"读取完毕" withTime:0.5];
+    } else {
+        [self loadProduct:self.catalogs];
+    }
 }
 
 - (void)productDidLoad{
@@ -530,6 +541,9 @@
 #pragma mark Cover View Methods
 
 - (NSUInteger)numberOfItemsInCarousel:(iCarousel *)carousel{
+    if ([self.shownProductForSearch count] == 0) {
+        [self setHudFinishStatus:@"加载完毕" withTime:0.5];
+    }
     return [self.shownProductForSearch count];
 }
 
@@ -538,6 +552,7 @@
 }
 
 - (UIView *)carousel:(iCarousel *)carousel viewForItemAtIndex:(NSUInteger)index reusingView:(TACDIYSelectViewCell *)view{
+
     
     TACDIYSelectViewCell *cell;
     //init view
@@ -618,6 +633,7 @@
 
 - (void)resetSearch{
     self.shownProductForSearch = [self.shownProduct mutableDeepCopy];
+    self.productToShow = [self.shownProductForSearch count];
     [self.coverFlow reloadData];
     [self.searchBar resignFirstResponder];
 }

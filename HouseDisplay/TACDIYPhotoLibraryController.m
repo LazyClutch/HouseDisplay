@@ -101,6 +101,7 @@
     [self.view removeFromSuperview];
 }
 
+
 #pragma mark ResizableView Methods
 - (void)userResizableViewDidBeginEditing:(SPUserResizableView *)userResizableView {
     [self.currentResizableView hideEditingHandles];
