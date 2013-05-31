@@ -232,7 +232,7 @@ iCarouselTranformOption;
 - (NSInteger)indexOfItemViewOrSubview:(UIView *)view;
 - (CGFloat)offsetForItemAtIndex:(NSInteger)index;
 - (void)reloadData;
-
+- (void)reloadDataWithCompletion:( void (^) (void) )completionBlock;
 #ifdef ICAROUSEL_IOS
 
 @property (nonatomic, assign) BOOL centerItemWhenSelected;

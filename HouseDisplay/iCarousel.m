@@ -1206,6 +1206,13 @@ NSComparisonResult compareViewDepth(UIView *view1, UIView *view2, iCarousel *sel
     }
 }
 
+- (void) reloadDataWithCompletion:( void (^) (void) )completionBlock {
+    [self reloadData];
+    if(completionBlock) {
+        completionBlock();
+    }
+}
+
 
 #pragma mark -
 #pragma mark Scrolling

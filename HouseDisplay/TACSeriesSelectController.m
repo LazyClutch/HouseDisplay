@@ -9,6 +9,7 @@
 #import "TACSeriesSelectController.h"
 #import "TACSeriesSelectCell.h"
 #import "TACSeriesDetailController.h"
+#import "UICollectionView+ReloadWithFinish.h"
 
 #define kHostAddress @"121.199.19.84"
 #define kMenuCellWidth  313
@@ -85,6 +86,9 @@
 }
 
 - (void)loadProduct{
+    if (self.seriesInfo == nil || [self.seriesInfo count] == 0  ) {
+        [self setHudFinishStatus:@"读取完毕" withTime:1.0];
+    }
     for (NSMutableDictionary *dict in self.seriesInfo) {
         NSString *number = [dict objectForKey:@"number"];
         NSString *name = [number URLEncodedString];
@@ -95,6 +99,7 @@
         NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     }
 }
+
 
 #pragma mark -
 #pragma mark Hud Delegate Methods
@@ -143,9 +148,6 @@
         }
         cell.description.textAlignment = NSTextAlignmentCenter;
         cell.description.text = labelTitle;
-        if (index == ([self.seriesDetails count] - 1)) {
-            [self setHudFinishStatus:@"读取完毕" withTime:0.5];
-        }
     } failure:^(NSURLRequest *request, NSHTTPURLResponse *response, NSError *error,id JSON){
         NSLog(@"%@",error);
     }];
@@ -160,9 +162,6 @@
 }
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section{
-    if ([self.seriesDetails count] == 0) {
-        [self setHudFinishStatus:@"读取完毕" withTime:0.5];
-    }
     return [self.seriesDetails count];
 }
 
@@ -221,8 +220,9 @@
         NSMutableArray *json = [jsonStr JSONValue];
         self.seriesInfo = json;
         for (NSMutableDictionary *dict in self.roomCatalog) {
-            if ([self.seriesInfo containsObject:dict]) {
-                [self.seriesInfo removeObject:dict];
+            NSMutableDictionary *item = [[NSMutableDictionary alloc] init];
+            if ((item = [self containObject:dict]) != nil) {
+                [self.seriesInfo removeObject:item];
             }
         }
         [self loadProduct];
@@ -230,8 +230,27 @@
         NSMutableDictionary *json = [jsonStr JSONValue];
         NSMutableArray *array = self.seriesDetails;
         [array addObject:json];
-        [self.collectionView reloadData];
+        [self.collectionView reloadDataWithCompletion:^{
+            [self setHudFinishStatus:@"读取完毕" withTime:2.5];
+
+        }];
     }
+}
+
+- (NSMutableDictionary *)containObject:(NSMutableDictionary *)dict{
+    NSMutableArray *info = self.seriesInfo;
+    for (NSMutableDictionary *item in info) {
+        NSArray *values = [item allValues];
+        NSArray *dictValues = [dict allValues];
+        NSString *name = [values objectAtIndex:0];
+        for (int i = 0; i < [dictValues count]; i++) {
+            NSString *dictName = [dictValues objectAtIndex:i];
+            if ([dictName isEqualToString:name]) {
+                return item;
+            }
+        }
+    }
+    return nil;
 }
 
 @end

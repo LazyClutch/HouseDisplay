@@ -139,6 +139,7 @@
 		63A2B73D170B03E900CA6AD9 /* diy5@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 63A2B733170B03E900CA6AD9 /* diy5@2x.png */; };
 		63A2B741170B090E00CA6AD9 /* TACDIYViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A2B73F170B090E00CA6AD9 /* TACDIYViewController.m */; };
 		63A2B742170B090E00CA6AD9 /* TACDIYViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 63A2B740170B090E00CA6AD9 /* TACDIYViewController.xib */; };
+		63A928311758B57C00B50780 /* UICollectionView+ReloadWithFinish.m in Sources */ = {isa = PBXBuildFile; fileRef = 63A928301758B57C00B50780 /* UICollectionView+ReloadWithFinish.m */; };
 		63C6C9A1172A556A00DCF90B /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 63C6C9A0172A556A00DCF90B /* ImageIO.framework */; };
 		63C8F3241719420E005BC4B7 /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 63C8F3231719420E005BC4B7 /* MBProgressHUD.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		63C8F326171946BE005BC4B7 /* 37x-Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = 63C8F325171946BE005BC4B7 /* 37x-Checkmark.png */; };
@@ -350,6 +351,8 @@
 		63A2B73E170B090E00CA6AD9 /* TACDIYViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TACDIYViewController.h; sourceTree = "<group>"; };
 		63A2B73F170B090E00CA6AD9 /* TACDIYViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TACDIYViewController.m; sourceTree = "<group>"; };
 		63A2B740170B090E00CA6AD9 /* TACDIYViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TACDIYViewController.xib; sourceTree = "<group>"; };
+		63A9282F1758B57C00B50780 /* UICollectionView+ReloadWithFinish.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UICollectionView+ReloadWithFinish.h"; sourceTree = "<group>"; };
+		63A928301758B57C00B50780 /* UICollectionView+ReloadWithFinish.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UICollectionView+ReloadWithFinish.m"; sourceTree = "<group>"; };
 		63C6C9A0172A556A00DCF90B /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		63C8F3221719420E005BC4B7 /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
 		63C8F3231719420E005BC4B7 /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
@@ -847,6 +850,8 @@
 				63FE38D21734035900E14754 /* UIImage-Extensions.m */,
 				63CA4839173C8769002F0DC6 /* NSMutableArray+MutableDeepCopy.h */,
 				63CA483A173C8769002F0DC6 /* NSMutableArray+MutableDeepCopy.m */,
+				63A9282F1758B57C00B50780 /* UICollectionView+ReloadWithFinish.h */,
+				63A928301758B57C00B50780 /* UICollectionView+ReloadWithFinish.m */,
 			);
 			name = Catagory;
 			sourceTree = "<group>";
@@ -1048,6 +1053,7 @@
 				6302D4531737EA530048781B /* TACSeriesDetailCell.m in Sources */,
 				63CA483B173C8769002F0DC6 /* NSMutableArray+MutableDeepCopy.m in Sources */,
 				63875036174FBF240014DB25 /* TACDIYSelectViewCell.m in Sources */,
+				63A928311758B57C00B50780 /* UICollectionView+ReloadWithFinish.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

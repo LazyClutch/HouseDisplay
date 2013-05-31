@@ -215,7 +215,6 @@
     animation.removedOnCompletion = NO;
     animation.type = @"rippleEffect";
     [self.view.superview.layer addAnimation:animation forKey:@"animationBack"];
-    //[self.view exchangeSubviewAtIndex:1 withSubviewAtIndex:0];
     [self.view removeFromSuperview];
 }
 
@@ -268,6 +267,7 @@
         [self.setCoverButton setTitle:@"完成" forState:UIControlStateNormal];
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"注意" message:@"已进入编辑模式，将图片拖出屏幕下方可删除图片" delegate:self cancelButtonTitle:@"知道了" otherButtonTitles: nil];
         [alert show];
+        [self performSelector:@selector(alertButtonDismiss:) withObject:alert afterDelay:1.0];
     }
     [self setIsEditing:!self.isEditing];
 }
@@ -299,6 +299,13 @@
         }
     }
     return YES;
+}
+
+- (void)alertButtonDismiss:(UIAlertView *)alert{
+    if(alert)
+    {
+        [alert dismissWithClickedButtonIndex:[alert cancelButtonIndex] animated:YES];
+    }
 }
 
 - (void)reDraw{
@@ -426,10 +433,6 @@
             }
             labelView.text = [dict objectForKey:@"product_describe"];
         }
-        if (index == (self.productToShow - 1)) {
-            [self setHudFinishStatus:@"加载完毕" withTime:0.5];
-            self.hud = nil;
-        }
     } failure:nil];
     [operation start];
 }
@@ -464,7 +467,6 @@
 - (void) connectionDidFinishLoading: (NSURLConnection*) connection {
     if (connection == self.catalogConnection) {
         [self catalogDidLoad];
-        [self setHudFinishStatus:@"读取完毕" withTime:0.5];
     } else if(connection == self.productConnection){
         NSString *jsonStr = [[NSString alloc] init];
         for (NSString *str in self.jsonTempDataArray) {
@@ -475,7 +477,10 @@
     } else {
         [self productDidLoad];
         [self resetSearch];
-        [self.coverFlow reloadData];
+        [self.coverFlow reloadDataWithCompletion:^{
+            [self setHudFinishStatus:@"加载完毕" withTime:2.5];
+            self.hud = nil;
+        }];
     }
 }
 
@@ -541,9 +546,6 @@
 #pragma mark Cover View Methods
 
 - (NSUInteger)numberOfItemsInCarousel:(iCarousel *)carousel{
-    if ([self.shownProductForSearch count] == 0) {
-        [self setHudFinishStatus:@"加载完毕" withTime:0.5];
-    }
     return [self.shownProductForSearch count];
 }
 
