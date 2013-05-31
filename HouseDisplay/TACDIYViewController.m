@@ -16,7 +16,7 @@
 #define kGlass @"glass"
 #define kDisplay @"display"
 #define kSelect @"select"
-#define kHostAddress @"115.28.39.103"
+#define kHostAddress @"121.199.19.84"
 #define currentState @"door"
 #define DEFAULT_RECT CGRectMake(100,100,250,250)
 

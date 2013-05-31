@@ -10,7 +10,7 @@
 #import "TACSeriesSelectCell.h"
 #import "TACSeriesDetailController.h"
 
-#define kHostAddress @"115.28.39.103"
+#define kHostAddress @"121.199.19.84"
 #define kMenuCellWidth  313
 #define kMenuCellHeight 163
 
@@ -77,6 +77,7 @@
 - (void)loadSeries{
     [self setHudStatus:@"正在请求数据"];
     NSString *requestURL = [NSString stringWithFormat:@"http://%@/db_image/catalog.php?room_id=0",kHostAddress];
+    NSLog(@"%@",requestURL);
     NSURL *url = [NSURL URLWithString:requestURL];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:4];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];

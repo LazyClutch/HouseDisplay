@@ -9,7 +9,7 @@
 #import "TACSeriesDetailController.h"
 #import "TACSeriesDetailCell.h"
 
-#define kHostAddress @"115.28.39.103"
+#define kHostAddress @"121.199.19.84"
 #define kMenuCellWidth  313
 #define kMenuCellHeight 163
 
